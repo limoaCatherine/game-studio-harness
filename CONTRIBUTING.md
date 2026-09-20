@@ -57,7 +57,7 @@ The four layers are frozen. Changing them requires a steer, a new loadplan, and 
 
 ## Docs
 
-Depth lives under `docs/`. README keeps the purpose → three framing notes (full pipeline / human–AI boundaries / capability curve) → inventory → department map → problems → philosophy → concepts → guides → platform → install order. Do not add decorative images; badges must be absolute shields.io URLs. Do not invent studio success percentages.
+Depth lives under `docs/`. README keeps the purpose → design philosophy → three framing notes (full pipeline / human–AI boundaries / capability curve) → inventory → department map → skill origin → problems → concepts → guides → platform → install order. Do not add decorative images; badges must be absolute shields.io URLs. Do not invent studio success percentages. Design crafts stay named (11 paths); do not collapse 策划 to combat plus economy.
 
 Public docs are bilingual: [README.md](README.md) and [README.en.md](README.en.md). After adding a craft or skill, both department capability maps must mention the id (35/35 crafts, 106/106 skills). `python install/verify_readme_catalog.py` checks this.
 

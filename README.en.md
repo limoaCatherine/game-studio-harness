@@ -5,9 +5,9 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/limoaCatherine/game-studio-harness/ci.yml?branch=main)](https://github.com/limoaCatherine/game-studio-harness/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/badge/version-0.4.0-informational.svg)](CHANGELOG.md)
 
-Game Studio Harness (GSH) is a four-layer context operating system for the **full game-production pipeline**, not a prompt pack for a few verticals. It connects LLM agents across direction, scope freeze, systems and numeric work, levels and narrative, engineering, quality and release, art and audio, and live operations: a file contract bounds the current round, skills open one step at a time, writes default to the isolation surface, and official surfaces are updated only after human approval.
+Game Studio Harness (GSH) is a four-layer context operating system for the **full game-production pipeline**. It connects LLM agents across production and direction, design (systems, combat, levels, narrative, numeric, UX, copy, liveops, monetization), engineering, quality, art and audio, and live operations: a file contract bounds the current round, skills open one step at a time, writes default to the isolation surface, and official surfaces are updated only after human approval.
 
-The design thesis is **bounded autonomy, auditable diffs, and human gates** — not unattended ship. Public evaluations treat an “agent” as harness plus model. This pack keeps each step inside a named roster and a verify gate so the work stays on a short, checkable horizon.
+The design thesis is **bounded autonomy, auditable diffs, and human gates**. Public evaluations treat an “agent” as harness plus model. This pack keeps each step inside a named roster and a verify gate so the work stays on a short, checkable horizon.
 
 Intended readers: producers, technical directors, lead designers, lead engineers, QA and art leads, and the AI coding tools that share one studio root.
 
@@ -16,18 +16,42 @@ scope → slice → isolate → verify → promote
 ```
 
 [中文](README.md) ·
+[Design philosophy](#design-philosophy) ·
 [Three things to understand first](#three-things-to-understand-first) ·
 [What's inside](#whats-inside) ·
-[What work it handles](#what-work-it-handles) ·
 [Inventory](#inventory) ·
 [Department capability map](#department-capability-map) ·
+[Where skills come from](#where-skills-come-from) ·
 [Problems it addresses](#problems-it-addresses) ·
-[Design philosophy](#design-philosophy) ·
 [Key concepts](#key-concepts) ·
 [Guides](#guides) ·
 [Platform support](#platform-support) ·
 [Docs](docs/README.md) ·
 [Install](#install)
+
+---
+
+## Design philosophy
+
+This section states **why the design exists and what a studio gains**. The standing thesis is bounded autonomy, auditable diffs, and human gates.
+
+**Human gates.** Pillars, scope cuts, official-surface promotion, live pricing, and ship sign-off change player experience and commercial outcomes. Public evaluations show that as task span grows and gates get fewer, unbounded long-horizon autonomy follows a falling logistic (sources in “Capability curve”). GSH leaves those decisions with the studio. The agent produces options, checklists, and isolation-surface diffs for human review.
+
+**Isolation surface.** Design tables, engine assets, and committed history are expensive to roll back. The default `write_class` is `sandbox`. The model writes only to isolation roots declared in `.harness/surfaces.json`. Promotion is a production process: it needs a human, and it writes record cells only, so the diff stays reviewable.
+
+**Craft paths.** Production work has an order: freeze rules before coefficients, write level goals before blockout, lock beats before dialogue, freeze contracts before implementation. A craft file is a step sequence (`uses_skills`). A skill file is the procedure for one step. `activated.json` `craft_path` stores the index and current skill. `gsh next` advances one step and rewrites the current card, so step one does not fill tables in step-five language.
+
+**Skill distillation.** Skills come from real studio workflows: checklists, table-write recipes, blockout and beat acceptance, contracts, and intake criteria, condensed into reusable `SKILL.md` procedures. The craft ranks the order; the procedure lives in the skill. Naming a skill opens an executable playbook. Expanded in [Where skills come from](#where-skills-come-from).
+
+**Context budget.** The per-turn tax stays short: constitution, current card, named skill or craft bodies. Other skills open when that step starts. `minimal` / `core` / `full` decide disk projection, not this turn’s injection.
+
+**Session continuity.** Studio-root `.harness` is the cross-tool filing cabinet. Probe sessions start with `_` and do not overwrite `LATEST`.
+
+**Acceptance evidence.** The close command is `gsh close`. Cursor `stop` and Claude Code `Stop` check the same report. Other tools follow the same flow via the CLI and `HOOKS.md`.
+
+**Lazy MCP.** `core` is a handshake list. `lazy_stdio` starts the child on the first `tools/call`.
+
+**Secrets and destructive operations.** Secrets must not enter git or the model context. `mcp.json.example` is placeholders only. Setup never overwrites an existing `mcp.json`. Irreversible Git and recursive deletes require human confirmation.
 
 ---
 
@@ -37,7 +61,7 @@ Read these three notes before the department map. They state that GSH **covers t
 
 ### 1. Full-pipeline coverage
 
-GSH is built for the whole production pipeline. The catalog currently holds **35 / 35** craft paths and **106 / 106** skills, grouped as production and direction, systems and numeric, narrative / level / UX, engineering, quality, and art / audio. Liveops, monetization, and handoff live in the same catalog. Naming one path opens only the current step. Unnamed crafts stay in the menu; they are not dropped.
+GSH is built for the whole production pipeline. The catalog currently holds **35 / 35** craft paths and **106 / 106** skills. Design has **11** crafts in two peer groups: systems, combat, combat numeric, economy numeric, progression numeric, monetization, liveops; and level, narrative, copy, UX. The rest are production and project management (4), engineering (6), art and tech art (9), and QA (5). Naming one path opens only the current step. Unnamed crafts stay in the menu.
 
 Craft index: [docs/crafts/index.md](docs/crafts/index.md). Skill index: [docs/skills/index.md](docs/skills/index.md). Audio ingest and Bank build are skills (`audio-fmod-checklist`, `fmod-bank-build`) on the tech-art / pipeline steps. There is no 36th craft.
 
@@ -109,8 +133,8 @@ Sources (percentages belong to the papers, not to GSH production KPIs):
 
 | Kind | Count | Role |
 |---|---:|---|
-| Craft paths | 35 | Production, systems/numeric, level/UX, engineering, QA, art/audio |
-| Skill procedures | 106 | Scoping, tables, formulas, acceptance, handoff |
+| Craft paths | 35 | Production 4, design 11 (systems/combat/level/narrative/numeric/UX/copy/liveops/monetization), engineering 6, art 9, QA 5 |
+| Skill procedures | 106 | Distilled studio playbooks (scope, tables, blockout, beats, contracts, acceptance, handoff) |
 | Native adapters | 19 | Complete per-tool trees: entry, rules, skills/crafts, hooks or equivalent |
 | MCP | 0 live servers / 36 purpose stubs | This pack does not ship connectable processes |
 
@@ -129,76 +153,6 @@ After setup, the shared runtime lives at `~/.gsh` (or `<isolate>/gsh`). Each sel
 
 ---
 
-## What work it handles
-
-GSH handles work across the full game-production pipeline that crosses crafts, sessions, and clients. The department map below covers every **35** craft paths in the catalog. Each path is addressable by id and executable step by step. All **106** skills open one at a time. This is not a numeric-slice subset.
-
-### Production and direction
-
-`producer`: milestone goals, build-acceptance drive, release-note voice.  
-`associate-producer`: delivery packs, cross-team coordination, blocker close-out.  
-`project-manager`: risk register, dependency map, status digest, correction options.  
-`creative-director`: experience pillars, slice critique, fantasy conflicts, scope-cut principles.  
-Pillar final call, scope-cut approval, and shipping sign-off stay human. The agent drafts options, checklists, and isolation-surface notes.
-
-### Scoping and freeze
-
-A request such as “this milestone only has to prove a 3-second melee TTK” becomes `loadplan.json`: named craft or skill ids, write class (default `sandbox`), and verify kind. `python -m gsh menu` looks up ids; `python -m gsh activate <session>` writes `activated.json` and the current card. Scope is stored in files so later sessions and other tools can read it.
-
-### Systems, combat, and numeric
-
-`systems-designer`: systems index, feature GDD slices, rule feasibility.  
-`combat-designer`: combat flow, skill kits, feel checklists.  
-`combat-numeric-designer` walks: anchors → attribute framework → formula / counter / skill coefficients → table write → corner cases → table diff. Each step is one skill. `python -m gsh next` moves `craft_open` from `combat-modeling` to `attribute-framework` so later coefficient tables stay out of this turn’s context.
-
-### Economy, progression, and monetization
-
-`economy-numeric-designer`: sources and sinks, prices, inflation stress, table promote.  
-`progression-numeric-designer`: growth curves, unlock cadence, attribute hooks.  
-`monetization-designer`: pay points, IAP / pack / pass catalog, KPI definitions.  
-Same execution model as combat numeric: one skill per step, tables on the isolation surface, evidence paths on close. Live economy and IAP pricing finals stay human.
-
-### Levels, narrative, and UX
-
-`level-designer`: goal chains, blockout, encounters, pacing.  
-`narrative-designer`: beat sheets, quest gates, dialogue.  
-`copywriter-designer`: system / tutorial copy, dialogue polish, naming and length.  
-`ux-designer`: information architecture and five-states.  
-After a craft is named, the round executes only the current step (blockout only, or beats only) and does not rewrite copy keys in parallel.
-
-### Client, server, and tools
-
-`client-engineer`, `client-combat-engineer`, `client-ui-engineer`: feature slices, combat-frame / hit presentation, UI logic and badges.  
-`server-engineer`, `server-combat-engineer`: API contracts, save migration, combat authority, anti-cheat hooks.  
-`tools-engineer`: pipeline-tool specs, export repair, CI tool entry points.  
-Official Git surfaces still pass through isolation and human approval. Engineering skills keep unfrozen design numbers out of code constants. Implement + test loops must ship a `verify-report`.
-
-### Quality and release
-
-`qa-lead`: test plan, acceptance criteria, risk-exemption governance. Exemption proposals are co-owned; exemption approval is human.  
-`qa-functional`: cases and defects.  
-`qa-automation`, `qa-compatibility`, `qa-performance`: automation scaffold, N/N-1 compatibility, measured performance budgets.  
-Close with `python -m gsh close --kind playtest` or `--kind build`; evidence is a case pack or a build log.
-
-### Art, animation, and tech art
-
-`character-concept-artist` / `environment-concept-artist`: character and environment concepts, production briefs.  
-`character-artist` / `environment-artist` / `ui-artist`: character, environment, and UI Kit asset lists and export rules.  
-`animator` / `rigger`: animation sets, event hooks, bind and skin.  
-`vfx-artist` / `tech-artist`: VFX budgets, import validation, LOD / shader and performance-budget hooks.  
-Audio ingest and Bank build use `audio-fmod-checklist` / `fmod-bank-build`. Style anchors and fantasy-tone finals stay human.
-
-### Live operations
-
-`liveops-designer`: event calendar, event spec, reward-mail checks. Collision and reissue rules live in the skill; schedule numbers live on isolation tables, not in the craft body.
-
-### Cross-craft handoff
-
-`handoff-pack`, `collab-protocol`, and `python -m gsh status`. The next shift opens the studio root, runs `python -m gsh resume`, and reads the current card and next skill without relying on chat history.
-
-Craft index: [docs/crafts/index.md](docs/crafts/index.md). Skill index: [docs/skills/index.md](docs/skills/index.md). 35 and 106 are the full current catalog, not an excerpt.
-
-
 ## Inventory
 
 The authoritative source is `catalog.json` (`gsh menu` scans root `agents/` and `skills/` frontmatter). The lists below match the single source of truth: `agents/` (35) and `skills/` (106).
@@ -208,17 +162,17 @@ The authoritative source is `catalog.json` (`gsh menu` scans root `agents/` and 
 | Department | Craft ids |
 | :--- | :--- |
 | Production and project management | `producer` · `associate-producer` · `project-manager` · `creative-director` |
-| Systems and numeric design | `systems-designer` · `combat-designer` · `combat-numeric-designer` · `economy-numeric-designer` · `progression-numeric-designer` · `monetization-designer` · `liveops-designer` |
-| Level, narrative, copy, and UX | `level-designer` · `narrative-designer` · `copywriter-designer` · `ux-designer` |
+| Design · systems and numeric (7) | `systems-designer` · `combat-designer` · `combat-numeric-designer` · `economy-numeric-designer` · `progression-numeric-designer` · `monetization-designer` · `liveops-designer` |
+| Design · level, narrative, copy, UX (4) | `level-designer` · `narrative-designer` · `copywriter-designer` · `ux-designer` |
 | Client and server engineering | `client-engineer` · `client-combat-engineer` · `client-ui-engineer` · `server-engineer` · `server-combat-engineer` · `tools-engineer` |
 | Art and technical art | `character-concept-artist` · `character-artist` · `environment-concept-artist` · `environment-artist` · `ui-artist` · `vfx-artist` · `animator` · `rigger` · `tech-artist` |
 | Quality assurance | `qa-lead` · `qa-functional` · `qa-automation` · `qa-compatibility` · `qa-performance` |
 
 ### 106 skills
 
-Craft `uses_skills` lists cover 85 event skills. The remaining 21 are not attached to any craft path and live in [Cross-cutting capabilities](#7-cross-cutting-capabilities--runtime-and-filing-cabinet): `assemble-craft-flow`, `attr-family-sync`, `audio-fmod-checklist`, `build-acceptance`, `build-gate-checklist`, `collab-protocol`, `data-readiness-check`, `deliverable-sheets`, `diagram-pack`, `doctor`, `excel-format`, `excel-read`, `fmod-bank-build`, `mcp-autostart`, `memory-retrieve`, `naming-consistency-check`, `personal-server-table-sync`, `promote-adr`, `terrain-gaea-pass`, `verify-gate`, `write-isolation`.
+Craft `uses_skills` lists cover 85 event skills. The remaining 21 are not attached to any craft path and live in [Cross-cutting capabilities](#6-cross-cutting-capabilities--runtime-and-filing-cabinet): `assemble-craft-flow`, `attr-family-sync`, `audio-fmod-checklist`, `build-acceptance`, `build-gate-checklist`, `collab-protocol`, `data-readiness-check`, `deliverable-sheets`, `diagram-pack`, `doctor`, `excel-format`, `excel-read`, `fmod-bank-build`, `mcp-autostart`, `memory-retrieve`, `naming-consistency-check`, `personal-server-table-sync`, `promote-adr`, `terrain-gaea-pass`, `verify-gate`, `write-isolation`.
 
-Every id appears in the department tables below. The capability map covers **35/35 crafts and 106/106 skills**.
+Every id appears in the department tables below. The capability map covers **35/35 crafts and 106/106 skills**. Distillation is stated after the map in [Where skills come from](#where-skills-come-from).
 
 ### 36 MCP connectors
 
@@ -246,6 +200,13 @@ Session commands map to scripts as follows:
 ### 1. Production and project management
 
 Production turns direction, capacity, dependencies, and acceptance into a trackable contract. The producer sets goals and release language. The associate producer splits packs and chases completeness. Project management keeps the risk register and dependency graph. The creative director freezes pillars and adjudicates experience conflicts. Without this layer, downstream crafts edit official surfaces inside an unapproved scope.
+
+| Craft | id |
+| :--- | :--- |
+| Producer | `producer` |
+| Associate producer | `associate-producer` |
+| Project manager | `project-manager` |
+| Creative director | `creative-director` |
 
 #### Craft paths
 
@@ -315,9 +276,32 @@ Opening a “playable combat graybox” milestone: `menu` refreshes `catalog.jso
 
 ---
 
-### 2. Systems and numeric design
+### 2. Design
 
-This department turns play into a designable systems index, implementable GDD slices, resolvable combat objects, and promotable numeric tables. Systems design locks rules and interfaces. Combat design locks flow and kits. Three numeric crafts own combat formulas, economy loops, and progression curves. Monetization and liveops attach pay points and event calendars to the same entities and switches. Table edits always follow read → sandbox write → format → diff → human-approved promotion.
+Design covers all **11** crafts in two peer groups: systems and numeric (7) and level, narrative, copy, UX (4). Growth curves are owned by `progression-numeric-designer` (`progression-curve`). Combat numeric owns attributes, formulas, counters, and skill coefficients.
+
+#### Craft roster (11)
+
+| Craft | id | What it does | Path skills |
+| :--- | :--- | :--- | :--- |
+| Systems design | `systems-designer` | Systems index, feature GDD slices, rule feasibility | `systems-index-map` · `feature-gdd-slice` · `rule-feasibility-check` · `promote-canon` |
+| Combat design | `combat-designer` | Combat flow, skill kits, feel checklists | `combat-flow-design` · `skill-kit-design` · `combat-feel-checklist` · `feature-gdd-slice` |
+| Combat numeric | `combat-numeric-designer` | Attributes, formulas, counters, skill coefficients; tables use the write recipe | `combat-modeling` · `attribute-framework` · `damage-formula-pass` · `counter-matrix-pass` · `skill-numeric-pass` · `excel-com-write` · `tunable-table-diff` |
+| Economy numeric | `economy-numeric-designer` | Source/sink loops, prices, inflation, table promote | `economy-loop-analysis` · `sink-source-map` · `price-curve-pass` · `inflation-stress` · `excel-com-write` · `tunable-table-diff` |
+| Progression numeric | `progression-numeric-designer` | Growth curves, unlock cadence, economy hooks, attribute attach | `progression-curve` · `sink-source-map` · `attribute-framework` · `excel-com-write` · `tunable-table-diff` |
+| Monetization | `monetization-designer` | Pay points, IAP / pack / pass catalog, KPI definitions | `monetization-kpi-pass` · `iap-catalog-check` |
+| Liveops | `liveops-designer` | Event calendar, event spec, reward-mail checks | `liveops-calendar` · `event-spec` · `reward-mail-check` |
+| Level design | `level-designer` | Goal chains, blockout, encounters, pacing | `level-goals-spec` · `blockout-pass` · `encounter-script` · `pacing-pass` |
+| Narrative design | `narrative-designer` | Beat sheets, quest specs, dialogue, lore consistency | `narrative-beat-sheet` · `quest-spec` · `lore-consistency-check` · `dialogue-pass` |
+| Copy | `copywriter-designer` | System / tutorial copy, dialogue polish, naming and length | `naming-consistency-check` · `copy-pass` · `dialogue-pass` |
+| UX | `ux-designer` | Information architecture, UX flows, usability review | `ux-flow-spec` · `ux-review-pass` |
+
+Each craft has a full path table below (step, intent, skills opened).
+
+
+#### Systems and numeric
+
+Systems design locks rules and interfaces. Combat design locks flow and kits. Three numeric paths own combat formulas, economy loops, and progression curves. Monetization and liveops attach pay points and event calendars to the same entities and switches. Table edits always follow read → sandbox write → format → diff → human-approved promotion.
 
 #### Craft paths
 
@@ -429,7 +413,7 @@ Run `data-readiness-check` before heavy simulation.
 
 ---
 
-### 3. Level, narrative, copy, and UX
+#### Level, narrative, copy, and UX
 
 This department writes what the player experiences in space and story as testable goals, gated beats, bindable quest state machines, and five-state UX flows. Level design owns goal chains and encounters. Narrative owns beats and lore. Copy unifies terms and length. UX translates system state machines into walkable information architecture. Graybox scale is shared with environment art. Copy keys are reserved for UI and error codes.
 
@@ -497,9 +481,18 @@ This department writes what the player experiences in space and story as testabl
 
 ---
 
-### 4. Client and server engineering
+### 3. Client and server engineering
 
 Engineering turns frozen interfaces into a buildable vertical slice. Client opens the happy path and fail states. Combat client aligns frames and prediction/rollback. UI client owns navigation stack and red dots. Server freezes contracts, saves, and anti-cheat hooks. Combat server owns settle authority. Tools engineering turns export and validation into a CI-able CLI. Authoritative numbers are not finalized in a client Notify callback.
+
+| Craft | id |
+| :--- | :--- |
+| Client engineer | `client-engineer` |
+| Client combat engineer | `client-combat-engineer` |
+| Client UI engineer | `client-ui-engineer` |
+| Server engineer | `server-engineer` |
+| Server combat engineer | `server-combat-engineer` |
+| Tools engineer | `tools-engineer` |
 
 #### Craft paths
 
@@ -586,9 +579,21 @@ Engineering turns frozen interfaces into a buildable vertical slice. Client open
 
 ---
 
-### 5. Art and technical art
+### 4. Art and technical art
 
 Art moves from a testable style anchor to a citable engine path. Concept delivers a makeable brief. Character and environment production pass checklists and naming gates. UI maintains the kit contract and four-state screens. Rig and animation hand skeleton, weights, and event frames to combat and VFX. Technical art turns import, LOD, shader, and VFX budgets into sampleable specs. Unapproved concepts do not enter production meshes. Failed graybox does not receive hero meshes.
+
+| Craft | id |
+| :--- | :--- |
+| Character concept | `character-concept-artist` |
+| Character art | `character-artist` |
+| Environment concept | `environment-concept-artist` |
+| Environment art | `environment-artist` |
+| UI art | `ui-artist` |
+| VFX | `vfx-artist` |
+| Animation | `animator` |
+| Rigging | `rigger` |
+| Tech art | `tech-artist` |
 
 #### Craft paths
 
@@ -703,9 +708,17 @@ Procedural open-world terrain uses the cross-cutting skill `terrain-gaea-pass` (
 
 ---
 
-### 6. Quality assurance
+### 5. Quality assurance
 
 QA turns “good enough” into observable start/stop conditions and an evidence pack. The lead owns the plan and exemptions. Functional QA extracts GWT from the GDD. Automation wires high-value cases to a stable scaffold. Compatibility runs N/N-1 and the device matrix. Performance resamples against a budget. Acceptance day does not rewrite criteria to paint green.
+
+| Craft | id |
+| :--- | :--- |
+| QA lead | `qa-lead` |
+| Functional QA | `qa-functional` |
+| Automation QA | `qa-automation` |
+| Compatibility QA | `qa-compatibility` |
+| Performance QA | `qa-performance` |
 
 #### Craft paths
 
@@ -781,7 +794,7 @@ Version submit: `activate` names `qa-lead` (T2/`read` or `sandbox`). `next`: app
 
 ---
 
-### 7. Cross-cutting capabilities / runtime and filing cabinet
+### 6. Cross-cutting capabilities / runtime and filing cabinet
 
 These skills are not listed on any craft `uses_skills`, but production sessions depend on them to scope, isolate writes, retrieve memory, close, and repair a deployment. They are the teeth of the runtime and the filing cabinet, not leftover utilities. Audio and terrain have no dedicated craft; their procedures still live in the library and must be named explicitly on the load-plan.
 
@@ -847,13 +860,21 @@ Before any department opens work: `menu` (`刷新菜单.py`; the session-start h
 
 ---
 
+## Where skills come from
+
+Skills are distilled from real studio workflows. Checklists, table-write recipes, blockout and beat acceptance, contracts, and intake criteria already used by production, design, engineering, art, and QA are condensed into `SKILL.md` files with inputs, outputs, and fail-closed rollback. A craft file only ranks the steps; the procedure lives in the skill. Naming a skill opens an executable playbook.
+
+The catalog’s **106** skills are the current distillation. New workflows become a skill first, then attach to a craft path. Full index: [docs/skills/index.md](docs/skills/index.md). Capability-layer note: [docs/architecture/l3-capability.md](docs/architecture/l3-capability.md).
+
+---
+
 ## Problems it addresses
 
 These are recurring production problems that a single prompt does not stabilize. GSH handles them with a four-layer file contract and a CLI.
 
 **The context budget is consumed by the menu.** Injecting 106 skills and 35 crafts in full causes the model to edit formulas, discuss saves, and touch official tables in the same step. GSH treats `catalog.json` as a director lookup (`gsh menu`). Boot injects only the constitution, the current card, and named bodies.
 
-**Multi-craft paths are expanded in one shot.** Combat numeric has a fixed order from anchors to coefficient tables. If naming a craft reads every `uses_skills` body, step one fills tables with step-five language. GSH opens `craft_open` only; `gsh next` advances.
+**Multi-craft paths are expanded in one shot.** Level design has a fixed order from goals to blockout; narrative from beats to quest gates; progression from anchors to growth curves; combat numeric from anchors to coefficient tables. If naming a craft reads every `uses_skills` body, step one fills tables with step-five language. GSH opens `craft_open` only; `gsh next` advances.
 
 **Official surfaces are mixed with drafts.** Design tables, engine assets, and committed history are expensive to roll back. GSH defaults to `write_class=sandbox`. Official writes require human approval and a record-cell changeset.
 
@@ -864,28 +885,6 @@ These are recurring production problems that a single prompt does not stabilize.
 **Every MCP host handshakes at IDE start.** Dozens of `tools/list` calls stall boot and spend the context budget. GSH handshakes only the `core` keys in `mcp-tiers.json`; the rest stay lazy. This pack ships no live servers.
 
 **Secrets enter model context; destructive commands run without confirmation.** Cursor and Claude Code intercept common secret paths on read and shell, and require confirmation for operations such as `git reset --hard`.
-
----
-
-## Design philosophy
-
-This section is separate from the problem statements. It states **why the design exists and what a studio gains**. The standing thesis remains bounded autonomy, auditable diffs, and human gates.
-
-**Context budget (context window).** The per-turn tax stays short: constitution, current card, named skill or craft bodies. Other skills open when that step starts. `minimal` / `core` / `full` decide disk projection, not this turn’s injection.
-
-**Craft paths.** A craft file is a step sequence (`uses_skills`). A skill file is the procedure for one step. `activated.json` `craft_path` stores index, current skill, and next skill. `gsh next` advances and rewrites the current card.
-
-**Official surface and isolation surface.** Isolation roots are declared in `.harness/surfaces.json`. The model executes on the isolation surface. Promotion is a production decision, not a default model privilege.
-
-**Session continuity.** Studio-root `.harness` is the cross-tool filing cabinet. Probe sessions start with `_` and do not overwrite `LATEST`.
-
-**Acceptance evidence.** The close command is `gsh close`. Cursor `stop` and Claude Code `Stop` check the same report. Other tools follow the same flow via the CLI and `HOOKS.md`.
-
-**Lazy MCP.** `core` is a handshake list, not an installed-server list. `lazy_stdio` starts the child on the first `tools/call`.
-
-**Secret isolation.** Secrets must not enter git or the model context. `mcp.json.example` is placeholders only. Setup never overwrites an existing `mcp.json`.
-
-**Confirmation for destructive operations.** Irreversible Git and recursive deletes require human confirmation.
 
 ---
 
@@ -917,29 +916,32 @@ This section is separate from the problem statements. It states **why the design
 
 ## Guides
 
-### Combat numeric slice
+Swap any craft id into the same commands. Full paths live in the [department capability map](#department-capability-map). The combat-numeric cookbook remains one worked example. Level, narrative, progression, economy, systems, and QA use the same `menu` → `activate` → `next` → `close` loop.
+
+### Scope a session and take one step
 
 ```bash
 python -m gsh setup --workspace /path/to/studio --tools cursor --profile core --yes
 cd /path/to/studio
-python -m gsh menu --kind craft -q combat
+python -m gsh menu --kind craft -q level
+# also: systems design / narrative / progression / combat numeric / economy / QA
 ```
 
-Write `.harness/sessions/combat-ttk/loadplan.json` naming `combat-numeric-designer`. Then:
+Write `.harness/sessions/<session>/loadplan.json` and name **one** craft in `items`, for example `level-designer`, `systems-designer`, `narrative-designer`, `progression-numeric-designer`, `economy-numeric-designer`, or `combat-numeric-designer`. Growth curves use `progression-numeric-designer` (skill `progression-curve`).
 
 ```bash
-python -m gsh activate combat-ttk
+python -m gsh activate <session>
 python -m gsh resume
-# open the skill in craft_open; edit tables on the isolation surface
-python -m gsh next --craft combat-numeric-designer
-python -m gsh close --kind schema --evidence .harness/sandbox/ttk-notes.md
+# open the skill in craft_open; edit tables, blockout notes, or slice drafts on the isolation surface
+python -m gsh next --craft <craft-id>
+python -m gsh close --kind schema --evidence .harness/sandbox/<notes>.md
 ```
 
-`activated.json` `craft_path` shows progress such as `2/9`. The current card and `state.json` stay aligned. Official record cells are written only after human approval.
+`activated.json` `craft_path` shows progress such as `2/9`. The current card stays in sync with `state.json`. Official record cells are written only after studio approval.
 
-Full walkthrough: [docs/cookbook/combat-numeric-slice.md](docs/cookbook/combat-numeric-slice.md). Docs map: [docs/README.md](docs/README.md) (architecture, adapters, cookbook, release).
+Combat-numeric walkthrough: [docs/cookbook/combat-numeric-slice.md](docs/cookbook/combat-numeric-slice.md). Docs map: [docs/README.md](docs/README.md) (architecture, adapters, cookbook, release).
 
-### Resume after a client switch
+### Continue on another client
 
 After scoping in Cursor, open the same studio root in another client:
 
@@ -948,16 +950,16 @@ python -m gsh status --workspace /path/to/studio
 python -m gsh resume --workspace /path/to/studio
 ```
 
-Both clients read the same `.harness`. Cursor injects the card summary on `sessionStart`. Claude Code `settings.json` invokes the same `hooks/开场.py`.
+Both sides read the same `.harness`. Cursor injects the current-card summary on `sessionStart`. Claude Code `settings.json` calls the same `hooks/开场.py`.
 
-### Director lookup without injecting the catalog
+### Director lookup, not a full-menu inject
 
 ```bash
 python -m gsh menu --kind skill -q excel
 python -m gsh menu --kind craft -q qa
 ```
 
-Output is an id plus one-line description. Do not write `catalog.json` into a system prompt. If the boot hook detects a dumped catalog in context, it rewrites the injection to recommend `gsh menu`.
+Output is an id plus one-line description. Do not put `catalog.json` in the system prompt. If the boot hook sees a full menu in context, it rewrites the turn to use `gsh menu`.
 
 ---
 
@@ -1060,22 +1062,21 @@ Open the **studio root**, not only this repository. Replace placeholders in `.ha
 
 | Task | Entry |
 |---|---|
-| Scope a production round | `python -m gsh menu --kind craft -q milestone`, then `skills/route-task/SKILL.md` |
-| Production / direction | `producer` / `creative-director` |
-| Combat numeric / TTK | Name `combat-numeric-designer`, `gsh activate`, advance with `gsh next` |
-| Economy / progression / monetization | `economy-numeric-designer` / `progression-numeric-designer` / `monetization-designer` |
-| Level blockout | `level-designer` |
-| Client / server | `client-engineer` / `server-engineer` |
-| Art / tech art | `character-artist` / `tech-artist` |
-| QA acceptance | `qa-lead` or `qa-functional`, then `gsh close` |
-| Liveops calendar | `liveops-designer` |
+| Scope a production round | `python -m gsh menu --kind craft -q milestone`, read `skills/route-task/SKILL.md` |
+| Production and project management | `producer` · `associate-producer` · `project-manager` · `creative-director` |
+| Design · systems and numeric | `systems-designer` · `combat-designer` · `combat-numeric-designer` · `economy-numeric-designer` · `progression-numeric-designer` · `monetization-designer` · `liveops-designer` |
+| Design · level, narrative, copy, UX | `level-designer` · `narrative-designer` · `copywriter-designer` · `ux-designer` |
+| Engineering | `client-engineer` · `client-combat-engineer` · `client-ui-engineer` · `server-engineer` · `server-combat-engineer` · `tools-engineer` |
+| Art and tech art | `character-concept-artist` · `character-artist` · `environment-concept-artist` · `environment-artist` · `ui-artist` · `vfx-artist` · `animator` · `rigger` · `tech-artist` |
+| Quality QA | `qa-lead` · `qa-functional` · `qa-automation` · `qa-compatibility` · `qa-performance` |
 | Resume the current session | `python -m gsh resume` |
-| Inspect progress | `python -m gsh status` |
-| Close a work item | `python -m gsh close --kind smoke --evidence <artifact>` |
+| Status | `python -m gsh status` |
+| Close | `python -m gsh close --kind smoke --evidence <artifact>` |
 
 ```text
-gsh menu -q ttk
-  → write loadplan.json (name a craft id)
+gsh menu -q level
+  # or: systems design / narrative / progression / combat numeric / QA
+  → write loadplan.json (name one craft id)
   → gsh activate <session>
   → read current.md; execute the current step only
   → gsh next
