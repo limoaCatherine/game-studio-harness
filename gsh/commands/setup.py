@@ -46,7 +46,11 @@ def run(
 ) -> int:
     pack_root = resolve_pack(pack)
     if not (pack_root / "skills" / "route-task" / "SKILL.md").is_file():
-        print("missing skills/ at pack root; clone the repo and run from there", file=sys.stderr)
+        print(
+            "missing skills/ at pack root; pip install . / pipx install . "
+            "or clone the repo and set GSH_PACK_ROOT",
+            file=sys.stderr,
+        )
         return 2
 
     if guided and not yes:

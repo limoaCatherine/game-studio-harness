@@ -25,6 +25,7 @@ NEED_SCRIPTS = (
     "应用外接档位.py",
     "拉起外接.py",
     "gsh_paths.py",
+    "职种路径.py",
 )
 USER_PATH = re.compile(r"[A-Za-z]:\\Users\\(?!\$\{)[A-Za-z0-9._-]+")
 DRIVE_HOST = re.compile(r"[A-Za-z]:\\Harness-Apps|[A-Za-z]:/Harness-Apps")
@@ -57,6 +58,8 @@ def _scan_secrets(path: Path, errors: list[str]) -> None:
         if item.suffix.lower() not in {".md", ".json", ".py", ".mdc", ".example", ".yml", ".yaml", ".toml", ".txt"}:
             continue
         if item.name in {"catalog.json", "mcp.json"}:
+            continue
+        if "pack_data" in item.parts:
             continue
         try:
             text = item.read_text(encoding="utf-8")

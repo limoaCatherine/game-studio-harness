@@ -339,7 +339,22 @@ def land_tool(pack: Path, h, spec: ToolSpec, profile: str, write_mcp: bool, dry:
         )
         write_text(
             dest / "prompts" / "verify-gate.prompt.md",
-            natives.copilot_prompt("GSH verify-gate", "Open skills/verify-gate/SKILL.md. Refuse verbal green."),
+            natives.copilot_prompt(
+                "GSH close",
+                "Run `python -m gsh close --kind smoke --evidence <path>`. Then read the report path it printed.",
+            ),
+            dry,
+            copied,
+        )
+        write_text(
+            dest / "prompts" / "status.prompt.md",
+            natives.copilot_prompt("GSH status", "Run `python -m gsh status` and `python -m gsh resume`."),
+            dry,
+            copied,
+        )
+        write_text(
+            dest / "prompts" / "next.prompt.md",
+            natives.copilot_prompt("GSH next", "Run `python -m gsh next` and open the skill it names."),
             dry,
             copied,
         )

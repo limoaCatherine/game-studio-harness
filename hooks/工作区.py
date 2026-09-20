@@ -163,8 +163,10 @@ def session_env(root: Path | None) -> dict[str, str]:
 def session_boot_context(root: Path | None, limit: int = 1800) -> str:
     """开场注入：读序 + 现行卡正文，不灌菜单全文。"""
     lines = [
-        "开场读序：第一层规则 → 现行卡 → 点名技能/职种正文。名单不是调用闸。",
-        "缺技能或外接可当场打开或调用；写正式面前先走隔离根。",
+        "开场读序：第一层规则 → 现行卡 → 点名技能/职种正文。",
+        "catalog.json 是导演点名菜单，用 `python -m gsh menu` 查 id，不要把菜单全文贴进对话。",
+        "续上：`python -m gsh status` / `python -m gsh resume`。职种前进：`python -m gsh next`。收口：`python -m gsh close`。",
+        "写正式面前先走隔离根。",
     ]
     if root is None:
         lines.append("业务根未找到，先定档。")
@@ -196,7 +198,20 @@ def session_boot_context(root: Path | None, limit: int = 1800) -> str:
         lines.append("已点名: " + ", ".join(named))
     opened = activated.get("craft_open") or {}
     if opened:
-        lines.append("职种下一步: " + ", ".join(f"{k}→{v}" for k, v in opened.items()))
+        lines.append("职种当前步: " + ", ".join(f"{k}→{v}" for k, v in opened.items()))
+    paths = activated.get("craft_path") or {}
+    if isinstance(paths, dict) and paths:
+        bits = []
+        for cid, row in paths.items():
+            if not isinstance(row, dict):
+                continue
+            steps = row.get("steps") or []
+            if not steps:
+                continue
+            n = int(row.get("index") or 0) + 1
+            bits.append(f"{cid} {n}/{len(steps)}")
+        if bits:
+            lines.append("职种进度: " + ", ".join(bits))
     keys = activated.get("retrieve_keys") or []
     if keys:
         lines.append("记忆键: " + ", ".join(str(x) for x in keys))

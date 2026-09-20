@@ -142,11 +142,28 @@ def find_catalog(h: Homes | None = None) -> Path:
     for path in catalog_candidates(homes):
         if path.is_file():
             return path
+    pack = find_pack_root()
+    pack_cat = pack / "harness" / "catalog.json"
+    if pack_cat.is_file():
+        return pack_cat
     return homes.gsh_harness / "catalog.json"
 
 
+def _is_pack_root(path: Path) -> bool:
+    return (
+        (path / "skills" / "route-task" / "SKILL.md").is_file()
+        and (path / "agents").is_dir()
+        and (path / "harness" / "scripts").is_dir()
+        and (path / "rules").is_dir()
+    )
+
+
 def find_pack_root(start: Path | None = None) -> Path:
-    """仓库根：同时具备 skills/、agents/、harness/、rules/。"""
+    """包根：同时具备 skills/、agents/、harness/、rules/。
+
+    探测顺序：``GSH_PACK_ROOT`` → 从 start 向上的检出 → 已安装 wheel 的
+    ``gsh/pack_data`` → 脚本相对回退。
+    """
     env = (os.environ.get("GSH_PACK_ROOT") or "").strip()
     if env:
         return Path(env).resolve()
@@ -154,13 +171,16 @@ def find_pack_root(start: Path | None = None) -> Path:
     if cur.is_file():
         cur = cur.parent
     for p in [cur, *cur.parents]:
-        if (
-            (p / "skills" / "route-task" / "SKILL.md").is_file()
-            and (p / "agents").is_dir()
-            and (p / "harness" / "scripts").is_dir()
-            and (p / "rules").is_dir()
-        ):
+        if _is_pack_root(p):
             return p
+    try:
+        from gsh.paths_cli import bundled_pack
+
+        bundled = bundled_pack()
+        if bundled is not None:
+            return bundled
+    except ImportError:
+        pass
     return Path(__file__).resolve().parents[2]
 
 

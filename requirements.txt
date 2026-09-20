@@ -1,0 +1,8 @@
+# Runtime: Python 3.11+ standard library only.
+# Install the project (console script `gsh` + pack data):
+#   python -m pip install .
+#   pipx install .
+#
+# Contributor / editable:
+#   python -m pip install -e ".[dev]"
+# See requirements-dev.txt.

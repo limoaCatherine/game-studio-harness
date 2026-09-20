@@ -15,3 +15,6 @@ _probe/
 dist/
 build/
 *.egg-info/
+.ruff_cache/
+.pytest_cache/
+gsh/pack_data/

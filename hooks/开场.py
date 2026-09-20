@@ -75,11 +75,14 @@ def main() -> None:
     roots = payload.get("workspace_roots") or []
     cwd = roots[0] if roots else Path.cwd()
     root = find_workspace(cwd)
+    extra = session_boot_context(root)
+    if "catalog.json" in extra and extra.count('"id"') > 20:
+        extra = "catalog.json 不得作为开场正文。用 python -m gsh menu 点名。"
     print(
         json.dumps(
             {
                 "env": session_env(root),
-                "additional_context": session_boot_context(root),
+                "additional_context": extra,
             },
             ensure_ascii=False,
         )

@@ -152,6 +152,7 @@ def land_shared(pack: Path, h, profile: str, dry: bool, copied: list[str]) -> di
     copy_tree(pack / "harness" / "mcp-tools", h.gsh_harness / "mcp-tools", dry, copied)
     copy_tree(pack / "harness" / "docs", h.gsh_harness / "docs", dry, copied)
     copy_tree(pack / "harness" / "mcp-boot", h.gsh_harness / "mcp-boot", dry, copied)
+    copy_tree(pack / "harness" / "templates", h.gsh_harness / "templates", dry, copied)
     copy_file(
         pack / "harness" / "host-paths.example.json",
         h.gsh_harness / "host-paths.example.json",
@@ -250,7 +251,9 @@ systemMessage: |
 def land_workspace(pack: Path, root: Path, dry: bool, copied: list[str]) -> str:
     if not dry:
         root.mkdir(parents=True, exist_ok=True)
-    merge_missing(pack / "studio" / ".harness", root / ".harness", dry, copied)
+    from gsh.paths_cli import studio_scaffold
+
+    merge_missing(studio_scaffold(pack), root / ".harness", dry, copied)
     from gsh.adapters import land_project_natives
 
     land_project_natives(pack, root, dry, copied)

@@ -155,7 +155,17 @@ def write_current_card(
         for iid in act.get(kind) or []:
             named.append(f"{kind}:{iid}")
     craft_open = act.get("craft_open") or {}
-    next_open = ", ".join(f"{k}→{v}" for k, v in craft_open.items()) or "无"
+    craft_path = act.get("craft_path") or {}
+    bits = []
+    for cid, cur in craft_open.items():
+        row = craft_path.get(cid) if isinstance(craft_path, dict) else None
+        if isinstance(row, dict) and row.get("steps"):
+            n = int(row.get("index") or 0) + 1
+            nxt = row.get("next") or "完成"
+            bits.append(f"{cid} {n}/{len(row['steps'])} {cur} → {nxt}")
+        else:
+            bits.append(f"{cid}→{cur}")
+    next_open = "; ".join(bits) or "无"
     forbid = plan.get("forbid") or []
     write_class = plan.get("write_class") or act.get("write_class") or "sandbox"
     lines = [
@@ -171,7 +181,7 @@ def write_current_card(
         f"- 已点名: {', '.join(named) or '无'}",
         f"- 职种下一步: {next_open}",
         f"- 禁改: {', '.join(str(x) for x in forbid) or '无'}",
-        f"- 下一手: 按职种下一步打开技能，或按计划制作",
+        f"- 下一手: 打开当前技能；做完后 `python -m gsh next`；收口 `python -m gsh close`",
         "",
     ]
     dest = current_card_path(root, session_id)

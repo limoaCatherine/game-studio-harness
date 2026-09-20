@@ -1,17 +1,17 @@
 # MCP 政策
 
-GSH 把「外接」分成三档。**本仓不声称 36 条全部可用。**
+GSH 将外接分为三档。本仓配送用途桩与占位模板；可连接进程由本机自行安装。
 
-## 本仓配送什么
+## 本仓配送范围
 
-| 物件 | 是什么 | 不是什么 |
+| 物件 | 说明 | 边界 |
 |---|---|---|
-| `harness/mcp-tools/*.json`（36） | 用途桩：id、purpose、工具名列表 | 可执行服务器 |
-| `harness/mcp.json.example` | 占位启动模板，环境变量全是 `${…}` | 带密钥的活配置 |
-| `harness/mcp-tiers.json` | 哪些键若已接线则开场握手，哪些懒接 | 可用性保证 |
-| `harness/mcp-boot/lazy_stdio.py` | 发现走缓存、第一次 `tools/call` 再拉子进程 | 子进程本身 |
-| `harness/mcp-boot/http_bridge.py` | 把本机 HTTP MCP 桥成 stdio | 远程 SaaS |
-| `harness/mcp-boot/cache/*.tools.json` | 工具声明缓存，避免启动时 `tools/list` | 对宿主在线的证明 |
+| `harness/mcp-tools/*.json`（36） | 用途桩：id、purpose、工具名列表 | 不含可执行服务器 |
+| `harness/mcp.json.example` | 占位启动模板，环境变量均为 `${…}` | 不含密钥 |
+| `harness/mcp-tiers.json` | 已接线键的开场握手名单，其余懒加载 | 不表示宿主已安装 |
+| `harness/mcp-boot/lazy_stdio.py` | 声明走缓存，首次 `tools/call` 再拉起子进程 | 不含子进程本身 |
+| `harness/mcp-boot/http_bridge.py` | 将本机 HTTP MCP 桥为 stdio | 不含远程托管服务 |
+| `harness/mcp-boot/cache/*.tools.json` | 工具声明缓存，避免启动时 `tools/list` | 不证明宿主在线 |
 
 **可接线活服务器配送数量：0。**
 

@@ -7,13 +7,13 @@ import sys
 from pathlib import Path
 
 from gsh import __version__
-from gsh.commands import doctor, setup, sync, uninstall, verify
+from gsh.commands import doctor, setup, studio, sync, uninstall, verify
 
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="gsh",
-        description="Game Studio Harness CLI — 把四层上下文 OS 投影到 AI 编程工具。不装 DCC，不写密钥。",
+        description="Game Studio Harness CLI — 安装、点名、续上、职种下一步、关项。",
     )
     p.add_argument("--version", action="version", version=f"gsh {__version__}")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -29,7 +29,10 @@ def build_parser() -> argparse.ArgumentParser:
         sp.add_argument("--isolate-root", help="探测根：所有家目录改落到此树下")
         sp.add_argument("--cursor-home", help="兼容旧开关；请改用 --isolate-root")
         sp.add_argument("--cursor-only", action="store_true", help="不建业务根")
-        sp.add_argument("--pack-root", help="仓库根；默认自动探测")
+        sp.add_argument(
+            "--pack-root",
+            help="pack 根（skills/agents/…）；默认 GSH_PACK_ROOT、git 检出、或 wheel 内 gsh/pack_data",
+        )
         sp.add_argument("--yes", action="store_true", help="非交互，跳过确认")
 
     s = sub.add_parser("setup", help="引导或脚本化安装")
@@ -51,6 +54,37 @@ def build_parser() -> argparse.ArgumentParser:
     u = sub.add_parser("uninstall", help="按 install-state 撤掉 GSH 投影（不删用户 mcp.json）")
     add_common(u)
     u.add_argument("--dry-run", action="store_true")
+
+    m = sub.add_parser("menu", help="导演菜单：按 id 检索职种/技能，不灌 catalog 全文")
+    add_common(m)
+    m.add_argument("--kind", default="all", choices=("all", "craft", "skill"))
+    m.add_argument("-q", "--query", default="", help="检索词，例如 ttk / 经济 / qa")
+
+    st = sub.add_parser("status", help="当前会话、职种进度、验证报告")
+    add_common(st)
+    st.add_argument("--session", help="会话短名；默认 LATEST")
+
+    rs = sub.add_parser("resume", help="打印现行卡与下一手")
+    add_common(rs)
+    rs.add_argument("--session", help="会话短名；默认 LATEST")
+
+    nx = sub.add_parser("next", help="把职种路径推到下一步并改写现行卡")
+    add_common(nx)
+    nx.add_argument("--session", help="会话短名；默认 LATEST")
+    nx.add_argument("--craft", help="职种 id；默认名单里的第一条")
+
+    cl = sub.add_parser("close", help="写出验证报告并登记关项")
+    add_common(cl)
+    cl.add_argument("--session", help="会话短名；默认 LATEST")
+    cl.add_argument("--kind", default="smoke", help="smoke|schema|playtest|build|release")
+    cl.add_argument("--evidence", default="", help="证据路径，逗号分隔")
+    cl.add_argument("--command", default="python -m gsh close")
+    cl.add_argument("--notes", default="")
+    cl.add_argument("--verdict", default="pass", choices=("pass", "fail"))
+
+    ac = sub.add_parser("activate", help="根据 loadplan 生成名单与现行卡")
+    add_common(ac)
+    ac.add_argument("session", help="会话短名")
 
     # 兼容旧入口：python -m gsh --workspace X  视为 setup
     return p
@@ -74,6 +108,12 @@ def main(argv: list[str] | None = None) -> int:
         "verify",
         "doctor",
         "uninstall",
+        "menu",
+        "status",
+        "resume",
+        "next",
+        "close",
+        "activate",
     }:
         pass
     elif argv and (argv[0].startswith("-") or not argv):
@@ -126,5 +166,43 @@ def main(argv: list[str] | None = None) -> int:
         )
     if args.cmd == "uninstall":
         return uninstall.run(isolate=isolate, dry=args.dry_run, yes=args.yes)
+    if args.cmd == "menu":
+        return studio.run_menu(kind=args.kind, query=args.query, pack=pack)
+    if args.cmd == "status":
+        return studio.run_status(
+            workspace=Path(args.workspace) if args.workspace else None,
+            session=args.session,
+            pack=pack,
+        )
+    if args.cmd == "resume":
+        return studio.run_resume(
+            workspace=Path(args.workspace) if args.workspace else None,
+            session=args.session,
+            pack=pack,
+        )
+    if args.cmd == "next":
+        return studio.run_next(
+            workspace=Path(args.workspace) if args.workspace else None,
+            session=args.session,
+            craft=args.craft,
+            pack=pack,
+        )
+    if args.cmd == "close":
+        return studio.run_close(
+            workspace=Path(args.workspace) if args.workspace else None,
+            session=args.session,
+            kind=args.kind,
+            evidence=args.evidence,
+            command=args.command,
+            notes=args.notes,
+            verdict=args.verdict,
+            pack=pack,
+        )
+    if args.cmd == "activate":
+        return studio.run_activate(
+            workspace=Path(args.workspace) if args.workspace else None,
+            session=args.session,
+            pack=pack,
+        )
     parser.error(f"unknown command {args.cmd}")
     return 2

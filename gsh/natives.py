@@ -114,8 +114,14 @@ prompts:
     description: Scope a GSH session
     prompt: Open skills/route-task/SKILL.md. Write loadplan.json. Do not invent ids.
   - name: verify-gate
-    description: Close only with evidence
-    prompt: Open skills/verify-gate/SKILL.md. Do not close without verify-report.json pass.
+    description: Close the current work item
+    prompt: Run python -m gsh close --kind smoke --evidence <path>. Open skills/verify-gate/SKILL.md if you need the field meaning.
+  - name: gsh-status
+    description: Resume the current GSH session
+    prompt: Run python -m gsh status and python -m gsh resume. Open the current skill only.
+  - name: gsh-next
+    description: Advance the current craft path
+    prompt: Run python -m gsh next. Then open the skill named in craft_open.
 """
 
 
@@ -159,15 +165,15 @@ def roo_modes() -> dict:
                 "description": "Execute one named skill or the current craft_open step in sandbox.",
                 "roleDefinition": "You execute one named GSH skill in isolation. Do not promote official surfaces.",
                 "groups": ["read", "edit", "command"],
-                "customInstructions": "Read current.md first. Stay in sandbox.",
+                "customInstructions": "Run python -m gsh resume. Open only the current craft step. Stay in sandbox.",
             },
             {
                 "slug": "gsh-closer",
                 "name": "GSH Closer",
-                "description": "Write verify-report.json. Refuse verbal green.",
-                "roleDefinition": "You close GSH work items only with a passing verify-report.json.",
+                "description": "Close the current work item with gsh close.",
+                "roleDefinition": "You close a GSH work item by running python -m gsh close and attaching evidence paths.",
                 "groups": ["read", "edit", "command"],
-                "customInstructions": "Open skills/verify-gate/SKILL.md.",
+                "customInstructions": "Run python -m gsh close --kind smoke --evidence <path>. Read skills/verify-gate/SKILL.md for field meaning.",
             },
         ]
     }

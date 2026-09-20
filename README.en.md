@@ -1,106 +1,286 @@
-<p align="center">
-  <img src="assets/four-layer.svg" alt="Game Studio Harness four layers" width="920" />
-</p>
+# Game Studio Harness
 
-<h1 align="center">Game Studio Harness</h1>
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://img.shields.io/github/actions/workflow/status/limoaCatherine/game-studio-harness/ci.yml?branch=main)](https://github.com/limoaCatherine/game-studio-harness/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/badge/version-0.4.0-informational.svg)](CHANGELOG.md)
 
-<p align="center">
-  <strong>A four-layer context operating system for game-production agents.</strong><br/>
-  Scope → slice → isolate → verify → promote.<br/>
-  <a href="README.md">中文</a> ·
-  <a href="#install">Install</a> ·
-  <a href="#mental-model">Mental model</a> ·
-  <a href="#design-philosophy">Design philosophy</a> ·
-  <a href="#layer-deep-dives">Layer deep dives</a> ·
-  <a href="#platform-support">Platform support</a> ·
-  <a href="docs/mcp-policy.md">MCP policy</a>
-</p>
+Game Studio Harness (GSH) is a **four-layer context operating system** for game-production pipelines. It connects LLM agents to scoping, craft paths, isolated execution, and evidence-based promotion: a file contract bounds the current round, skills open one step at a time, writes default to the isolation surface, and official surfaces are updated only after human approval.
 
-<p align="center">
+Intended readers: producers, technical directors, lead designers, lead engineers, and the AI coding tools that share one studio root.
 
-| Crafts | Skills | MCP policy | Native adapters |
-| :---: | :---: | :---: | :---: |
-| 35 crafts | 106 skills | **0** live servers shipped / 36 purpose stubs | 19 full native trees · Cursor `hooks.json` · Claude `settings.json` |
+```text
+scope → slice → isolate → verify → promote
+```
 
-</p>
+[中文](README.md) ·
+[What's inside](#whats-inside) ·
+[What work it handles](#what-work-it-handles) ·
+[Problems it addresses](#problems-it-addresses) ·
+[Design philosophy](#design-philosophy) ·
+[Key concepts](#key-concepts) ·
+[Guides](#guides) ·
+[Platform support](#platform-support) ·
+[Docs](docs/README.md) ·
+[Install](#install)
 
-> Context windows are scarce. Official surfaces are irreversible. Sessions die. Verbal "green" cannot close a work item.
->
-> GSH is a **four-layer context OS** for LLM agents inside a real game-production pipeline: scope, slice, isolate, verify, promote.
+---
 
-> [!WARNING]
-> **Official sources only.** Install from [github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness). Third-party zips and mirrors are unreviewed and may ship hostile hooks or a live `mcp.json`. This repo is MIT. It does not vendor DCC binaries or studio absolute paths.
+## What's inside
+
+| Kind | Count | Role |
+|---|---:|---|
+| Craft paths | 35 | Production, systems/numeric, level/UX, engineering, QA, art/audio |
+| Skill procedures | 106 | Scoping, tables, formulas, acceptance, handoff |
+| Native adapters | 19 | Complete per-tool trees: entry, rules, skills/crafts, hooks or equivalent |
+| MCP | 0 live servers / 36 purpose stubs | This pack does not ship connectable processes |
+
+```text
+game-studio-harness/
+├── skills/                 # 106 skills (single content source)
+├── agents/                 # 35 craft paths (single content source)
+├── rules/ hooks/ harness/  # constitution, hooks, runtime, catalog
+├── gsh/                    # setup / sync / verify / menu / status / next / close
+├── studio/.harness/        # studio-root scaffold
+├── .cursor/ .claude/ …     # native conventions (no skill forest in the pack)
+└── docs/ tests/
+```
+
+After setup, the shared runtime lives at `~/.gsh` (or `<isolate>/gsh`). Each selected tool home receives the full native tree that tool already understands.
+
+---
+
+## What work it handles
+
+GSH handles production work that crosses crafts, sessions, and clients on a single vertical slice. Each path below is addressable by catalog id and executable step by step.
+
+### Scoping and freeze
+
+A request such as “this milestone only has to prove a 3-second melee TTK” becomes `loadplan.json`: named craft or skill ids, write class (default `sandbox`), and verify kind. `python -m gsh menu` looks up ids; `python -m gsh activate <session>` writes `activated.json` and the current card. Scope is stored in files so later sessions and other tools can read it.
+
+### Combat numeric
+
+`combat-numeric-designer` walks: anchors → attribute framework → formula / counter / skill coefficients → table write → corner cases → table diff. Each step is one skill. `python -m gsh next` moves `craft_open` from `combat-modeling` to `attribute-framework` so later coefficient tables stay out of this turn’s context.
+
+### Economy and progression
+
+`economy-numeric-designer`: sources and sinks, prices, inflation stress, table promote.  
+`progression-numeric-designer`: growth curves, unlock cadence, attribute hooks.  
+Same execution model as combat numeric: one skill per step, tables on the isolation surface, evidence paths on close.
+
+### Levels, narrative, and UX
+
+`level-designer`: goal chains, blockout, encounters, pacing.  
+`narrative-designer`: beat sheets, quest gates, dialogue.  
+`ux-designer`: information architecture and five-states.  
+After a craft is named, the round executes only the current step (blockout only, or beats only) and does not rewrite copy keys in parallel.
+
+### Client and server
+
+`client-engineer`, `server-engineer`, and the combat/UI variants split contract, feature slice, and save migration into steps. Official Git surfaces still pass through isolation and human approval. Engineering skills keep unfrozen design numbers out of code constants.
+
+### Quality and release
+
+`qa-lead`: test plan and acceptance criteria.  
+`qa-functional`: cases and defects.  
+Automation, compatibility, and performance have separate paths. Close with `python -m gsh close --kind playtest` or `--kind build`; evidence is a case pack or a build log.
+
+### Live operations
+
+`liveops-designer`: event calendar, event spec, reward-mail checks. Collision and reissue rules live in the skill; schedule numbers live on isolation tables, not in the craft body.
+
+### Cross-craft handoff
+
+`handoff-pack`, `collab-protocol`, and `python -m gsh status`. The next shift opens the studio root, runs `python -m gsh resume`, and reads the current card and next skill without relying on chat history.
+
+Craft index: [docs/crafts/index.md](docs/crafts/index.md). Skill index: [docs/skills/index.md](docs/skills/index.md).
+
+---
+
+## Problems it addresses
+
+These are recurring production problems that a single prompt does not stabilize. GSH handles them with a four-layer file contract and a CLI.
+
+**The context budget is consumed by the menu.** Injecting 106 skills and 35 crafts in full causes the model to edit formulas, discuss saves, and touch official tables in the same step. GSH treats `catalog.json` as a director lookup (`gsh menu`). Boot injects only the constitution, the current card, and named bodies.
+
+**Multi-craft paths are expanded in one shot.** Combat numeric has a fixed order from anchors to coefficient tables. If naming a craft reads every `uses_skills` body, step one fills tables with step-five language. GSH opens `craft_open` only; `gsh next` advances.
+
+**Official surfaces are mixed with drafts.** Design tables, engine assets, and committed history are expensive to roll back. GSH defaults to `write_class=sandbox`. Official writes require human approval and a record-cell changeset.
+
+**Progress is lost when a session ends or the client changes.** Chat is not the archive. Progress lives in `current.md`, `state.json`, and `tasks.jsonl`. Any installed tool can run `gsh status` / `gsh resume`.
+
+**Acceptance has no durable record.** Informal confirmation cannot enter release materials. `gsh close` writes `verify-report.json` (`verify_kind`, `evidence_paths`, `verdict`) and appends the audit log.
+
+**Every MCP host handshakes at IDE start.** Dozens of `tools/list` calls stall boot and spend the context budget. GSH handshakes only the `core` keys in `mcp-tiers.json`; the rest stay lazy. This pack ships no live servers.
+
+**Secrets enter model context; destructive commands run without confirmation.** Cursor and Claude Code intercept common secret paths on read and shell, and require confirmation for operations such as `git reset --hard`.
+
+---
+
+## Design philosophy
+
+This section is separate from the problem statements. It states **why the design exists and what a studio gains**.
+
+**Context budget (context window).** The per-turn tax stays short: constitution, current card, named skill or craft bodies. Other skills open when that step starts. `minimal` / `core` / `full` decide disk projection, not this turn’s injection.
+
+**Craft paths.** A craft file is a step sequence (`uses_skills`). A skill file is the procedure for one step. `activated.json` `craft_path` stores index, current skill, and next skill. `gsh next` advances and rewrites the current card.
+
+**Official surface and isolation surface.** Isolation roots are declared in `.harness/surfaces.json`. The model executes on the isolation surface. Promotion is a production decision, not a default model privilege.
+
+**Session continuity.** Studio-root `.harness` is the cross-tool filing cabinet. Probe sessions start with `_` and do not overwrite `LATEST`.
+
+**Acceptance evidence.** The close command is `gsh close`. Cursor `stop` and Claude Code `Stop` check the same report. Other tools follow the same flow via the CLI and `HOOKS.md`.
+
+**Lazy MCP.** `core` is a handshake list, not an installed-server list. `lazy_stdio` starts the child on the first `tools/call`.
+
+**Secret isolation.** Secrets must not enter git or the model context. `mcp.json.example` is placeholders only. Setup never overwrites an existing `mcp.json`.
+
+**Confirmation for destructive operations.** Irreversible Git and recursive deletes require human confirmation.
+
+---
+
+## Key concepts
+
+| Concept | Definition and use |
+|---|---|
+| Four layers | Constitution (always on) → director (names ids) → capability (opens on demand) → filing (progress and evidence) |
+| Craft | `agents/<id>.md`. A walkable path. `gsh next` updates `craft_open` |
+| Skill | `skills/<id>/SKILL.md`. Procedure for the current step. No session numbers |
+| Director menu | `gsh menu` looks up ids. `catalog.json` is a menu file, not a system prompt |
+| Current card | `.harness/sessions/<id>/current.md`. Read first after a client switch |
+| Close | `gsh close` writes `verify-report.json` and appends `tasks.jsonl` |
+| Write isolation | Default `sandbox`. Official writes need human approval and a record-cell changeset |
+| Profile | `minimal` / `core` / `full` decide which skills and crafts land in homedirs |
+| Isolate | Probe root that does not write real user homedirs |
+
+```text
+[production request]
+  → gsh menu names an id
+  → loadplan + activate
+  → current-step skill
+  → isolation-surface work
+  → gsh close
+  → human approval, then promote
+```
+
+---
+
+## Guides
+
+### Combat numeric slice
+
+```bash
+python -m gsh setup --workspace /path/to/studio --tools cursor --profile core --yes
+cd /path/to/studio
+python -m gsh menu --kind craft -q combat
+```
+
+Write `.harness/sessions/combat-ttk/loadplan.json` naming `combat-numeric-designer`. Then:
+
+```bash
+python -m gsh activate combat-ttk
+python -m gsh resume
+# open the skill in craft_open; edit tables on the isolation surface
+python -m gsh next --craft combat-numeric-designer
+python -m gsh close --kind schema --evidence .harness/sandbox/ttk-notes.md
+```
+
+`activated.json` `craft_path` shows progress such as `2/9`. The current card and `state.json` stay aligned. Official record cells are written only after human approval.
+
+Full walkthrough: [docs/cookbook/combat-numeric-slice.md](docs/cookbook/combat-numeric-slice.md). Docs map: [docs/README.md](docs/README.md) (architecture, adapters, cookbook, release).
+
+### Resume after a client switch
+
+After scoping in Cursor, open the same studio root in another client:
+
+```bash
+python -m gsh status --workspace /path/to/studio
+python -m gsh resume --workspace /path/to/studio
+```
+
+Both clients read the same `.harness`. Cursor injects the card summary on `sessionStart`. Claude Code `settings.json` invokes the same `hooks/开场.py`.
+
+### Director lookup without injecting the catalog
+
+```bash
+python -m gsh menu --kind skill -q excel
+python -m gsh menu --kind craft -q qa
+```
+
+Output is an id plus one-line description. Do not write `catalog.json` into a system prompt. If the boot hook detects a dumped catalog in context, it rewrites the injection to recommend `gsh menu`.
+
+---
+
+## Platform support
+
+Every selected tool receives a complete skill/craft tree and the entry files that tool already opens.
+
+| Tool | Entry | Hooks / automation | Other native files |
+|---|---|---|---|
+| Cursor | `rules/全局.mdc` | executes `hooks.json` | harness, lazy MCP |
+| Claude Code | `CLAUDE.md` | executes `settings.json` → same `hooks/*.py` | `HOOKS.md` |
+| Codex | `AGENTS.md` | `HOOKS.md` + `gsh status/next/close` | `~/.agents/skills` |
+| Windsurf | `.windsurfrules` | same CLI | `.windsurf/rules` |
+| Cline | `.clinerules/` | same CLI | — |
+| Roo Code | `.roo/rules` | `.roomodes` director / maker / closer | — |
+| Continue.dev | `config.yaml` | prompts: route-task / close / status / next | — |
+| GitHub Copilot | instructions + prompts | same | — |
+| OpenCode | `opencode.json` | `HOOKS.md` + CLI | — |
+| Gemini CLI | `GEMINI.md` | same | — |
+| Aider | `CONVENTIONS.md` | `.aider.conf.yml` read-only constitution | — |
+| Zed | `AGENTS.md` + `.rules` | same | — |
+| Amazon Q / Trae / Junie | rules / guidelines | same | — |
+| Grok / DeepSeek / Kimi / Qwen | `AGENTS.md` / `QWEN.md` | same | — |
+
+The CLI runs against the studio root for every tool above. Event-hook runtimes are wired for Cursor and Claude Code.
+
+Per-tool notes: [docs/adapters/](docs/adapters/).
 
 ---
 
 ## Install
 
-**Python 3.11+**. Windows game-production machines are first-class; Linux/macOS are for isolate probes and CI. The installer projects architecture files and skills only. It does not ship production-software installers and does not write secrets.
+**Python 3.11+**. Windows is a first-class game-production target; Linux/macOS are for isolate probes and CI. The installer projects architecture files and skills. It does not ship production-software installers and does not write secrets.
 
-> [!IMPORTANT]
-> **Edit content only at repo root.** `skills/`, `agents/`, `rules/`, `hooks/`, and `harness/` are the only source of truth. `gsh setup` / `gsh sync` write that same content into each tool's complete native tree. Do not keep a second hand-maintained skill tree in a homedir.
+Install only from the official repository or its GitHub Releases: [github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness). Third-party packages are outside this project’s maintenance. PyPI is not published yet.
 
-### Recommended: Python CLI
+Edit content only at repo root: `skills/`, `agents/`, `rules/`, `hooks/`, `harness/`. The wheel ships those trees, so `pip install .` / `pipx install .` does not require a live clone. `gsh setup` / `gsh sync` write that same content into each tool’s complete native tree.
 
 ```bash
 git clone https://github.com/limoaCatherine/game-studio-harness.git
 cd game-studio-harness
-python -m gsh setup --guided
+python -m pip install .
+gsh setup --guided
 ```
+
+Windows: `py -3.11 -m pip install .`, then `gsh setup --workspace D:\studio-root --yes`.
 
 Non-interactive:
 
 ```bash
-python -m gsh setup \
+gsh setup \
   --workspace /path/to/studio-root \
   --tools cursor,claude \
   --profile core \
   --yes
 ```
 
-Equivalent entries (choose one, do not stack):
-
 | Entry | Command |
 |---|---|
+| CLI on PATH | `gsh setup` |
 | Module | `python -m gsh setup` |
 | Unix | `./install.sh` |
 | Windows | `.\install.ps1` or `.\一键部署.ps1` |
-| Legacy wrapper | `python install/install.py` forwards to `gsh setup` |
 
-### Profiles
-
-| `--profile` | Lands | Use when |
+| `--profile` | Projection | Use when |
 |---|---|---|
-| `minimal` | L1 + 12 director/isolation/close skills + 4 crafts | Learn the four layers |
-| `core` | Daily director, tables, slice, acceptance + common crafts | Most production sessions |
-| `full` (default) | 106 skills + 35 crafts + all MCP stubs | You want the full catalog |
+| `minimal` | 12 director/isolation/close skills + 4 crafts | Complete one four-layer loop |
+| `core` | Daily director, tables, slice, acceptance | Most production sessions |
+| `full` (default) | 106 skills + 35 crafts | Full catalog on disk |
 
-### Tools
+`--tools all` (default) lands 19 complete native trees. `legacy` = cursor,claude,codex,grok,deepseek.
 
-| `--tools` | Native files landed in that tool home |
-|---|---|
-| `cursor` | `hooks.json` + `rules/` + `skills/` + `agents/` + `harness/` + lazy MCP wrappers |
-| `claude` | `CLAUDE.md` + `settings.json` (same Python hooks) + `skills/` + `agents/` + `HOOKS.md` |
-| `codex` | `AGENTS.md` + `rules/gsh.md` + `skills/` + `~/.agents/skills` + `HOOKS.md` |
-| `windsurf` | `AGENTS.md` + `.windsurfrules` + `.windsurf/rules` + `skills/` + `HOOKS.md` |
-| `cline` | `AGENTS.md` + `.clinerules/gsh.md` + `skills/` + `HOOKS.md` |
-| `roo` | `AGENTS.md` + `.roo/rules` + `.roomodes` + `skills/` + `HOOKS.md` |
-| `continue` | `AGENTS.md` + `config.yaml` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
-| `copilot` | `copilot-instructions.md` + `instructions/` + `prompts/` + `skills/` + `HOOKS.md` |
-| `opencode` | `AGENTS.md` + `opencode.json` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
-| `gemini` | `GEMINI.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
-| `aider` | `CONVENTIONS.md` + `.aider.conf.yml` + `skills/` + `HOOKS.md` |
-| `zed` | `AGENTS.md` + `.rules` + `settings.json` + `skills/` + `HOOKS.md` |
-| `amazonq` | `AGENTS.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
-| `trae` | `AGENTS.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
-| `junie` | `AGENTS.md` + `guidelines.md` + `skills/` + `HOOKS.md` |
-| `grok` / `deepseek` | `AGENTS.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
-| `kimi` | `AGENTS.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
-| `qwen` | `QWEN.md` + `AGENTS.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
-| `legacy` | cursor, claude, codex, grok, deepseek |
-| `all` (default) | all 19 tools above |
-
-### Isolate probe (do this first)
+Isolate probe (does not write real homedirs):
 
 ```bash
 python -m gsh setup \
@@ -112,432 +292,102 @@ python -m gsh setup \
 
 python -m gsh verify \
   --isolate-root /tmp/gsh-probe \
-  --workspace /tmp/gsh-probe/ws \
-  --tools all
+  --workspace /tmp/gsh-probe/ws
 ```
-
-Green `verify` means: catalog parses, IDs are unique, crafts are not pre-expanded, no secrets or machine paths, each selected tool home matches root `skills/` byte-for-byte, and the pack no longer stores a second `cursor/skills` tree.
-
-### Sync and uninstall
 
 ```bash
-python -m gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
-python -m gsh uninstall --isolate-root /tmp/gsh-probe --yes
+gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
+gsh uninstall --isolate-root /tmp/gsh-probe --yes
 ```
 
-Uninstall follows `install-state.json`. It keeps a user `mcp.json` and never touches official studio tables.
+pipx, Release wheels, `GSH_PACK_ROOT`, and future PyPI: [docs/install.md](docs/install.md). Cutting a release: [docs/release.md](docs/release.md).
 
 ---
 
-## Start here
+## Start using
 
-1. Open the **studio root**, not only this repo.
-2. Fill `.harness/surfaces.json` placeholders on your machine. Do not commit real drive letters back to GSH.
-3. Scope first: read `skills/route-task/SKILL.md`, write `loadplan.json`, run the roster generator.
-4. Boot only the current card and named bodies. Do not paste `catalog.json` into the thread.
-5. Default `write_class` is `sandbox`. Promote only with a human and a changeset merge.
-6. Close an item only after `verify-report.json` exists and `verdict` is `pass`.
+Open the **studio root**, not only this repository. Replace placeholders in `.harness/surfaces.json` with machine-local paths. Do not commit real drive letters back to the GSH repository.
 
-End-to-end game path: [docs/cookbook/combat-numeric-slice.md](docs/cookbook/combat-numeric-slice.md).
-
----
-
-## Mental model
-
-```text
-[request]
-  → L2 director names catalog ids
-  → L3 slice (craft opens step one only)
-  → limited context
-  → sandbox work
-  → verify report
-  → human promote
-```
-
-A model cannot hold a full production pipeline. Dumping 106 skills makes it play combat numeric, client, and QA at once, then touch engine assets before the GDD is frozen.
-
-L2 handshakes L3 with an explicit file contract. Crafts are paths, not checklists. MCPs stay lazy. The four layers stay four because each one blocks a different crash. See [Design philosophy](#design-philosophy) and [Layer deep dives](#layer-deep-dives).
-
----
-
-## Design philosophy
-
-GSH is written for the people in the production room: producers, TDs, leads. They have to say what this vertical slice must prove, then keep the model on that one job for the next hour. Every rule below comes from an accident that keeps happening on a real floor.
-
-### The window is scarce
-
-A session can hold only a short working set. The catalog has 106 skills, 35 crafts, two canon files, and a pile of ADRs. If boot pastes the whole menu, the craft path, and the lore bible at once, the model cross-plays on step one: it edits a damage formula, talks about save migration, and writes "just for now" into an official table.
-
-Boot therefore reads four things: the constitution, the current card, named bodies, and memory hit by `retrieve_keys`. Other skills open when that step starts. `minimal` / `core` / `full` decide which files land on disk, not what this turn stuffs into the window.
-
-### A craft is a path, not a pre-expanded dump
-
-Game production is a multi-craft pipeline. A combat-numeric path may be: anchor table → formula order → skill coefficients → acceptance. If naming a craft reads every `uses_skills` body, step one fills tables with step-five language before the primary key is frozen.
-
-`activated.json` writes only `craft_open` (the first step). Later skills open when you reach them. The craft file is the map. The skill file is the procedure. The model is the worker for this step, not the whole department.
-
-### Official surfaces are irreversible
-
-Design tables, engine assets, and committed history cost real people to roll back. The model does not feel that cost.
-
-Default `write_class` is `sandbox`. Isolation roots live in `.harness/surfaces.json`. Promote only when a human approves, the changeset merges record cells, and `verify-report.json` has `verdict: pass`. Changing the official table first and "writing the report later" is an incident.
-
-### Sessions die. Tools change.
-
-A producer may scope in Cursor at noon and finish the same slice in another client at night. Chat history is not the archive.
-
-The current card is `.harness/sessions/<id>/current.md`. State is `state.json`. The audit log is `tasks.jsonl` (append-only). The roster is `activated.json`. After a tool switch, open the studio root and read the card. Do not rely on "I remember what we said this morning." Probe sessions start with `_` so fixtures do not overwrite `LATEST`.
-
-### Verbal "green" cannot close an item
-
-"Feels fine", "the hook was quiet", and "I played it a bit" are not acceptance. Close requires a file: `verify-report.json` with `bead_id`, `verify_kind`, `command`, an integer `exit_code`, a non-empty `evidence_paths` list, and `verdict: pass`.
-
-Cursor's `stop` hook checks that report. Claude Code `settings.json` points `Stop` at the same `hooks/结束.py`. Other tools have no event runtime; `HOOKS.md` tells you to open the report yourself. No `pass`, no close.
-
-### Hosts stay asleep
-
-Every MCP handshakes, lists tools, and holds a host process at IDE start. Wiring 36 purposes as eager stdio hangs boot and spends the window on tool descriptions.
-
-`mcp-tiers.json` `core` is a handshake list, not an installed-server list. This pack ships **0** live servers and 36 purpose stubs. Real start goes through `lazy_stdio` and `拉起外接.py`. excelMCP in core means the table pipeline wants that tier key; you still install the host on the machine.
-
-### Secrets never enter the model
-
-Once `.env`, `credentials.json`, or a private key lands in context, it can ride logs, session sync, and prompt caches.
-
-Cursor `beforeReadFile` and Claude `PreToolUse` / `Read` block common secret paths. `mcp.json.example` is placeholders only. Setup never overwrites an existing `mcp.json`. `verify` scans user-profile absolute paths, hard-coded host roots, and live `ghp_` / `sk-` tokens.
-
-### Destructive shell needs friction
-
-`git reset --hard`, force-push, and recursive deletes can erase a human afternoon. Cursor `beforeShellExecution` and Claude `PreToolUse` / `Bash` ask for confirm. Other tools write the same rule into `HOOKS.md`: no human nod, no run.
-
-### One content tree, many complete native installs
-
-A studio will not stay on a single client. Someone opens Cursor, someone opens Claude Code, CI runs Codex, someone else uses Copilot for a one-line fix. Content stays one copy: repo-root skills, crafts, rules, hooks, runtime.
-
-After setup, each tool home is the **full layout that tool already understands**: entry files, rule directories, skill tree, craft tree, hooks or the closest equivalent, an MCP example, and `gsh-capability.json`. The repo does not store a second skill forest. Open this pack and read root `skills/`. Edit once, then `gsh sync` realigns every installed native tree.
-
-```mermaid
-flowchart LR
-  L1[L1 Constitution<br/>rules and hooks]
-  L2[L2 Director<br/>loadplan and roster]
-  L3[L3 Capability<br/>skills / crafts / stubs]
-  L4[L4 Filing<br/>surfaces and evidence]
-  L1 --> L2 --> L3 --> L4
-  L4 -->|current card| L1
-```
-
----
-
-## What's inside
-
-```text
-game-studio-harness/
-├── skills/ agents/ rules/ hooks/ harness/   # single source of truth
-├── gsh/                                     # Python 3.11+ CLI
-├── studio/.harness/                         # empty L4 scaffold
-├── .cursor/                                 # Cursor native conventions (no skills tree)
-├── .claude/ .codex/ .roo/ …                 # per-tool native entries and rules
-├── GEMINI.md CONVENTIONS.md QWEN.md
-├── docs/ tests/
-```
-
-The pack does not store a second `cursor/skills` tree. Full skill trees appear only in installed tool homes.
-
----
-
-## Key concepts
-
-| Concept | One line |
+| Task | Entry |
 |---|---|
-| Four layers | Constitution / director / capability / filing. Frozen |
-| Craft | `agents/<id>.md`. A path. Do not pre-expand |
-| Skill | `skills/<id>/SKILL.md`. Reusable procedure. No session numbers |
-| Hook | Python gates invoked by Cursor `hooks.json` and Claude `settings.json`; other tools ship `HOOKS.md` |
-| Rule | Always-on thin tax |
-| Filing | `.harness` files, not a knowledge graph |
-| Catalog | Generated ID menu after setup |
-| Profile | minimal / core / full |
-| Isolate root | Probe tree that does not write real homedirs |
-
----
-
-## Layer deep dives
-
-Every module below: **what it handles / what it solves / paths / crash if absent**.
-
-### L1 Constitution
-
-Always-on tax. Stay thin. No table recipes. No session TTK numbers.
-
-#### `rules/全局.mdc`
-
-- **Handles:** lifecycle, boot read order, roster semantics (named ids, absorb `needs_mcp`, do not pre-expand crafts, allow mid-session opens), continue/steer/park/new/parallel, required loadplan fields, step-by-step craft walking, evidence on close, L4 table map, freeze.
-- **Solves:** invented workflows; catalog pasted as a system prompt; reading a whole craft path on boot.
-- **Paths:** `rules/全局.mdc` → `~/.cursor/rules/全局.mdc`; repo-local `.cursor/rules/全局.mdc`.
-- **If absent:** no read order, no "do not pre-expand". The agent cross-plays roles and fills step-5 tables during step 1.
-
-#### `AGENTS.md` / `CLAUDE.md` / `GEMINI.md` / `CONVENTIONS.md` / `QWEN.md`
-
-- **Handles:** the same constitution under the filename each tool already opens.
-- **Solves:** keeping read-order, write isolation, and close evidence after a client switch.
-- **Paths:** repo-root entry files; `setup --workspace` writes them onto the studio root.
-- **If absent:** the client that opens the studio root has no four-layer entry and becomes generic chat.
-
-#### `hooks/hooks.json`
-
-- **Handles:** `sessionStart`, `beforeShellExecution`, `beforeReadFile`, `stop`.
-- **Solves:** rules that never become runtime.
-- **Paths:** `hooks/hooks.json` → `~/.cursor/hooks.json`.
-- **If absent:** hook scripts never run.
-- **Honest:** Cursor only. This is not a Claude hook pack.
-
-#### `hooks/开场.py`
-
-- **Handles:** refresh stale catalog; optional MCP probe; print current-card digest; set `HARNESS_*`.
-- **Solves:** dumping 100+ skill blurbs on boot; not knowing the session.
-- **If absent:** first reply guesses progress and invents catalog ids.
-
-#### `hooks/工作区.py`
-
-- **Handles:** walk up to `.harness`; read `LATEST`; assemble env.
-- **Solves:** hardcoded paths when several IDEs share one studio.
-- **If absent:** boot cannot find the studio; close cannot see `bead_id`.
-
-#### `hooks/读文件前.py`
-
-- **Handles:** deny `.env`, credentials, PEM, SSH, AWS, GnuPG paths.
-- **Solves:** secrets entering the model.
-- **If absent:** "just debugging" reads production keys. Cursor only.
-
-#### `hooks/命令前.py`
-
-- **Handles:** confirm force-push / hard reset / clean -x; block close without a passing report.
-- **Solves:** silent destruction of local work; verbal green closes.
-- **If absent:** `git reset --hard` after a failed experiment.
-
-#### `hooks/结束.py`
-
-- **Handles:** on `completed`, validate report schema and verdict; follow up if `current.md` is missing.
-- **Solves:** handing off a fail as done.
-- **If absent:** sessions look finished without evidence.
-
-#### `hooks/校验验证报告.py`
-
-- **Handles:** required fields and enums for `verify-report.json`.
-- **Solves:** a Chinese paragraph that says "passed".
-- **If absent:** close gates cannot decide.
-
-#### `hooks/数据就绪预检.py`
-
-- **Handles:** framework workbooks from env + `surfaces.json` only. No studio drive letters in source.
-- **Solves:** balance passes on missing books.
-- **If absent:** combat sim runs on empty sheets.
-
-#### Hook thin delegates
-
-`hooks/建议执行单.py` and `hooks/生成会话能力名单.py` delegate to `harness/scripts/`. They resolve via `gsh_paths` / relative layout so isolate roots work.
-
----
-
-### L2 Director
-
-The director is not the worker.
-
-#### `skills/route-task/SKILL.md`
-
-- **Handles:** restate goal/deliverable/boundary; pick catalog ids; set tier and write class; write loadplan; decide subagents.
-- **Solves:** editing tables on the first token.
-- **If absent:** no contract for later layers.
-
-#### `harness/scripts/生成会话能力名单.py`
-
-- **Handles:** validate ids; write `craft_open` only; absorb `needs_mcp`; write `activated.json` and the current card.
-- **Solves:** injecting eight craft skills at once.
-- **If absent:** boot cannot see a roster.
-
-#### `activated.json` / `current.md` / `loadplan.json`
-
-- **Handles:** the auditable slice, the amnesia card, the machine-readable plan.
-- **Solves:** "I named combat numeric" living only in chat.
-- **If absent:** hooks have no `HARNESS_CRAFT_OPEN`; compaction wipes the thread.
-
-#### `harness/scripts/建议执行单.py`
-
-- **Handles:** execution skills before close skills.
-- **Solves:** writing the handoff before the formula.
-- **If absent:** order depends on model mood.
-
----
-
-### L3 Capability library
-
-#### Catalog
-
-`刷新菜单.py` scans frontmatter and MCP stubs into `catalog.json`. Without it, directors invent ids.
-
-#### Skills (106)
-
-Reusable procedures. No session numbers. Index: [docs/skills/index.md](docs/skills/index.md).
-
-Domains: director/close, memory/promote, isolation/layout, tables, direction/scope, combat/numeric, economy/monetization, narrative/level/UX, art/audio/tech-art, engineering/QA, liveops/MCP.
-
-If a domain is missing, the model invents field names and promote rules for that work.
-
-#### Crafts (35)
-
-Job paths. `combat-numeric-designer` walks model → attributes → formula/counter/skill table → corners → table diff. Index: [docs/crafts/index.md](docs/crafts/index.md).
-
-If crafts are missing you can still name loose skills, but you lose recommended order and duty fences. Different crafts should be different subagents.
-
-#### MCP tiers and lazy stdio
-
-`mcp-tiers.json` lists `excelMCP` as a **core tier key**. That means "handshake on boot *if you wired it locally*". It does **not** mean this repo ships an Excel MCP server.
-
-`lazy_stdio.py` exposes cached tool declarations and starts the child on first `tools/call`. Without it, a 36-server `tools/list` storm freezes Cursor boot.
-
-#### 36 `mcp-tools/*.json` stubs
-
-Purpose text for the catalog. **Live servers shipped: 0.** See [docs/mcp-policy.md](docs/mcp-policy.md).
-
-#### `mcp.json.example`
-
-Placeholder launch templates. `${PYTHON}` `${MCP_BOOT}` `${HARNESS_APPS}` `${LARK_APP_ID}`. Setup never overwrites an existing `mcp.json`.
-
-#### Apply-tiers / boot / handshake scripts
-
-`应用外接档位.py`, `拉起外接.py`, `mcp-autostart`, `握手四层.py`, `回归四层.py`, `接线自检.py`, `整接.py` keep lazy wrapping and four-layer regressions honest. Probe sessions starting with `_` must not write `LATEST`.
-
----
-
-### L4 Filing cabinet
-
-Files, not a graph. Scaffold: `studio/.harness/` with empty data.
-
-#### `surfaces.json` / `write-isolation`
-
-Official ↔ sandbox for tables, git, engine, assets. Crash if absent: trial writes hit official xlsx / mainline / Content.
-
-#### `state.json` / `tasks.jsonl` / `sessions/`
-
-Current row, append-only ledger, per-session contract. Crash if absent: new windows guess progress.
-
-#### `canon/` / `adr/` / retrieve / promote skills
-
-Approved facts open only on `retrieve_keys`. Crash if absent: hallway talk becomes canon, or boot scans the whole bible.
-
-#### `verify-gate` / `verify-report.json` / `artifacts/index.jsonl`
-
-Tiered evidence. Crash if absent: L1 cannot close.
-
-#### `项目库.py` / `目录夹具.py`
-
-Write the current card and state. Fixtures read the catalog instead of hard-coding a studio craft name.
-
----
-
-## CLI
+| Scope a vertical slice | `python -m gsh menu --kind craft -q slice`, then `skills/route-task/SKILL.md` |
+| Combat numeric / TTK | Name `combat-numeric-designer`, `gsh activate`, advance with `gsh next` |
+| Economy / progression | `economy-numeric-designer` / `progression-numeric-designer` |
+| Level blockout | `level-designer` |
+| Client / server | `client-engineer` / `server-engineer` |
+| QA acceptance | `qa-lead` or `qa-functional`, then `gsh close` |
+| Liveops calendar | `liveops-designer` |
+| Resume the current session | `python -m gsh resume` |
+| Inspect progress | `python -m gsh status` |
+| Close a work item | `python -m gsh close --kind smoke --evidence <artifact>` |
+
+```text
+gsh menu -q ttk
+  → write loadplan.json (name a craft id)
+  → gsh activate <session>
+  → read current.md; execute the current step only
+  → gsh next
+  → gsh close --evidence <isolation-surface artifact>
+  → after human approval, write official record cells
+```
+
+### CLI
 
 ```text
 python -m gsh setup | sync | verify | doctor | uninstall
+python -m gsh menu [--kind craft|skill] [-q query]
+python -m gsh activate <session>
+python -m gsh status | resume
+python -m gsh next [--craft <id>]
+python -m gsh close --kind smoke --evidence <path>
 ```
 
-`install-state.json` records profile, tools, and files.
+---
 
-### `setup` flags
+## MCP policy
 
-`--workspace`, `--cursor-only`, `--tools`, `--profile`, `--isolate-root`, `--write-mcp`, `--guided`, `--yes`, `--dry-run`, `--pack-root`.
+This pack ships **0** live servers, 36 purpose stubs, and `mcp.json.example`. `mcp-tiers.json` `core` is a handshake list. excelMCP in core is a tier key for the table pipeline; the host is still installed locally. Real start goes through `lazy_stdio`.
 
-### `sync`
-
-Re-projects from repo root. This is the only legal way to keep adapters aligned after you edit a skill.
-
-### `verify`
-
-Exit 2 on failure. Checks SSOT, unique IDs, no pre-expand, full native trees in selected homes, projection bytes, secret scan, workspace native entries.
-
-### `doctor`
-
-Read-only drift report. Exit 1 if issues.
-
-### `uninstall`
-
-Removes projections. Keeps `mcp.json`. Does not delete official surfaces.
+Full policy: [docs/mcp-policy.md](docs/mcp-policy.md).
 
 ---
 
-## Platform support
+## Context budget
 
-This table is what lands on disk and who executes hooks. Every selected tool receives a complete skill/craft tree and its native entry files.
-
-| Tool | Native entry | Skill/craft tree | Hooks | Other native files |
-|---|---|---|---|---|
-| Cursor | `rules/全局.mdc` | yes | **runs** `hooks.json` | `harness/`, lazy MCP |
-| Claude Code | `CLAUDE.md` | yes | **runs** `settings.json` → same `hooks/*.py` | `HOOKS.md` (event names differ) |
-| Codex | `AGENTS.md` | yes (plus `~/.agents/skills`) | convention / `HOOKS.md` | `rules/gsh.md` |
-| Windsurf | `AGENTS.md` + `.windsurfrules` | yes | convention / `HOOKS.md` | `.windsurf/rules` |
-| Cline | `AGENTS.md` | yes | convention / `HOOKS.md` | `.clinerules/` |
-| Roo Code | `AGENTS.md` | yes | convention / `HOOKS.md` | `.roo/rules`, `.roomodes` |
-| Continue.dev | `AGENTS.md` | yes | convention / `HOOKS.md` | `config.yaml`, `rules/gsh.md` |
-| GitHub Copilot | `copilot-instructions.md` | yes | convention / `HOOKS.md` | `instructions/`, `prompts/` |
-| OpenCode | `AGENTS.md` | yes | convention / `HOOKS.md` | `opencode.json` |
-| Gemini CLI | `GEMINI.md` | yes | convention / `HOOKS.md` | `rules/gsh.md` |
-| Aider | `CONVENTIONS.md` | yes | convention / `HOOKS.md` | `.aider.conf.yml` |
-| Zed | `AGENTS.md` + `.rules` | yes | convention / `HOOKS.md` | `settings.json` |
-| Amazon Q | `AGENTS.md` | yes | convention / `HOOKS.md` | `rules/gsh.md` |
-| Trae | `AGENTS.md` | yes | convention / `HOOKS.md` | `rules/gsh.md` |
-| JetBrains Junie | `guidelines.md` | yes | convention / `HOOKS.md` | `AGENTS.md` |
-| Grok | `AGENTS.md` | yes | convention / `HOOKS.md` | `rules/gsh.md` |
-| DeepSeek | `AGENTS.md` | yes | convention / `HOOKS.md` | `rules/gsh.md` |
-| Kimi Code | `AGENTS.md` | yes | convention / `HOOKS.md` | `rules/gsh.md` |
-| Qwen Code | `QWEN.md` | yes | convention / `HOOKS.md` | `AGENTS.md`, `rules/gsh.md` |
-
-If `~/.continue/config.yaml` already exists, treat the GSH copy as a merge source and read the diff before replacing your file.
-
-Per-tool notes: [docs/adapters/](docs/adapters/). Cross-harness: [docs/architecture/cross-harness.md](docs/architecture/cross-harness.md).
-
----
-
-## Token / context
-
-| Practice | Saves |
+| Practice | Injection saved |
 |---|---|
-| Thin L1 | per-turn tax |
-| No full catalog on boot | 100+ descriptions |
-| Crafts not pre-expanded | the rest of a job path |
-| `retrieve_keys` for canon | the lore bible |
-| Lazy MCP | boot `tools/list` and host processes |
-| minimal/core profiles | skills you will not use |
-| Truncated current card | boot injection |
-
-Anti-patterns: catalog as system prompt; 35 craft bodies inside `AGENTS.md`; 36 MCPs as eager stdio.
+| Short L1 | per-turn tax |
+| `gsh menu` lookup | 100+ descriptions |
+| `gsh next` opens one step | the rest of the craft path |
+| `retrieve_keys` for canon | the lore corpus |
+| Lazy MCP | boot `tools/list` |
+| minimal / core | skills not needed this round |
 
 ---
 
 ## Security
 
-- No secrets in git. Example MCP files are placeholders.
-- Setup does not overwrite `mcp.json`.
-- Cursor `beforeReadFile` blocks common secret paths (Cursor only).
-- Destructive git asks (Cursor only).
-- `verify` and `tests/test_no_secrets.py` scan user paths, `Harness-Apps`, `ghp_` / `sk-`.
-- Private GitHub advisories: [SECURITY.md](SECURITY.md).
+- Secrets do not enter git. `mcp.json.example` is placeholders only.
+- Setup does not overwrite an existing `mcp.json`.
+- Cursor / Claude Code intercept common secret paths.
+- Destructive Git operations require confirmation.
+- `verify` and `tests/test_no_secrets.py` scan user-profile absolute paths, `Harness-Apps`, and `ghp_` / `sk-`.
+- Report vulnerabilities via GitHub private advisories: [SECURITY.md](SECURITY.md).
 
 ---
 
 ## Troubleshooting
 
-| Symptom | First move |
+| Symptom | Action |
 |---|---|
-| verify: missing catalog | setup then verify with the same isolate root |
-| projection drifted | `python -m gsh sync`; do not hand-edit `~/.cursor/skills` |
-| `cursor/skills` still in the repo | you are on the 0.1 layout |
-| Cursor hooks silent | `--tools cursor` was not installed, or the IDE is reading another hooks.json |
-| Claude hooks silent | confirm `~/.claude/settings.json` and that `hooks/*.py` resolve from the working directory |
-| all 36 MCPs red | expected; this repo ships zero live servers |
-| excelMCP is core but offline | tier ≠ shipment |
-| craft talks promote on step 1 | roster was pre-expanded |
-| doctor: old Python | install 3.11+ |
-| uninstall deleted mcp.json | should not happen; restore backup and file an issue |
+| `verify` reports missing catalog | Run `setup` with the same `--isolate-root` |
+| Projection drifted from root skills | `python -m gsh sync` |
+| Current step unclear | `python -m gsh status` |
+| Craft path did not advance | `python -m gsh next --craft <id>` |
+| Close hook waiting for a report | `python -m gsh close --evidence <path>` |
+| Catalog should not enter the prompt | `gsh menu -q …` |
+| All MCP hosts unavailable | Expected: this pack ships no live servers |
+| `doctor` reports an old Python | Install 3.11+ |
 
 ---
 
@@ -547,224 +397,26 @@ Anti-patterns: catalog as system prompt; 35 craft bodies inside `AGENTS.md`; 36 
 python -m unittest discover -s tests -v
 ```
 
-`test_catalog`, `test_unique_ids`, `test_craft_no_preexpand`, `test_no_secrets`, `test_projection_thin`, `test_native_homes`, `test_cli_isolate`.
-
----
-
-## Migrating from the 0.1 five-tree layout
-
-| Old | New |
-|---|---|
-| `cursor/skills/` | `skills/` |
-| `cursor/agents/` | `agents/` |
-| `cursor/rules/` | `rules/` |
-| `cursor/hooks*` | `hooks/` |
-| `cursor/harness/` | `harness/` |
-| `cursor/constitution.md` | `AGENTS.md` |
-| five full tool trees | deleted; projected by setup/sync |
-| `install/install.py` | `python -m gsh setup` |
-
-Move any local-only skill edits onto repo-root `skills/`, then sync. Probe in an isolate root before writing real homedirs. Existing `mcp.json` is kept. Studio `.harness` sessions are merged, not wiped.
-
----
-
-## Session lifecycle
-
-```text
-new item → loadplan → generate roster → read current card
-→ sandbox work → verify-report → sync-state
-→ human promote (changeset only) → close
-```
-
-Continue: same chat, same open deliverable, incremental plan.  
-Steer: change the plan first.  
-Park: stop the old card, new session for the interrupt.  
-Parallel: independent sessions; different crafts become subagents.
-
-Sessions whose names start with `_` must not write `LATEST`.
-
----
-
-## Schemas (summary)
-
-**loadplan.json** — required `session_id`, `tier`, `items`, `verify_kind`, `intent`, `work_mode`. Suggested `write_class`, `retrieve_keys`, `forbid`, `bead_id`. `why` ≥ 8 characters.
-
-**activated.json** — `ok`, `skills`, `crafts`, `craft_open`, `mcp_allow`. `skills` must not equal the full `uses_skills` of a named craft.
-
-**verify-report.json** — `bead_id`, `verify_kind`, `command`, integer `exit_code`, non-empty `evidence_paths`, `verdict` pass|fail.
-
-**surfaces.json** — `id`, `kind`, `official`, `sandbox`, `note`. Placeholders only in this repo.
-
-**mcp-tiers.json** — `core` is a handshake list, not an availability list.
-
----
-
-## Domain crash table
-
-| Domain uninstalled | Crash |
-|---|---|
-| Director / close | no contract, no close |
-| Memory / promote | hallway talk becomes canon |
-| Isolation / layout | official mixed with drafts |
-| Tables | whole-file xlsx overwrite |
-| Direction / scope | features bloat; pillars cannot veto |
-| Combat / numeric | formula order drifts |
-| Economy / IAP | sources and sinks break |
-| Narrative / level / UX | beats and quests desync |
-| Art / audio / tech-art | naming and sockets ungated |
-| Engineering / QA | no contract, no regression pack |
-| Liveops / MCP | calendar collisions; eager MCP boot hang |
-
-`minimal` only guarantees director/isolation/close. Combat tables need `core` or `full`.
-
----
-
-## Craft-group crash table
-
-| Group uninstalled | Crash |
-|---|---|
-| Production / direction | no packages, no cuts, no milestone evidence |
-| Systems / numeric | GDD and table keys diverge |
-| Narrative / level / UX | quest SM, beats, blockout, five-states desync |
-| Engineering | client presentation treated as authority |
-| QA | cases and automation maps break |
-| Art / audio | briefs cannot enter 3D; bind/VFX paths missing |
-
-Craft bodies list skill ids only. Session numbers do not belong in `agents/*.md`.
-
----
-
-## Runtime script table
-
-| Script | Layer | If absent |
-|---|---|---|
-| `刷新菜单.py` | L3 | no catalog |
-| `生成会话能力名单.py` | L2 | no activated/current |
-| `建议执行单.py` | L2 | close before work |
-| `项目库.py` | L4 | amnesia |
-| `目录夹具.py` | tests | fixtures hard-code a game |
-| `gsh_paths.py` | all | hooks hard-code `~/.cursor` |
-| `应用外接档位.py` | L3 | eager MCP |
-| `拉起外接.py` | L3 | handshake with a dead host |
-| four-layer regressions | tests | pre-expand returns silently |
-
----
-
-## Open this repo vs open a studio root
-
-This repo is for editing skills, hooks, and the CLI. Do not put real table roots here. A studio root is for making the game; `.harness` is the filing cabinet. `setup --workspace` only fills missing L4 files.
-
----
-
-## Environment variables
-
-`GSH_PACK_ROOT`, `GSH_ISOLATE_ROOT`, `GSH_HOME`, `CURSOR_HOME`, `CLAUDE_HOME`, `CODEX_HOME`, `GROK_HOME`, `DSH_HOME`, `ROO_HOME`, `AIDER_HOME`, `ZED_HOME`, `AMAZONQ_HOME`, `TRAE_HOME`, `JUNIE_HOME`, `KIMI_HOME`, `QWEN_HOME`, `AGENTS_SKILLS`, `HARNESS_ROOT`, `HARNESS_SESSION`, `HARNESS_HOST_PATHS`, `FRAMEWORK_WORKBOOK`, `BATTLE_SIM_WORKBOOK`, `DATA_READY_SHEETS`.
-
-Isolate mode uses directory convention and does not require these.
-
----
-
-## Common production mistakes
-
-1. Treating a craft as a skill dump.
-2. Pasting `catalog.json` into a system prompt.
-3. Committing real studio paths into GSH.
-4. Claiming 36 live MCPs.
-5. Skipping `current.md` and `verify-report.json` on a tool that only ships `HOOKS.md`.
-6. Editing `~/.claude/skills` instead of repo-root `skills/`.
-7. Copying a second `cursor/skills` tree into the pack.
-8. Whole-file overwrite of official xlsx.
-9. Probe sessions writing `LATEST`.
-10. Treating Copilot instructions as a secret-read hook. Copilot still gets a full skill tree and prompts; a human must read `verify-report.json`.
-
----
-
-## Cookbook
-
-[docs/cookbook/combat-numeric-slice.md](docs/cookbook/combat-numeric-slice.md): isolate install → loadplan names `combat-numeric-designer` → confirm no pre-expand → do `craft_open` only → sandbox tables → T1 report → human promote.
-
-Swap the craft id for progression or economy. Isolation and no-pre-expand stay mandatory.
-
----
-
-## Doc map
-
-Architecture L1–L4, cross-harness, MCP policy, skill index, craft index, per-adapter pages, cookbook: all under [docs/](docs/).
+Coverage includes catalog parse, craft-path non-expansion, secret scan, native-tree projection, isolate CLI, and the `menu` / `activate` / `next` / `close` loop.
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md) · [SUPPORT.md](SUPPORT.md).
 
 1. Edit skills only under `skills/<id>/SKILL.md`.
-2. Edit crafts only under `agents/<id>.md`.
-3. New MCP: purpose stub + placeholders. No live server, no secret.
-4. Architecture changes need a steer, a new plan, and an ADR.
-5. PRs need isolate `verify` green and `unittest` green.
+2. Edit crafts only under `agents/<id>.md`. `uses_skills` is a sequence that `gsh next` walks.
+3. New MCP: purpose stub plus placeholders. Do not commit a connectable server or a secret.
+4. Changes to the four layers require a steer and an ADR.
+5. Pull requests require a passing isolate `verify` and a passing `unittest` run.
+
+The 0.1 duplicate trees such as `cursor/skills` are removed. Edit at repo root, then `sync`.
 
 ---
-
-## FAQ
-
-**Why is Chinese the primary README?**  
-Because the production audience is a Chinese game pipeline. This file is the English twin.
-
-**Why do skill files still mention `~/.cursor/...`?**  
-That is the Cursor runtime landing zone after setup. Source of truth is repo-root `skills/`.
-
-**Can I install only a few skills into Claude?**  
-Yes: `--profile minimal|core --tools claude`. Do not maintain a second tree.
-
-**Isolate root vs workspace?**  
-Isolate fakes homedirs. Workspace holds the game and `.harness`. Verify checks both.
-
-**Why does verify fail if `cursor/skills` exists in the pack?**  
-Skill bodies belong at repo-root `skills/` and in installed homes. A second tree in the pack makes `sync` lose its single door.
-
-**Do hooks run on Windows?**  
-Yes, if Python 3.11+ is on PATH.
-
-**May I add skill 107?**  
-Yes, at `skills/<id>/SKILL.md`, then sync. Never copy it into adapters by hand.
-
-**May I add a fifth layer?**  
-Not casually. Steer, replan, write an ADR. See the freeze canon file.
-
-**Does my tool run GSH hooks?**  
-Cursor executes `hooks.json`. Claude Code executes `settings.json` against the same Python scripts. Every other tool ships `HOOKS.md`: open `current.md` yourself and refuse to close without a `verify-report.json`.
-
----
-
-## Install-state and shared runtime
-
-After setup, the shared runtime lives at `~/.gsh` (or `<isolate>/gsh`):
-
-```text
-gsh/
-  AGENTS.md
-  install-state.json
-  gsh-adapter.json
-  skills/ agents/ rules/ hooks/
-  harness/          # scripts, catalog.json, mcp-tools, mcp-boot, mcp-tiers.json
-  mcp.json.example
-```
-
-Each selected tool then receives its own complete native tree under that tool's home. Cursor executes `hooks.json`. Claude Code executes `settings.json`. The others land entry files, rules, skills, crafts, and `HOOKS.md`.
-
-`install-state.json` is how `sync` and `uninstall` know what this machine asked for. If you delete it, `sync` falls back to the CLI flags you pass.
-
-Do not treat `~/.cursor/skills` as a second source of truth. If it drifted, overwrite it from the pack with `sync`. If you meant the edit, move it to repo-root `skills/` first.
-
-When in doubt, open `current.md` yourself and refuse to close without a `verify-report.json`.
 
 ## License
 
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · [LICENSE](LICENSE) MIT · [CHANGELOG.md](CHANGELOG.md)
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · [LICENSE](LICENSE) MIT · [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md)
 
-The four layers are frozen. Hallway talk is not canon. Write isolation is the default tooth. Secrets stay out of git.
-
-The only official source is the GitHub repository
-[limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness).
-
-Third-party re-uploads are not reviewed.
+The four layers are frozen. Progress is written under `.harness`. The only official source is the GitHub repository above.
