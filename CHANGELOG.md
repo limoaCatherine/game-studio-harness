@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1
+
+- README / README.en restructured: purpose first, then inventory, capabilities, problem statements, design philosophy (separate), concepts, guides, platform, then install.
+- Register: 上下文预算 / context budget; removed oral phrasing and unused `assets/four-layer.svg`.
+- MCP policy table restated as 说明 / 边界 (no negative-definition list).
+
 ## 0.3.0
 
 - Craft paths are a runnable pipeline: `activated.json` now stores `craft_path`, and `python -m gsh next` advances the current step.

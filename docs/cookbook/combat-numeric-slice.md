@@ -1,6 +1,6 @@
 # Cookbook：战斗数值竖切
 
-定档 → 点战斗数值职种 → 按步前进 → 沙箱改表 → `gsh close` → 人准晋升。
+定档 → 指定战斗数值职种 → 按步前进 → 隔离面改表 → `gsh close` → 制作方批准后晋升。
 
 ## 0. 准备
 
@@ -65,6 +65,6 @@ python -m gsh next --craft combat-numeric-designer
 python -m gsh close --kind schema --evidence .harness/sandbox/ttk-notes.md
 ```
 
-报告落到 `.harness/artifacts/bead-ttk/verify-report.json`。人准后只回写正式表的记录格。
+报告落到 `.harness/artifacts/bead-ttk/verify-report.json`。制作方批准后只回写正式表的记录格。
 
 换工具续上：`python -m gsh status`。
