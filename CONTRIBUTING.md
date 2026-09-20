@@ -1,5 +1,16 @@
 # Contributing
 
+## Environment
+
+Python 3.11+. From a clone:
+
+```bash
+python -m pip install -e ".[dev]"
+gsh --version
+```
+
+Runtime has no third-party dependencies. `requirements.txt` is a pointer; `requirements-dev.txt` pins contributor tools.
+
 ## Single source of truth
 
 Edit capability files **once**, at the repository root:
@@ -13,14 +24,20 @@ Edit capability files **once**, at the repository root:
 | Runtime | `harness/` |
 | CLI | `gsh/` |
 
-Do **not** add `cursor/skills`, `claude/skills`, or `.cursor/skills`. After you change the root, run:
+Do **not** add `cursor/skills`, `claude/skills`, or `.cursor/skills`. Do **not** commit `gsh/pack_data/` — hatchling copies the root trees into the wheel at build time.
+
+After you change the root:
 
 ```bash
-python -m gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
-python -m gsh verify --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --tools all
-python -m gsh menu --kind craft -q ttk
+gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
+gsh verify --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --tools all
+gsh menu --kind craft -q ttk
 python -m unittest discover -s tests -v
 ```
+
+Optional: `ruff check gsh tests`.
+
+A pull request that changes `gsh/` or pack layout should also survive `python -m build` and `pip install` of the wheel from an empty working directory (see `.github/workflows/ci.yml` job `pack`).
 
 ## Skills
 
@@ -37,6 +54,14 @@ Add a purpose stub under `harness/mcp-tools/<id>.json` and a placeholder block i
 ## Architecture
 
 The four layers are frozen. Changing them requires a steer, a new loadplan, and an ADR under the studio filing cabinet — not a drive-by new top-level folder.
+
+## Docs
+
+Depth lives under `docs/`. README keeps the purpose → capabilities → problems → philosophy → concepts → guides → platform → install order. Do not add decorative images; badges must be absolute shields.io URLs.
+
+## Releases
+
+Maintainers cut versions per [docs/release.md](docs/release.md). Contributors do not push tags.
 
 ## Commit style
 

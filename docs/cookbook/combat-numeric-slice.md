@@ -7,7 +7,8 @@
 ```bash
 git clone https://github.com/limoaCatherine/game-studio-harness.git
 cd game-studio-harness
-python -m gsh setup --tools cursor --profile core --workspace "$PWD/../studio-root" --yes
+python -m pip install .
+gsh setup --tools cursor --profile core --workspace "$PWD/../studio-root" --yes
 ```
 
 在业务根填 `.harness/surfaces.json` 的 `<tables-root>`。

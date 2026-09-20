@@ -1,5 +1,10 @@
 # Game Studio Harness
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://img.shields.io/github/actions/workflow/status/limoaCatherine/game-studio-harness/ci.yml?branch=main)](https://github.com/limoaCatherine/game-studio-harness/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/badge/version-0.4.0-informational.svg)](CHANGELOG.md)
+
 Game Studio Harness（GSH）是面向游戏制作流水线的**四层上下文操作系统**。它把大模型代理接入定档、职种路径、隔离制作与验收晋升：用文件合同约束本轮范围，按步骤打开技能，默认写入隔离面，验收通过后再由制作方批准回写正式面。
 
 适用对象：制作人、技术总监、主策划、主程序，以及在同一业务根上协作的 AI 编程工具。
@@ -16,6 +21,7 @@ Game Studio Harness（GSH）是面向游戏制作流水线的**四层上下文�
 [关键概念](#关键概念) ·
 [指南](#指南) ·
 [平台支持](#平台支持) ·
+[文档](docs/README.md) ·
 [安装](#安装)
 
 ---
@@ -181,7 +187,7 @@ python -m gsh close --kind schema --evidence .harness/sandbox/ttk-notes.md
 
 `activated.json` 中的 `craft_path` 显示如 `2/9` 的进度。现行卡与 `state.json` 保持同步。制作方批准后再回写正式表记录格。
 
-完整步骤：[docs/cookbook/combat-numeric-slice.md](docs/cookbook/combat-numeric-slice.md)。
+完整步骤：[docs/cookbook/combat-numeric-slice.md](docs/cookbook/combat-numeric-slice.md)。文档地图：[docs/README.md](docs/README.md)（架构、适配器、cookbook、发版）。
 
 ### 更换客户端后续作
 
@@ -236,20 +242,23 @@ CLI 可在上述工具对应的业务根上执行。事件钩子运行时目前�
 
 需要 **Python 3.11+**。Windows 为游戏生产环境的一等目标平台；Linux / macOS 用于隔离试装与 CI。安装器只投影架构文件与技能，不附带任何制作软件安装包，不写入密钥。
 
-只从官方仓库安装：[github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness)。第三方打包不在本项目维护范围内。
+只从官方仓库或该仓库的 GitHub Release 安装：[github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness)。第三方打包不在本项目维护范围内。PyPI 尚未发布。
 
-内容只在仓库根修改：`skills/` `agents/` `rules/` `hooks/` `harness/`。`gsh setup` / `gsh sync` 将同一份内容写成各工具的完整原生目录。
+内容只在仓库根修改：`skills/` `agents/` `rules/` `hooks/` `harness/`。wheel 将这些目录打进包内，因此 `pip install .` / `pipx install .` 之后不必保持 clone。`gsh setup` / `gsh sync` 将同一份内容写成各工具的完整原生目录。
 
 ```bash
 git clone https://github.com/limoaCatherine/game-studio-harness.git
 cd game-studio-harness
-python -m gsh setup --guided
+python -m pip install .
+gsh setup --guided
 ```
+
+Windows：`py -3.11 -m pip install .`，然后 `gsh setup --workspace D:\studio-root --yes`。
 
 非交互：
 
 ```bash
-python -m gsh setup \
+gsh setup \
   --workspace /path/to/studio-root \
   --tools cursor,claude \
   --profile core \
@@ -258,6 +267,7 @@ python -m gsh setup \
 
 | 入口 | 命令 |
 |---|---|
+| PATH 上的 CLI | `gsh setup` |
 | 模块 | `python -m gsh setup` |
 | Unix | `./install.sh` |
 | Windows | `.\install.ps1` 或 `.\一键部署.ps1` |
@@ -286,9 +296,11 @@ python -m gsh verify \
 ```
 
 ```bash
-python -m gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
-python -m gsh uninstall --isolate-root /tmp/gsh-probe --yes
+gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
+gsh uninstall --isolate-root /tmp/gsh-probe --yes
 ```
+
+pipx、Release wheel、`GSH_PACK_ROOT` 与未来 PyPI：[docs/install.md](docs/install.md)。发版与资产：[docs/release.md](docs/release.md)。
 
 ---
 
@@ -391,7 +403,7 @@ python -m unittest discover -s tests -v
 
 ## 贡献
 
-见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+见 [CONTRIBUTING.md](CONTRIBUTING.md) · [SUPPORT.md](SUPPORT.md)。
 
 1. 技能只修改 `skills/<id>/SKILL.md`。
 2. 职种只修改 `agents/<id>.md`。`uses_skills` 为序列，由 `gsh next` 前进。
@@ -405,6 +417,6 @@ python -m unittest discover -s tests -v
 
 ## 许可
 
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · [LICENSE](LICENSE) MIT · [CHANGELOG.md](CHANGELOG.md)
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · [LICENSE](LICENSE) MIT · [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md)
 
 四层已封版。进度写入 `.harness`。官方源仅为上述 GitHub 仓库。

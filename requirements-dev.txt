@@ -1,0 +1,2 @@
+# Contributor tools. Runtime has no third-party dependencies.
+-e .[dev]

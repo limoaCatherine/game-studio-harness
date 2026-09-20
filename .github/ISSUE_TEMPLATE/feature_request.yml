@@ -1,0 +1,30 @@
+name: Feature request
+description: A craft, skill, adapter, or CLI change that stays inside the four layers.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The four layers are frozen. New top-level folders need a steer and an ADR, not a drive-by folder.
+  - type: textarea
+    id: need
+    attributes:
+      label: Production need
+      description: Which craft path or session loop this unblocks.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: File ids (skill / craft / tool) and the command you would run.
+    validations:
+      required: true
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      options:
+        - label: No live MCP server or secret would be committed
+        - label: Official surfaces stay behind human approval
+        - label: Catalog stays a director menu, not a system prompt

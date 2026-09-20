@@ -14,7 +14,7 @@ USER_PATH = re.compile(r"[A-Za-z]:\\Users\\(?!\$\{)[A-Za-z0-9._-]+")
 DRIVE_HOST = re.compile(r"[A-Za-z]:\\Harness-Apps|[A-Za-z]:/Harness-Apps")
 SECRET_A = re.compile(r'"-a",\s*"[A-Za-z0-9]{16,}"')
 SECRET_LIKE = re.compile(r"\b(ghp_|github_pat_|sk-)[A-Za-z0-9_\-]{16,}")
-SKIP_DIRS = {".git", "__pycache__", ".venv", "node_modules"}
+SKIP_DIRS = {".git", "__pycache__", ".venv", "node_modules", "dist", "build", ".ruff_cache", ".pytest_cache", "pack_data", ".egg-info"}
 SCAN_SUFFIX = {".md", ".json", ".py", ".mdc", ".example", ".yml", ".yaml", ".toml", ".txt", ".ps1", ".sh"}
 
 

@@ -29,7 +29,10 @@ def build_parser() -> argparse.ArgumentParser:
         sp.add_argument("--isolate-root", help="探测根：所有家目录改落到此树下")
         sp.add_argument("--cursor-home", help="兼容旧开关；请改用 --isolate-root")
         sp.add_argument("--cursor-only", action="store_true", help="不建业务根")
-        sp.add_argument("--pack-root", help="仓库根；默认自动探测")
+        sp.add_argument(
+            "--pack-root",
+            help="pack 根（skills/agents/…）；默认 GSH_PACK_ROOT、git 检出、或 wheel 内 gsh/pack_data",
+        )
         sp.add_argument("--yes", action="store_true", help="非交互，跳过确认")
 
     s = sub.add_parser("setup", help="引导或脚本化安装")

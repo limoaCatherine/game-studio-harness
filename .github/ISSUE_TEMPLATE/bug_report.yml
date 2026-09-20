@@ -1,0 +1,56 @@
+name: Bug report
+description: Isolate verify, CLI, adapter, or pack-data failure.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Run `gsh verify` on an isolate root before filing. Do not paste secrets, `mcp.json`, or studio absolute paths.
+  - type: input
+    id: version
+    attributes:
+      label: gsh version
+      placeholder: "0.4.0"
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version and OS
+      placeholder: "Python 3.11.9 on Windows 11"
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How did you install
+      options:
+        - pipx install . (from clone)
+        - pip install .
+        - pip install -e .
+        - Release wheel
+        - python -m gsh from a clone (no pip)
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: Exact argv, including isolate and workspace.
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual (doctor / verify output)
+      render: text
+    validations:
+      required: true

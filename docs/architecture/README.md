@@ -9,3 +9,6 @@
 - [跨工具](cross-harness.md)
 - [适配器一览](../adapters/README.md)
 - [MCP 政策](../mcp-policy.md)
+- [安装](../install.md)
+- [发版](../release.md)
+- [文档地图](../README.md)

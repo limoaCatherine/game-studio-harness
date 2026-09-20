@@ -251,7 +251,9 @@ systemMessage: |
 def land_workspace(pack: Path, root: Path, dry: bool, copied: list[str]) -> str:
     if not dry:
         root.mkdir(parents=True, exist_ok=True)
-    merge_missing(pack / "studio" / ".harness", root / ".harness", dry, copied)
+    from gsh.paths_cli import studio_scaffold
+
+    merge_missing(studio_scaffold(pack), root / ".harness", dry, copied)
     from gsh.adapters import land_project_natives
 
     land_project_natives(pack, root, dry, copied)

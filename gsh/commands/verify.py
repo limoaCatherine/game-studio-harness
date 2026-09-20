@@ -59,6 +59,8 @@ def _scan_secrets(path: Path, errors: list[str]) -> None:
             continue
         if item.name in {"catalog.json", "mcp.json"}:
             continue
+        if "pack_data" in item.parts:
+            continue
         try:
             text = item.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError):

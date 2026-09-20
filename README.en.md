@@ -1,5 +1,10 @@
 # Game Studio Harness
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://img.shields.io/github/actions/workflow/status/limoaCatherine/game-studio-harness/ci.yml?branch=main)](https://github.com/limoaCatherine/game-studio-harness/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/badge/version-0.4.0-informational.svg)](CHANGELOG.md)
+
 Game Studio Harness (GSH) is a **four-layer context operating system** for game-production pipelines. It connects LLM agents to scoping, craft paths, isolated execution, and evidence-based promotion: a file contract bounds the current round, skills open one step at a time, writes default to the isolation surface, and official surfaces are updated only after human approval.
 
 Intended readers: producers, technical directors, lead designers, lead engineers, and the AI coding tools that share one studio root.
@@ -16,6 +21,7 @@ scope → slice → isolate → verify → promote
 [Key concepts](#key-concepts) ·
 [Guides](#guides) ·
 [Platform support](#platform-support) ·
+[Docs](docs/README.md) ·
 [Install](#install)
 
 ---
@@ -181,7 +187,7 @@ python -m gsh close --kind schema --evidence .harness/sandbox/ttk-notes.md
 
 `activated.json` `craft_path` shows progress such as `2/9`. The current card and `state.json` stay aligned. Official record cells are written only after human approval.
 
-Full walkthrough: [docs/cookbook/combat-numeric-slice.md](docs/cookbook/combat-numeric-slice.md).
+Full walkthrough: [docs/cookbook/combat-numeric-slice.md](docs/cookbook/combat-numeric-slice.md). Docs map: [docs/README.md](docs/README.md) (architecture, adapters, cookbook, release).
 
 ### Resume after a client switch
 
@@ -236,20 +242,23 @@ Per-tool notes: [docs/adapters/](docs/adapters/).
 
 **Python 3.11+**. Windows is a first-class game-production target; Linux/macOS are for isolate probes and CI. The installer projects architecture files and skills. It does not ship production-software installers and does not write secrets.
 
-Install only from the official repository: [github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness). Third-party packages are outside this project’s maintenance.
+Install only from the official repository or its GitHub Releases: [github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness). Third-party packages are outside this project’s maintenance. PyPI is not published yet.
 
-Edit content only at repo root: `skills/`, `agents/`, `rules/`, `hooks/`, `harness/`. `gsh setup` / `gsh sync` write that same content into each tool’s complete native tree.
+Edit content only at repo root: `skills/`, `agents/`, `rules/`, `hooks/`, `harness/`. The wheel ships those trees, so `pip install .` / `pipx install .` does not require a live clone. `gsh setup` / `gsh sync` write that same content into each tool’s complete native tree.
 
 ```bash
 git clone https://github.com/limoaCatherine/game-studio-harness.git
 cd game-studio-harness
-python -m gsh setup --guided
+python -m pip install .
+gsh setup --guided
 ```
+
+Windows: `py -3.11 -m pip install .`, then `gsh setup --workspace D:\studio-root --yes`.
 
 Non-interactive:
 
 ```bash
-python -m gsh setup \
+gsh setup \
   --workspace /path/to/studio-root \
   --tools cursor,claude \
   --profile core \
@@ -258,6 +267,7 @@ python -m gsh setup \
 
 | Entry | Command |
 |---|---|
+| CLI on PATH | `gsh setup` |
 | Module | `python -m gsh setup` |
 | Unix | `./install.sh` |
 | Windows | `.\install.ps1` or `.\一键部署.ps1` |
@@ -286,9 +296,11 @@ python -m gsh verify \
 ```
 
 ```bash
-python -m gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
-python -m gsh uninstall --isolate-root /tmp/gsh-probe --yes
+gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
+gsh uninstall --isolate-root /tmp/gsh-probe --yes
 ```
+
+pipx, Release wheels, `GSH_PACK_ROOT`, and future PyPI: [docs/install.md](docs/install.md). Cutting a release: [docs/release.md](docs/release.md).
 
 ---
 
@@ -391,7 +403,7 @@ Coverage includes catalog parse, craft-path non-expansion, secret scan, native-t
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md) · [SUPPORT.md](SUPPORT.md).
 
 1. Edit skills only under `skills/<id>/SKILL.md`.
 2. Edit crafts only under `agents/<id>.md`. `uses_skills` is a sequence that `gsh next` walks.
@@ -405,6 +417,6 @@ The 0.1 duplicate trees such as `cursor/skills` are removed. Edit at repo root, 
 
 ## License
 
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · [LICENSE](LICENSE) MIT · [CHANGELOG.md](CHANGELOG.md)
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · [LICENSE](LICENSE) MIT · [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md)
 
 The four layers are frozen. Progress is written under `.harness`. The only official source is the GitHub repository above.
