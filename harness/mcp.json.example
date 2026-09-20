@@ -1,0 +1,695 @@
+{
+    "mcpServers": {
+        "blender-mcp": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "blender-mcp",
+                "--cache",
+                "${MCP_BOOT}\\cache\\blender-mcp.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "cmd",
+                "/c",
+                "${UVX}",
+                "--python",
+                "3.11",
+                "blender-mcp"
+            ],
+            "env": {
+                "UV_PYTHON_PREFERENCE": "only-managed",
+                "DISABLE_TELEMETRY": "true",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "cascadeur": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}/http_bridge.py",
+                "--name",
+                "cascadeur",
+                "--url",
+                "http://127.0.0.1:8765/mcp",
+                "--tools",
+                "${MCP_BOOT}/cache/cascadeur.tools.json"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "chrome-devtools": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "chrome-devtools",
+                "--cache",
+                "${MCP_BOOT}\\cache\\chrome-devtools.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "cmd",
+                "/c",
+                "${NPX}",
+                "-y",
+                "chrome-devtools-mcp@latest"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "cloudcompare": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "cloudcompare",
+                "--cache",
+                "${MCP_BOOT}\\cache\\cloudcompare.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\cloudcompare-mcp\\.venv\\Scripts\\cloudcompare-mcp.exe"
+            ],
+            "env": {
+                "CLOUDCOMPARE_PATH": "${HARNESS_APPS}\\DCC\\CloudCompare\\CloudCompare\\CloudCompare.exe",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "docker-mcp": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "docker-mcp",
+                "--cache",
+                "${MCP_BOOT}\\cache\\docker-mcp.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${DOCKER}",
+                "run",
+                "-i",
+                "--rm",
+                "-v",
+                "//./pipe/dockerDesktopLinuxEngine://./pipe/docker_engine",
+                "gavinlucas/docker-mcp-server:latest"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "everything-search": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "everything-search",
+                "--cache",
+                "${MCP_BOOT}\\cache\\everything-search.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\everything-mcp\\.venv\\Scripts\\everything-mcp.exe"
+            ],
+            "env": {
+                "EVERYTHING_ES_PATH": "${HARNESS_APPS}\\mcp\\everything-mcp\\es\\es.exe",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "excelMCP": {
+            "command": "${EXCEL_MCP_PYTHON}",
+            "args": [
+                "${HARNESS_APPS}/mcp/excel-unified/server.py"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1",
+                "EXCEL_COM_CMD": "${DOTNET_TOOLS}/mcp-excel.exe"
+            }
+        },
+        "fmod-studio": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "fmod-studio",
+                "--cache",
+                "${MCP_BOOT}\\cache\\fmod-studio.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\fmod-studio-mcp\\.venv\\Scripts\\fmod-studio-mcp.exe"
+            ],
+            "env": {
+                "FMOD_STUDIO_HOST": "127.0.0.1",
+                "FMOD_STUDIO_PORT": "3663",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "gamedev-mcp": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "gamedev-mcp",
+                "--cache",
+                "${MCP_BOOT}\\cache\\gamedev-mcp.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\gamedev-mcp-server\\gamedev-mcp-server.exe",
+                "--port=28080"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1",
+                "MCP_PLUGIN_PORT": "28080",
+                "MCP_PLUGIN_CLIENT_TRANSPORT": "stdio",
+                "MCP_AUTH": "none",
+                "MCP_BIND": "loopback"
+            }
+        },
+        "instant-meshes": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "instant-meshes",
+                "--cache",
+                "${MCP_BOOT}\\cache\\instant-meshes.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\instant-meshes-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\instant-meshes-mcp\\server.py"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1",
+                "BLENDER_EXECUTABLE": "${HARNESS_APPS}\\DCC\\Blender\\blender.exe",
+                "INSTANT_MESHES_ALLOW_ANY_BLENDER": "1"
+            }
+        },
+        "krita-mcp": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "krita-mcp",
+                "--cache",
+                "${MCP_BOOT}\\cache\\krita-mcp.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\krita-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\krita-mcp\\run_mcp.py"
+            ],
+            "env": {
+                "KRITA_URL": "http://127.0.0.1:5678",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "lark-mcp": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "lark-mcp",
+                "--cache",
+                "${MCP_BOOT}\\cache\\lark-mcp.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "cmd",
+                "/c",
+                "${NPX}",
+                "-y",
+                "@larksuiteoapi/lark-mcp",
+                "mcp",
+                "-a",
+                "${LARK_APP_ID}",
+                "-s",
+                "${LARK_APP_SECRET}"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "renderdoc": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "renderdoc",
+                "--cache",
+                "${MCP_BOOT}\\cache\\renderdoc.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\renderdoc-mcp\\.venv\\Scripts\\renderdoc-mcp.exe"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "roslyn-mcp": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "roslyn-mcp",
+                "--cache",
+                "${MCP_BOOT}\\cache\\roslyn-mcp.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${DOTNET_TOOLS}/roslyn-mcp"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "xmind": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "xmind",
+                "--cache",
+                "${MCP_BOOT}\\cache\\xmind.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\xmind-mcp\\.venv\\Scripts\\xmind-mcp.exe"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "ffmpeg": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "ffmpeg",
+                "--cache",
+                "${MCP_BOOT}\\cache\\ffmpeg.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\ffmpeg-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\ffmpeg-mcp\\server.py"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "imagemagick": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "imagemagick",
+                "--cache",
+                "${MCP_BOOT}\\cache\\imagemagick.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${NODE}",
+                "${HARNESS_APPS}\\mcp\\imagemagick-mcp\\dist\\index.js"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "gimp": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "gimp",
+                "--cache",
+                "${MCP_BOOT}\\cache\\gimp.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${UV}",
+                "run",
+                "--directory",
+                "${HARNESS_APPS}\\mcp\\gimp-mcp",
+                "gimp_mcp_server.py"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "inkscape": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "inkscape",
+                "--cache",
+                "${MCP_BOOT}\\cache\\inkscape.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${UV}",
+                "--directory",
+                "${HARNESS_APPS}\\mcp\\inkscape-mcp",
+                "run",
+                "inkscape-mcp",
+                "--mode",
+                "stdio"
+            ],
+            "env": {
+                "INKSCAPE_PATH": "${HARNESS_APPS}\\DCC\\Inkscape\\bin\\inkscape.exe",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "excalidraw": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "excalidraw",
+                "--cache",
+                "${MCP_BOOT}\\cache\\excalidraw.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\excalidraw-mcp\\.venv\\Scripts\\excalidraw-mcp.exe"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "miro": {
+            "url": "https://mcp.miro.com/"
+        },
+        "ldtk": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "ldtk",
+                "--cache",
+                "${MCP_BOOT}\\cache\\ldtk.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\ldtk-file-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\ldtk-file-mcp\\server.py"
+            ],
+            "env": {
+                "LDTK_PROJECT_DIR": "${HARNESS_APPS}\\DCC\\LDtk\\_mcp-workspace",
+                "LDTK_EXE": "${HARNESS_APPS}\\DCC\\LDtk\\LDtk.exe",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "magicavoxel": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "magicavoxel",
+                "--cache",
+                "${MCP_BOOT}\\cache\\magicavoxel.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\vox-file-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\vox-file-mcp\\server.py"
+            ],
+            "env": {
+                "VOX_PROJECT_DIR": "${HARNESS_APPS}\\DCC\\MagicaVoxel\\_mcp-workspace",
+                "MAGICAVOXEL_EXE": "${HARNESS_APPS}\\DCC\\MagicaVoxel\\MagicaVoxel.exe",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "meshlab": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "meshlab",
+                "--cache",
+                "${MCP_BOOT}\\cache\\meshlab.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\meshlab-cli-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\meshlab-cli-mcp\\server.py"
+            ],
+            "env": {
+                "MESHLAB_EXE": "${HARNESS_APPS}\\DCC\\MeshLab\\meshlab.exe",
+                "MESHLAB_WORKDIR": "${HARNESS_APPS}\\DCC\\MeshLab\\_mcp-workspace",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "materialize": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "materialize",
+                "--cache",
+                "${MCP_BOOT}\\cache\\materialize.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\materialize-host-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\materialize-host-mcp\\server.py"
+            ],
+            "env": {
+                "MATERIALIZE_EXE": "${HARNESS_APPS}\\DCC\\Materialize\\Materialize\\Materialize.exe",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "xnormal": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "xnormal",
+                "--cache",
+                "${MCP_BOOT}\\cache\\xnormal.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\xnormal-host-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\xnormal-host-mcp\\server.py"
+            ],
+            "env": {
+                "XNORMAL_EXE": "${XNORMAL_EXE}",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "meshroom": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "meshroom",
+                "--cache",
+                "${MCP_BOOT}\\cache\\meshroom.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\meshroom-host-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\meshroom-host-mcp\\server.py"
+            ],
+            "env": {
+                "MESHROOM_EXE": "${MESHROOM_EXE}",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "treeit": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "treeit",
+                "--cache",
+                "${MCP_BOOT}\\cache\\treeit.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\treeit-host-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\treeit-host-mcp\\server.py"
+            ],
+            "env": {
+                "TREEIT_EXE": "${HARNESS_APPS}\\DCC\\TreeIt\\Tree It\\Tree It.exe",
+                "TREEIT_DIR": "${HARNESS_APPS}\\DCC\\TreeIt\\Tree It",
+                "TREEIT_WORKSPACE": "${HARNESS_APPS}\\DCC\\TreeIt\\Tree It\\_mcp-workspace",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "accurig": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "accurig",
+                "--cache",
+                "${MCP_BOOT}\\cache\\accurig.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\accurig-host-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\accurig-host-mcp\\server.py"
+            ],
+            "env": {
+                "ACCURIG_EXE": "${HARNESS_APPS}\\DCC\\AccuRIG\\AccuRIG.exe",
+                "ACCURIG_DIR": "${HARNESS_APPS}\\DCC\\AccuRIG",
+                "ACCURIG_WORKSPACE": "${HARNESS_APPS}\\DCC\\AccuRIG\\_mcp-workspace",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "rokoko": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "rokoko",
+                "--cache",
+                "${MCP_BOOT}\\cache\\rokoko.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\rokoko-host-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\rokoko-host-mcp\\server.py"
+            ],
+            "env": {
+                "ROKOKO_EXE": "${HARNESS_APPS}\\DCC\\Rokoko\\Rokoko Studio.exe",
+                "ROKOKO_DIR": "${HARNESS_APPS}\\DCC\\Rokoko",
+                "ROKOKO_WORKSPACE": "${HARNESS_APPS}\\DCC\\Rokoko\\_mcp-workspace",
+                "ROKOKO_LISTEN_HOST": "127.0.0.1",
+                "ROKOKO_LISTEN_PORT": "14043",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "audacity": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "audacity",
+                "--cache",
+                "${MCP_BOOT}\\cache\\audacity.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\audacity-host-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\audacity-host-mcp\\server.py"
+            ],
+            "env": {
+                "AUDACITY_EXE": "${AUDACITY_EXE}",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "pureref": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "pureref",
+                "--cache",
+                "${MCP_BOOT}\\cache\\pureref.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\pureref-host-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\pureref-host-mcp\\server.py"
+            ],
+            "env": {
+                "PUREREF_EXE": "${PUREREF_EXE}",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "tiled": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "tiled",
+                "--cache",
+                "${MCP_BOOT}\\cache\\tiled.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${NPX}",
+                "-y",
+                "tiled-mcp-server",
+                "--project-dir",
+                "${HARNESS_APPS}\\Engines\\Sandbox\\maps"
+            ],
+            "env": {
+                "TILED_PROJECT_DIR": "${HARNESS_APPS}\\Engines\\Sandbox\\maps",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "gaea": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "gaea",
+                "--cache",
+                "${MCP_BOOT}\\cache\\gaea.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "C:\\\\Program Files\\\\nodejs\\\\node.exe",
+                "${HARNESS_APPS}\\\\mcp\\\\gaea-mcp\\\\node_modules\\\\tsx\\\\dist\\\\cli.mjs",
+                "${HARNESS_APPS}\\\\mcp\\\\gaea-mcp\\\\src\\\\server.ts"
+            ],
+            "env": {
+                "GAEA_INSTALL_DIR": "${HARNESS_APPS}\\\\DCC\\\\Gaea",
+                "PROJECT_DIR": "${HARNESS_APPS}\\\\mcp\\\\gaea-mcp\\\\projects",
+                "OUTPUT_DIR": "${HARNESS_APPS}\\\\mcp\\\\gaea-mcp\\\\output",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "materialpilot": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "materialpilot",
+                "--cache",
+                "${MCP_BOOT}\\cache\\materialpilot.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "C:\\\\Program Files\\\\nodejs\\\\node.exe",
+                "${HARNESS_APPS}\\\\mcp\\\\materialpilot\\\\apps\\\\mcp-server\\\\dist\\\\main.js"
+            ],
+            "env": {
+                "MATERIAL_MAKER_PATH": "${MATERIAL_MAKER_EXE}",
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        "fmod-cli": {
+            "command": "${PYTHON}",
+            "args": [
+                "${MCP_BOOT}\\lazy_stdio.py",
+                "--name",
+                "fmod-cli",
+                "--cache",
+                "${MCP_BOOT}\\cache\\fmod-cli.tools.json",
+                "--framing",
+                "ndjson",
+                "--",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\fmod-cli-mcp\\.venv\\Scripts\\python.exe",
+                "${HARNESS_APPS}\\mcp\\harness-host-mcps\\fmod-cli-mcp\\server.py"
+            ],
+            "env": {
+                "FMOD_CLI": "${HARNESS_APPS}\\Audio\\FMOD\\fmodstudiocl.exe",
+                "FMOD_STUDIO_EXE": "${HARNESS_APPS}\\Audio\\FMOD\\FMOD Studio.exe",
+                "FMOD_PROJECT_DIR": "${HARNESS_APPS}\\Audio\\FMOD\\_mcp-projects",
+                "PYTHONUNBUFFERED": "1"
+            }
+        }
+    }
+}

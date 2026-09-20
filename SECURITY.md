@@ -1,20 +1,29 @@
-# 安全
+# Security
 
-## 报告
+## Report
 
-请用 GitHub 私密漏洞报告，不要开公开 issue。
+Use a GitHub private vulnerability report. Do not open a public issue for secrets or hook bypasses.
 
-## 范围
+## Scope
 
-本仓、安装器、五套工具目录里的架构文件。
+This repository, the `gsh` CLI, hook scripts, and generated projections. Host DCC processes and third-party MCP servers that you install locally are **out of scope** for GSH itself.
 
-## 密钥
+## Secrets
 
-- 密钥不进仓库。`mcp.json.example` 只放占位符。
-- 安装器不会覆盖已有的 `mcp.json`。
-- 若密钥误提交：立即轮换，再重写历史，不要只 revert。
+- Secrets do not belong in git. `harness/mcp.json.example` uses `${PLACEHOLDER}` only.
+- Setup never overwrites an existing `mcp.json`.
+- Cursor `beforeReadFile` denies common secret paths. Other tools do not get that gate — do not assume they do.
+- If a secret is committed: rotate it, then rewrite history. A revert commit is not enough.
 
-## 供应链
+## Supply chain
 
-- 发布与安装只指向本仓。
-- 第三方包未列入官方面之前按非官方处理。
+- Install only from this GitHub repository.
+- Treat unofficial zips and mirrors as untrusted.
+- This pack ships **zero** live MCP servers. A file under `harness/mcp-tools/` is a purpose stub.
+
+## Isolate before real homedirs
+
+```bash
+python -m gsh setup --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
+python -m gsh verify --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws
+```

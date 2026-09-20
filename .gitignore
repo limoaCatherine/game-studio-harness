@@ -2,7 +2,6 @@ __pycache__/
 *.py[cod]
 .DS_Store
 Thumbs.db
-.cursor/
 mcp.json
 catalog.json
 mcp-health.json
@@ -11,3 +10,8 @@ _probe/
 .env
 .env.*
 !.env.example
+.cursor/mcp.json
+**/.venv/
+dist/
+build/
+*.egg-info/

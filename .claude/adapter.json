@@ -1,0 +1,11 @@
+{
+  "harness": "claude",
+  "runtime": "instruction",
+  "source": {
+    "constitution": "../AGENTS.md",
+    "skills": "../skills",
+    "agents": "../agents"
+  },
+  "installs_to": ["~/.claude", "${isolate}/claude"],
+  "notes": "Claude Code reads CLAUDE.md. GSH hooks.json is Cursor-native and is not claimed as a Claude runtime."
+}
