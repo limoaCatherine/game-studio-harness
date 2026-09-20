@@ -2,7 +2,7 @@
 
 **给游戏制作代理用的四层编排。** 技能、职种、外接、写隔离，一次装到 Cursor、Claude Code、Codex、Grok、DeepSeek。
 
-[English](#english) · [安装](#安装) · [设计](#设计) · [目录](#目录)
+[English](#english) · [安装](#安装) · [设计](#设计) · [目录](#目录) · [行为准则](#行为准则)
 
 | 职种 | 技能 | 外接 |
 | ---: | ---: | ---: |
@@ -11,6 +11,10 @@
 > 窗口是稀缺的。正式面是不可逆的。会话会断。
 
 本仓用封版的四层来管这三件事。它不附带引擎或 DCC。它附带的是一种编排：谁来选上下文、谁来做事、谁来碰正式文件。
+
+```text
+定档 -> 制作 -> 结案
+```
 
 ---
 
@@ -44,7 +48,12 @@ python install/verify_install.py --isolate-root D:\probe --workspace D:\probe\ws
 
 相关性一旦交给模型自己猜，它会为了保险把可能用到的全部打开。握手把相关性收成一个集合。集合小，专注度才可预期。
 
-![专注度](figures/专注度.svg)
+| 概念 | 做什么 | 上下文行为 |
+|---|---|---|
+| 宪法 | 每轮都不能忘的运转 | 始终加载，所以必须薄 |
+| 定档 | 这一轮点谁、写到哪、怎么收口 | 只注入点名切片 |
+| 能力库 | 可复用做法和岗位路径 | 在库里，被点名才进窗口 |
+| 档案柜 | 做到哪、正式面在哪、哪句已批准 | 按键寻址，不扫全库 |
 
 ### 四层
 
@@ -56,29 +65,29 @@ python install/verify_install.py --isolate-root D:\probe --workspace D:\probe\ws
 
 五套编程工具是同一套四层的五份齐套拷贝，不是第五层。落点会变，运转法不该变。
 
-![四层](figures/四层.svg)
-
 ### 任务编排
 
 定档 → 制作 → 结案，解决的是代理会同时做三件有害的事：把可能相关的做法都打开、同时扮演几个岗位、直接改看得到的正式文件。
 
 一件交付一个会话。口径变了，先改合同再换上下文。岗位不同，就按职种分开做——专注度的边界是岗位，不是「请你同时当数值策划和客户端」。试错默认进隔离根；正式面只在人准的那一下，按记录集回写。
 
-![任务编排](figures/任务编排.svg)
+编排的对象不是任务看板，是**上下文集合和写权限**。集合稳，代理才不会在转向时带着过期技能说话；写权限收住，并行会话才不会互相覆盖正式面。
 
 ### 技能、子代理、外接
 
 三种东西粒度不同，不能合成一种。
 
-**技能**是一件事的做法：定支柱、写伤害公式、过导入校验、出验证结论。当次数字和当次路径不准写进技能。
-
-**子代理（职种）**是一条岗的走法。战斗数值策划从建模走到晋升，关卡策划从目标链走到节奏，测试负责人从计划走到豁免。同一诉求里岗位不同，优先各开一只，主会话只负责点名和收口。
-
-**外接**是宿主的手：改表、进引擎、动 DCC、画图。软件可以不在，架构仍应能转。三十六条外接若开场全连，发现阶段会被空等吃掉；所以默认只让每日要握的手直连，其余懒接。
+| | 粒度 | 怎么用 |
+|---|---|---|
+| 技能 | 一件事的做法 | 定支柱、写伤害公式、过导入校验。当次数字不准写进技能 |
+| 子代理（职种） | 一条岗的走法 | 战斗数值从建模走到晋升。岗位不同优先各开一只 |
+| 外接 | 宿主的手 | 改表、进引擎、动 DCC。软件可以不在，架构仍应能转 |
 
 制作流水线被托住的方式，是每一段都有岗可点、有技能可按步打开、有手可以伸向对应软件：
 
-![制作流水线](figures/制作流水线.svg)
+```text
+方向 -> 规则与数值 -> 体验与资产 -> 工程与验收 -> 运营
+```
 
 方向一段，职种是创意总监，技能是支柱、体验批注、砍范围。规则与数值一段，系统策划、战斗策划、三路数值策划各走各的路径，改表的手是表格外接。体验与资产一段，叙事、交互、关卡、原画、绑定、动画、特效、技美、音频各有岗。工程与验收一段，客户端、服务端、工具、测试分开。运营一段，活服、商业化、发版接到日历、活动规格和商店目录。
 
@@ -90,7 +99,6 @@ python install/verify_install.py --isolate-root D:\probe --workspace D:\probe\ws
 
 ```text
 README.md
-figures/
 cursor/   claude/   codex/   grok/   deepseek/
 studio/
 install/
@@ -115,6 +123,10 @@ install/
 A four-layer harness for game-production agents. Skills, crafts, MCP, and write isolation for Cursor, Claude Code, Codex, Grok, and DeepSeek.
 
 The window is scarce. The official surface is irreversible. Sessions break. This repo ships an orchestration: who picks context, who does the work, who touches official files. It does not ship engines or DCC.
+
+```text
+route -> build -> close
+```
 
 Install: clone, run `一键部署.bat`, point at your studio root. The pack installs architecture, not host software.
 
