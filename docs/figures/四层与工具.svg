@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -20 1615.6 680" width="1615.6" height="680">
+<rect x="-20" y="-20" width="1615.6" height="680" fill="#ffffff" />
+<rect x="0" y="0" width="367.8" height="70" rx="8" ry="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2" opacity="1.0" />
+<rect x="407.8" y="0" width="200" height="70" rx="8" ry="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2" opacity="1.0" />
+<rect x="647.8" y="0" width="200" height="70" rx="8" ry="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2" opacity="1.0" />
+<rect x="887.8" y="0" width="272.6" height="70" rx="8" ry="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2" opacity="1.0" />
+<rect x="0" y="190" width="200" height="70" rx="8" ry="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2" opacity="1.0" />
+<rect x="240" y="190" width="221.80000000000004" height="70" rx="8" ry="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2" opacity="1.0" />
+<rect x="501.80000000000007" y="190" width="273.8" height="70" rx="8" ry="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2" opacity="1.0" />
+<rect x="815.6000000000001" y="190" width="234.20000000000005" height="70" rx="8" ry="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2" opacity="1.0" />
+<rect x="1089.8000000000002" y="190" width="200" height="70" rx="8" ry="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2" opacity="1.0" />
+<rect x="0" y="380" width="200" height="70" rx="8" ry="8" fill="#d0bfff" stroke="#7048e8" stroke-width="2" opacity="1.0" />
+<rect x="240" y="380" width="200" height="70" rx="8" ry="8" fill="#d0bfff" stroke="#7048e8" stroke-width="2" opacity="1.0" />
+<rect x="480" y="380" width="200" height="70" rx="8" ry="8" fill="#d0bfff" stroke="#7048e8" stroke-width="2" opacity="1.0" />
+<rect x="720" y="380" width="209.40000000000003" height="70" rx="8" ry="8" fill="#d0bfff" stroke="#7048e8" stroke-width="2" opacity="1.0" />
+<rect x="969.4000000000001" y="380" width="323.80000000000007" height="70" rx="8" ry="8" fill="#d0bfff" stroke="#7048e8" stroke-width="2" opacity="1.0" />
+<rect x="0" y="570" width="200" height="70" rx="8" ry="8" fill="#ffd8a8" stroke="#e8590c" stroke-width="2" opacity="1.0" />
+<rect x="240" y="570" width="221.80000000000004" height="70" rx="8" ry="8" fill="#ffd8a8" stroke="#e8590c" stroke-width="2" opacity="1.0" />
+<rect x="501.80000000000007" y="570" width="200" height="70" rx="8" ry="8" fill="#ffd8a8" stroke="#e8590c" stroke-width="2" opacity="1.0" />
+<rect x="741.8000000000001" y="570" width="200" height="70" rx="8" ry="8" fill="#ffd8a8" stroke="#e8590c" stroke-width="2" opacity="1.0" />
+<rect x="981.8000000000001" y="570" width="246.60000000000005" height="70" rx="8" ry="8" fill="#ffd8a8" stroke="#e8590c" stroke-width="2" opacity="1.0" />
+<text x="183.9" y="42.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">全局.mdc / constitution.md</text>
+<text x="507.8" y="42.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">hooks.json</text>
+<text x="747.8" y="42.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">开场.py</text>
+<text x="1024.1" y="42.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">结束.py / 命令前.py</text>
+<text x="100.0" y="232.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">route-task</text>
+<text x="350.90000000000003" y="232.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">loadplan.json</text>
+<text x="638.7" y="232.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">生成会话能力名单.py</text>
+<text x="932.7000000000002" y="232.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">activated.json</text>
+<text x="1189.8000000000002" y="232.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">current.md</text>
+<text x="100.0" y="422.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">skills 106</text>
+<text x="340.0" y="422.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">crafts 35</text>
+<text x="580.0" y="422.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">刷新菜单.py</text>
+<text x="824.7" y="422.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">catalog.json</text>
+<text x="1131.3000000000002" y="422.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">mcp-tiers + lazy_stdio</text>
+<text x="100.0" y="612.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">state.json</text>
+<text x="350.90000000000003" y="612.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">surfaces.json</text>
+<text x="601.8000000000001" y="612.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">tasks.jsonl</text>
+<text x="841.8000000000001" y="612.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">canon / adr</text>
+<text x="1105.1000000000001" y="612.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">write-isolation</text>
+<defs><marker id="arrowhead-end-arrow_wlUVJK5TJa" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 367.8 35.0 L 647.8 35.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_wlUVJK5TJa)"  />
+<defs><marker id="arrowhead-end-arrow_nueu3NvQan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 607.8 35.0 L 647.8 35.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_nueu3NvQan)"  />
+<defs><marker id="arrowhead-end-arrow_CGsaGvKXoS" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 200 225.0 L 240 225.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_CGsaGvKXoS)"  />
+<defs><marker id="arrowhead-end-arrow_n5ogDY91ZG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 461.80000000000007 225.0 L 501.80000000000007 225.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_n5ogDY91ZG)"  />
+<defs><marker id="arrowhead-end-arrow_SLJxne9DgW" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 824.7 380 L 638.7 260" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_SLJxne9DgW)"  />
+<defs><marker id="arrowhead-end-arrow_6rqQmk8TDO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 775.6000000000001 225.0 L 815.6000000000001 225.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_6rqQmk8TDO)"  />
+<defs><marker id="arrowhead-end-arrow_eCHlbiXKTe" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 775.6000000000001 225.0 L 1089.8000000000002 225.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_eCHlbiXKTe)"  />
+<defs><marker id="arrowhead-end-arrow_ZvJHODFTtZ" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 932.7000000000002 190 L 747.8 70" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_ZvJHODFTtZ)"  />
+<defs><marker id="arrowhead-end-arrow_hWWa1UQ6r9" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 1089.8000000000002 225.0 L 847.8 35.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_hWWa1UQ6r9)"  />
+<defs><marker id="arrowhead-end-arrow_0hWGnEHmYm" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 680 415.0 L 720 415.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_0hWGnEHmYm)"  />
+<defs><marker id="arrowhead-end-arrow_ZV2TUyKLND" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 200 415.0 L 480 415.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_ZV2TUyKLND)"  />
+<defs><marker id="arrowhead-end-arrow_QbJ0p863hR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 440 415.0 L 480 415.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_QbJ0p863hR)"  />
+<defs><marker id="arrowhead-end-arrow_tBWOkhZTnJ" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 461.80000000000007 605.0 L 981.8000000000001 605.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_tBWOkhZTnJ)"  />
+<defs><marker id="arrowhead-end-arrow_EBS51UfI8J" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 887.8 35.0 L 200.0 605.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_EBS51UfI8J)"  />
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20.0 -20.0 958.8 960.0" width="958.8" height="960.0">
+<rect x="-20.0" y="-20.0" width="958.8" height="960.0" fill="#ffffff" />
+<rect x="198.55000000000004" y="0.0" width="471.2" height="70" rx="8" ry="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2" opacity="1.0" />
+<rect x="39.89999999999998" y="170.0" width="320.80000000000007" height="70" rx="8" ry="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2" opacity="1.0" />
+<rect x="0.0" y="340.0" width="400.6" height="70" rx="8" ry="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2" opacity="1.0" />
+<rect x="54.80000000000001" y="510.0" width="291.0" height="70" rx="8" ry="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2" opacity="1.0" />
+<rect x="39.89999999999998" y="680.0" width="320.80000000000007" height="70" rx="8" ry="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2" opacity="1.0" />
+<rect x="208.45000000000005" y="850.0" width="451.4" height="70" rx="8" ry="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2" opacity="1.0" />
+<rect x="420.70000000000005" y="170.0" width="494.6" height="70" rx="8" ry="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2" opacity="1.0" />
+<text x="434.15000000000003" y="42.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">&quot;菜单库\n106 技能 + 35 职种 + 36 外接&quot;</text>
+<text x="200.3" y="212.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">&quot;点名闸 loadplan.json&quot;</text>
+<text x="200.3" y="382.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">&quot;职种闸 craft_open 只带第一步&quot;</text>
+<text x="200.3" y="552.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">&quot;钩子闸 开场不灌菜单&quot;</text>
+<text x="200.3" y="722.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">&quot;记忆闸 retrieve_keys&quot;</text>
+<text x="434.15000000000003" y="892.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">&quot;制作窗口\n宪法 + 现行卡 + 点名正文&quot;</text>
+<text x="668.0" y="212.0" font-size="20" fill="#1e1e1e" text-anchor="middle" opacity="1.0" font-family="Arial, sans-serif">&quot;外接闸 mcp-tiers\n核心直连，其余懒接&quot;</text>
+<defs><marker id="arrowhead-end-arrow_6OKrLVXFcn" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 198.55000000000004 35.0 L 360.70000000000005 205.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_6OKrLVXFcn)"  />
+<defs><marker id="arrowhead-end-arrow_HjSxPhyvy9" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 200.3 240.0 L 200.3 340.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_HjSxPhyvy9)"  />
+<defs><marker id="arrowhead-end-arrow_l2VWIFTPaq" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 200.3 410.0 L 200.3 510.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_l2VWIFTPaq)"  />
+<defs><marker id="arrowhead-end-arrow_GtYM5DvqBo" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 200.3 580.0 L 200.3 680.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_GtYM5DvqBo)"  />
+<defs><marker id="arrowhead-end-arrow_NbfR4jYDhy" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 360.70000000000005 715.0 L 208.45000000000005 885.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0"  marker-end="url(#arrowhead-end-arrow_NbfR4jYDhy)"  />
+<defs><marker id="arrowhead-end-arrow_FMOGTBdbZv" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 669.75 35.0 L 420.70000000000005 205.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0" stroke-dasharray="8,4" marker-end="url(#arrowhead-end-arrow_FMOGTBdbZv)"  />
+<defs><marker id="arrowhead-end-arrow_wt1zsNEKtN" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e" /></marker></defs><path d="M 668.0 240.0 L 434.15000000000003 850.0" fill="none" stroke="#1e1e1e" stroke-width="2" opacity="1.0" stroke-dasharray="8,4" marker-end="url(#arrowhead-end-arrow_wt1zsNEKtN)"  />
+</svg>
