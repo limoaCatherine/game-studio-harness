@@ -1,0 +1,343 @@
+[
+  {
+    "name": "compute_cloud_to_cloud_distances",
+    "description": "Compute nearest-neighbour C2C distances from the compared cloud to the reference cloud. Saves the labelled cloud. Requires CloudCompare.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "reference_path": {
+          "type": "string"
+        },
+        "compared_path": {
+          "type": "string"
+        },
+        "output_path": {
+          "type": "string"
+        },
+        "max_distance": {
+          "type": "number",
+          "description": "Optional max search distance (m)."
+        }
+      },
+      "required": [
+        "reference_path",
+        "compared_path",
+        "output_path"
+      ]
+    }
+  },
+  {
+    "name": "compute_cloud_to_mesh_distances",
+    "description": "Compute signed C2M distances from a cloud to a reference mesh. Requires CloudCompare.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "mesh_path": {
+          "type": "string"
+        },
+        "cloud_path": {
+          "type": "string"
+        },
+        "output_path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "mesh_path",
+        "cloud_path",
+        "output_path"
+      ]
+    }
+  },
+  {
+    "name": "compute_normals",
+    "description": "Estimate surface normals. Requires CloudCompare.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input_path": {
+          "type": "string"
+        },
+        "output_path": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "LS",
+            "QUADRIC",
+            "TRIANGULATION"
+          ],
+          "default": "LS"
+        },
+        "radius": {
+          "type": "number"
+        },
+        "knn": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "input_path",
+        "output_path"
+      ]
+    }
+  },
+  {
+    "name": "convert_format",
+    "description": "Convert a point cloud to a different format. Target format is inferred from the output file extension (.las, .laz, .ply, .pcd, .xyz, .asc, .e57, .obj). Requires CloudCompare.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input_path": {
+          "type": "string"
+        },
+        "output_path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "input_path",
+        "output_path"
+      ]
+    }
+  },
+  {
+    "name": "filter_by_scalar_field",
+    "description": "Keep only points with scalar-field value in [min_val, max_val]. Requires CloudCompare.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input_path": {
+          "type": "string"
+        },
+        "output_path": {
+          "type": "string"
+        },
+        "min_val": {
+          "type": "number"
+        },
+        "max_val": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "input_path",
+        "output_path",
+        "min_val",
+        "max_val"
+      ]
+    }
+  },
+  {
+    "name": "get_cloudcompare_info",
+    "description": "Check if CloudCompare is installed and return its version and path. Call this first to confirm the tool is available.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "icp_registration",
+    "description": "Register a data cloud onto a model cloud using ICP. Returns transformation matrix and final RMS error. Requires CloudCompare.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "model_path": {
+          "type": "string"
+        },
+        "data_path": {
+          "type": "string"
+        },
+        "output_path": {
+          "type": "string"
+        },
+        "overlap": {
+          "type": "number",
+          "default": 100,
+          "description": "Expected overlap % (10–100)."
+        },
+        "iterations": {
+          "type": "integer",
+          "default": 20
+        },
+        "random_sampling_limit": {
+          "type": "integer",
+          "default": 50000
+        }
+      },
+      "required": [
+        "model_path",
+        "data_path",
+        "output_path"
+      ]
+    }
+  },
+  {
+    "name": "load_cloud_info",
+    "description": "Load a point cloud or mesh via CloudCompare and return basic statistics. Supports LAS/LAZ, PLY, PCD, E57, XYZ, ASC, BIN, SHP, OBJ, and more. Requires CloudCompare to be installed.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "description": "Absolute path to the point cloud or mesh file."
+        }
+      },
+      "required": [
+        "file_path"
+      ]
+    }
+  },
+  {
+    "name": "merge_clouds",
+    "description": "Merge two or more point clouds. Requires CloudCompare.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input_paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2
+        },
+        "output_path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "input_paths",
+        "output_path"
+      ]
+    }
+  },
+  {
+    "name": "read_cloud_metadata",
+    "description": "Read a point cloud file natively (no CloudCompare required) and return detailed metadata: point count, bounding box, extent, XY area, density, presence of RGB/intensity/normals, and scalar field names. Supports LAS, LAZ, PLY, PCD, XYZ, ASC, TXT.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "description": "Absolute path to the point cloud file."
+        }
+      },
+      "required": [
+        "file_path"
+      ]
+    }
+  },
+  {
+    "name": "run_cloudcompare_command",
+    "description": "Run an arbitrary CloudCompare CLI command. Do NOT include the binary path or -SILENT — they are added automatically. Example: [\"-O\", \"/path/cloud.las\", \"-AUTO_SAVE\", \"OFF\"]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "working_directory": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "args"
+      ]
+    }
+  },
+  {
+    "name": "statistical_outlier_removal",
+    "description": "Remove statistical outliers (SOR filter). Requires CloudCompare.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input_path": {
+          "type": "string"
+        },
+        "output_path": {
+          "type": "string"
+        },
+        "knn": {
+          "type": "integer",
+          "default": 6
+        },
+        "n_sigma": {
+          "type": "number",
+          "default": 1
+        }
+      },
+      "required": [
+        "input_path",
+        "output_path"
+      ]
+    }
+  },
+  {
+    "name": "subsample",
+    "description": "Reduce the density of a point cloud using random, spatial, or octree subsampling. Output is saved to the specified path. Requires CloudCompare.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input_path": {
+          "type": "string"
+        },
+        "output_path": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "RANDOM",
+            "SPATIAL",
+            "OCTREE"
+          ],
+          "default": "SPATIAL"
+        },
+        "parameter": {
+          "type": "number",
+          "description": "RANDOM: number of points to keep (int). SPATIAL: minimum point spacing in metres. OCTREE: octree level (1–21)."
+        }
+      },
+      "required": [
+        "input_path",
+        "output_path",
+        "parameter"
+      ]
+    }
+  },
+  {
+    "name": "visualize_cloud",
+    "description": "Render a point cloud as a multi-view image (top / front / side + metadata panel) and return it as a base64-encoded PNG the model can see directly. No CloudCompare installation required. Supports LAS, LAZ, PLY, PCD, XYZ, ASC, TXT.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "description": "Absolute path to the point cloud file."
+        },
+        "color_by": {
+          "type": "string",
+          "enum": [
+            "height",
+            "rgb",
+            "intensity"
+          ],
+          "description": "Colour scheme: 'height' = Z gradient (default), 'rgb' = stored RGB (falls back to height if absent), 'intensity' = plasma gradient.",
+          "default": "height"
+        },
+        "max_points": {
+          "type": "integer",
+          "description": "Maximum points to render (random subsample for speed). Default 400000.",
+          "default": 400000
+        }
+      },
+      "required": [
+        "file_path"
+      ]
+    }
+  }
+]

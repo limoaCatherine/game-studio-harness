@@ -1,15 +1,8 @@
 {
   "name": "game-studio-harness",
-  "layout": "core-plus-adapters",
+  "layout": "five-complete-harness-roots",
   "software_in_pack": false,
   "public": true,
   "entry": ["一键部署.bat", "一键部署.ps1", "scripts/install.py"],
-  "tools": ["cursor", "claude", "codex", "grok", "deepseek"],
-  "roots": {
-    "core": "core/",
-    "adapters": "adapters/",
-    "studio": "studio/",
-    "docs": "docs/",
-    "scripts": "scripts/"
-  }
+  "tools": ["cursor", "claude", "codex", "grok", "deepseek"]
 }

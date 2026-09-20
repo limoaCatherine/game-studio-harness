@@ -1,0 +1,5 @@
+{
+  "id": "docker-mcp",
+  "purpose": "容器/镜像/网络/卷管理（个人服 docker-compose）",
+  "tools": []
+}

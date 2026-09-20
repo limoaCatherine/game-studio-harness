@@ -1,0 +1,289 @@
+[
+  {
+    "name": "clear_model",
+    "description": "清空全部体素，保留尺寸。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "clear_modelArguments"
+    }
+  },
+  {
+    "name": "create_model",
+    "description": "",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "size_x": {
+          "default": 16,
+          "title": "Size X",
+          "type": "integer"
+        },
+        "size_y": {
+          "default": 16,
+          "title": "Size Y",
+          "type": "integer"
+        },
+        "size_z": {
+          "default": 16,
+          "title": "Size Z",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "create_modelArguments"
+    }
+  },
+  {
+    "name": "fill_box",
+    "description": "",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "x0": {
+          "title": "X0",
+          "type": "integer"
+        },
+        "y0": {
+          "title": "Y0",
+          "type": "integer"
+        },
+        "z0": {
+          "title": "Z0",
+          "type": "integer"
+        },
+        "x1": {
+          "title": "X1",
+          "type": "integer"
+        },
+        "y1": {
+          "title": "Y1",
+          "type": "integer"
+        },
+        "z1": {
+          "title": "Z1",
+          "type": "integer"
+        },
+        "color_index": {
+          "default": 1,
+          "title": "Color Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path",
+        "x0",
+        "y0",
+        "z0",
+        "x1",
+        "y1",
+        "z1"
+      ],
+      "title": "fill_boxArguments"
+    }
+  },
+  {
+    "name": "fill_sphere",
+    "description": "实心球。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "cx": {
+          "title": "Cx",
+          "type": "integer"
+        },
+        "cy": {
+          "title": "Cy",
+          "type": "integer"
+        },
+        "cz": {
+          "title": "Cz",
+          "type": "integer"
+        },
+        "radius": {
+          "title": "Radius",
+          "type": "integer"
+        },
+        "color_index": {
+          "default": 1,
+          "title": "Color Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path",
+        "cx",
+        "cy",
+        "cz",
+        "radius"
+      ],
+      "title": "fill_sphereArguments"
+    }
+  },
+  {
+    "name": "hollow_box",
+    "description": "空心盒子（只画壳）。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "x0": {
+          "title": "X0",
+          "type": "integer"
+        },
+        "y0": {
+          "title": "Y0",
+          "type": "integer"
+        },
+        "z0": {
+          "title": "Z0",
+          "type": "integer"
+        },
+        "x1": {
+          "title": "X1",
+          "type": "integer"
+        },
+        "y1": {
+          "title": "Y1",
+          "type": "integer"
+        },
+        "z1": {
+          "title": "Z1",
+          "type": "integer"
+        },
+        "color_index": {
+          "default": 1,
+          "title": "Color Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path",
+        "x0",
+        "y0",
+        "z0",
+        "x1",
+        "y1",
+        "z1"
+      ],
+      "title": "hollow_boxArguments"
+    }
+  },
+  {
+    "name": "launch_magicavoxel",
+    "description": "",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        }
+      },
+      "title": "launch_magicavoxelArguments"
+    }
+  },
+  {
+    "name": "list_vox",
+    "description": "",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "read_model",
+    "description": "",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "read_modelArguments"
+    }
+  },
+  {
+    "name": "set_voxel",
+    "description": "color_index=0 删除体素。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "x": {
+          "title": "X",
+          "type": "integer"
+        },
+        "y": {
+          "title": "Y",
+          "type": "integer"
+        },
+        "z": {
+          "title": "Z",
+          "type": "integer"
+        },
+        "color_index": {
+          "title": "Color Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path",
+        "x",
+        "y",
+        "z",
+        "color_index"
+      ],
+      "title": "set_voxelArguments"
+    }
+  },
+  {
+    "name": "status",
+    "description": "",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "core": [
+    "excelMCP"
+  ],
+  "why_core": {
+    "excelMCP": "每日改表；进程轻；COM 已延后，握手不挡。"
+  },
+  "why_lazy": {
+    "everything-search": "用到再搜，不必启动全量。",
+    "roslyn-mcp": "用到 C# 符号再拉，不必启动全量。",
+    "gamedev-mcp": "空等 Unity 一次 tools/list 约 10 秒，会堵掉 Excel/Cascadeur。",
+    "docker-mcp": "工具表过百，还要 Docker 守护进程。",
+    "fmod-studio": "工具表过百，且要 Studio 脚本口。",
+    "materialpilot": "工具表过百，用到材质图再拉。",
+    "cascadeur": "已有 HTTP 桥；脚本服务未开时不可挡发现。",
+    "miro": "远程口，保持 URL，不套本机包装。"
+  },
+  "already_lazy": [
+    "cascadeur"
+  ],
+  "url_passthrough": [
+    "miro"
+  ],
+  "default_framing": "ndjson",
+  "framing": {
+    "gamedev-mcp": "ndjson"
+  },
+  "boot": {
+    "cache": "${CURSOR_HOME}/harness/mcp-boot/cache",
+    "lazy_stdio": "${CURSOR_HOME}/harness/mcp-boot/lazy_stdio.py"
+  }
+}

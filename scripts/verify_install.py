@@ -9,8 +9,8 @@ import sys
 from pathlib import Path
 
 PACK = Path(__file__).resolve().parents[1]
-if str(PACK / "core" / "harness" / "scripts") not in sys.path:
-    sys.path.insert(0, str(PACK / "core" / "harness" / "scripts"))
+if str(PACK / "cursor" / "harness" / "scripts") not in sys.path:
+    sys.path.insert(0, str(PACK / "cursor" / "harness" / "scripts"))
 from gsh_paths import homes_from_env  # noqa: E402
 
 NEED_SKILLS = ("route-task", "write-isolation", "doctor", "verify-gate", "mcp-autostart")
@@ -142,10 +142,18 @@ def main() -> int:
         check_skill_tree(h.dsh / "skills", errors, "deepseek")
 
     pack = Path(args.pack_root)
+    for name in ALL_TOOLS:
+        skill = pack / name / "skills" / "route-task" / "SKILL.md"
+        if not skill.is_file():
+            fail(errors, f"pack {name}/ is not complete (missing skills/route-task)")
+
     scan_roots = [
-        pack / "core",
+        pack / "cursor",
+        pack / "claude",
+        pack / "codex",
+        pack / "grok",
+        pack / "deepseek",
         pack / "docs",
-        pack / "adapters",
         pack / "scripts" / "install.py",
         pack / "scripts" / "verify_install.py",
         pack / "README.md",
@@ -167,7 +175,7 @@ def main() -> int:
             if SECRET_A.search(text) or SECRET_LIKE.search(text):
                 fail(errors, f"{path.as_posix()} still looks like a live secret")
 
-    example = pack / "adapters" / "cursor" / "mcp.json.example"
+    example = pack / "cursor" / "mcp.json.example"
     if example.is_file():
         text = example.read_text(encoding="utf-8")
         if "-a" in text and "${LARK_APP_ID}" not in text:

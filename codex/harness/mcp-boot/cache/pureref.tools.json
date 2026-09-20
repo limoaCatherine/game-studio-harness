@@ -1,0 +1,64 @@
+[
+  {
+    "name": "launch",
+    "description": "启动宿主 GUI（不等待退出）。extra_args 为可选空格分隔参数。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "extra_args": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Extra Args"
+        }
+      },
+      "title": "launchArguments"
+    }
+  },
+  {
+    "name": "list_recent",
+    "description": "在宿主目录/工作区按扩展名列出最近文件（mtime 降序）。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "default": 20,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "title": "list_recentArguments"
+    }
+  },
+  {
+    "name": "open_file",
+    "description": "用宿主打开指定文件（若宿主支持把路径当参数）。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "open_fileArguments"
+    }
+  },
+  {
+    "name": "status",
+    "description": "返回宿主可执行文件是否存在、路径与版本探测（若有）。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  }
+]

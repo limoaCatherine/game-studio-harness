@@ -1,0 +1,3204 @@
+[
+  {
+    "name": "a-b-variants",
+    "description": "Generate color, copy, or style variations of an image for A/B split testing",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the base image"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Directory to save variants"
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Variant name"
+              },
+              "tint_color": {
+                "type": "string",
+                "description": "Color tint to apply"
+              },
+              "brightness": {
+                "type": "number",
+                "minimum": -100,
+                "maximum": 100,
+                "description": "Brightness adjustment"
+              },
+              "contrast": {
+                "type": "number",
+                "minimum": -100,
+                "maximum": 100,
+                "description": "Contrast adjustment"
+              },
+              "saturation": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Saturation adjustment"
+              },
+              "text_overlay": {
+                "type": "string",
+                "description": "Text to overlay"
+              },
+              "text_color": {
+                "type": "string",
+                "description": "Text color"
+              },
+              "text_position": {
+                "type": "string",
+                "enum": [
+                  "top",
+                  "center",
+                  "bottom"
+                ],
+                "description": "Text position"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "description": "Array of variant configurations"
+        }
+      },
+      "required": [
+        "input",
+        "output_dir",
+        "variants"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "adjust",
+    "description": "Adjust brightness, contrast, saturation, hue, and gamma of an image",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "brightness": {
+          "type": "number",
+          "minimum": -100,
+          "maximum": 100,
+          "default": 0,
+          "description": "Brightness adjustment (-100 to 100)"
+        },
+        "contrast": {
+          "type": "number",
+          "minimum": -100,
+          "maximum": 100,
+          "default": 0,
+          "description": "Contrast adjustment (-100 to 100)"
+        },
+        "saturation": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 200,
+          "default": 100,
+          "description": "Saturation (0=grayscale, 100=normal)"
+        },
+        "hue": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 200,
+          "default": 100,
+          "description": "Hue shift (100=no change)"
+        },
+        "gamma": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 10,
+          "default": 1,
+          "description": "Gamma correction (1.0=no change)"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "annotate",
+    "description": "Add arrows, circles, and numbered callouts to images for tutorials and documentation",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "annotations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "arrow",
+                  "circle",
+                  "rectangle",
+                  "number"
+                ],
+                "description": "Annotation type"
+              },
+              "x": {
+                "type": "integer",
+                "description": "X position"
+              },
+              "y": {
+                "type": "integer",
+                "description": "Y position"
+              },
+              "x2": {
+                "type": "integer",
+                "description": "End X (for arrows and rectangles)"
+              },
+              "y2": {
+                "type": "integer",
+                "description": "End Y (for arrows and rectangles)"
+              },
+              "radius": {
+                "type": "integer",
+                "description": "Radius (for circles)"
+              },
+              "label": {
+                "type": "string",
+                "description": "Label text (for numbers/labels)"
+              },
+              "color": {
+                "type": "string",
+                "default": "red",
+                "description": "Annotation color"
+              },
+              "stroke_width": {
+                "type": "integer",
+                "default": 3,
+                "description": "Line thickness"
+              }
+            },
+            "required": [
+              "type",
+              "x",
+              "y"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Array of annotations to draw"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "annotations"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "app-icon-set",
+    "description": "Generate iOS and Android app icon sets from one source image",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to source icon (1024x1024 recommended)"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Directory to save icon sets"
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "ios",
+              "android"
+            ]
+          },
+          "default": [
+            "ios",
+            "android"
+          ],
+          "description": "Target platforms"
+        }
+      },
+      "required": [
+        "input",
+        "output_dir"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "aspect-crop-set",
+    "description": "Generate one image cropped to all common aspect ratios (1:1, 4:5, 9:16, 16:9, 3:2) with smart focal point",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the source image"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Directory to save cropped variants"
+        },
+        "ratios": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "1:1",
+              "4:5",
+              "9:16",
+              "16:9",
+              "3:2",
+              "2:3",
+              "4:3",
+              "3:4"
+            ]
+          },
+          "default": [
+            "1:1",
+            "4:5",
+            "9:16",
+            "16:9",
+            "3:2"
+          ],
+          "description": "Target aspect ratios"
+        },
+        "max_dimension": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 2000,
+          "description": "Maximum width or height"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "output_dir"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "background-remove",
+    "description": "Remove or replace image backgrounds using color keying or flood fill",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "target_color": {
+          "type": "string",
+          "default": "white",
+          "description": "Background color to remove"
+        },
+        "fuzz": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 20,
+          "description": "Color tolerance percentage"
+        },
+        "replace_color": {
+          "type": "string",
+          "default": "none",
+          "description": "Replacement color (\"none\" for transparent)"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format (use png for transparency)"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "banner-set",
+    "description": "Generate all IAB standard ad banner sizes from one design (leaderboard, medium-rect, skyscraper, mobile, half-page, billboard)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the source design image"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Directory to save all banner sizes"
+        },
+        "sizes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "leaderboard",
+              "medium-rect",
+              "wide-skyscraper",
+              "mobile-banner",
+              "half-page",
+              "billboard",
+              "large-leaderboard",
+              "mobile-large",
+              "square"
+            ]
+          },
+          "default": [
+            "leaderboard",
+            "medium-rect",
+            "wide-skyscraper",
+            "mobile-banner",
+            "half-page",
+            "billboard"
+          ],
+          "description": "Banner sizes to generate"
+        },
+        "format": {
+          "type": "string",
+          "default": "png",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "output_dir"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "batch",
+    "description": "Chain multiple ImageMagick operations on one image in a single call",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Array of ImageMagick operation strings, e.g. [\"-resize 800x600\", \"-quality 85\"]"
+        }
+      },
+      "required": [
+        "input",
+        "output",
+        "operations"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "before-after",
+    "description": "Create a side-by-side comparison image with a divider line and labels",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "before": {
+          "type": "string",
+          "description": "Path to the \"before\" image"
+        },
+        "after": {
+          "type": "string",
+          "description": "Path to the \"after\" image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output comparison image"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1200,
+          "description": "Total output width"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 600,
+          "description": "Total output height"
+        },
+        "divider_width": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 4,
+          "description": "Divider line width"
+        },
+        "divider_color": {
+          "type": "string",
+          "default": "white",
+          "description": "Divider line color"
+        },
+        "label_before": {
+          "type": "string",
+          "default": "Before",
+          "description": "Label for left side"
+        },
+        "label_after": {
+          "type": "string",
+          "default": "After",
+          "description": "Label for right side"
+        },
+        "font": {
+          "type": "string",
+          "default": "Arial-Bold",
+          "description": "Font family"
+        }
+      },
+      "required": [
+        "before",
+        "after",
+        "output"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "blur",
+    "description": "Apply Gaussian, motion, or radial blur to an image or a specific region",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "gaussian",
+            "motion",
+            "radial"
+          ],
+          "default": "gaussian",
+          "description": "Blur type"
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0,
+          "description": "Blur radius (0=auto)"
+        },
+        "sigma": {
+          "type": "number",
+          "minimum": 0.1,
+          "default": 5,
+          "description": "Blur sigma/strength"
+        },
+        "angle": {
+          "type": "number",
+          "default": 0,
+          "description": "Angle for motion blur"
+        },
+        "region": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "integer"
+            },
+            "y": {
+              "type": "integer"
+            },
+            "width": {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            "height": {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            }
+          },
+          "required": [
+            "x",
+            "y",
+            "width",
+            "height"
+          ],
+          "additionalProperties": false,
+          "description": "Optional region to blur"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "border",
+    "description": "Add borders, padding, or frames with color or pattern fill",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 10,
+          "description": "Border width in pixels"
+        },
+        "color": {
+          "type": "string",
+          "default": "white",
+          "description": "Border color"
+        },
+        "style": {
+          "type": "string",
+          "enum": [
+            "solid",
+            "raised",
+            "sunken"
+          ],
+          "default": "solid",
+          "description": "Border style"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "caption-bar",
+    "description": "Add a solid or gradient bar with text at the top or bottom of an image — video thumbnail style",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "text": {
+          "type": "string",
+          "description": "Caption text"
+        },
+        "position": {
+          "type": "string",
+          "enum": [
+            "top",
+            "bottom"
+          ],
+          "default": "bottom",
+          "description": "Bar position"
+        },
+        "bar_height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 60,
+          "description": "Bar height in pixels"
+        },
+        "bar_color": {
+          "type": "string",
+          "default": "#000000CC",
+          "description": "Bar background color (supports transparency)"
+        },
+        "font": {
+          "type": "string",
+          "default": "Arial",
+          "description": "Font family"
+        },
+        "font_size": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 28,
+          "description": "Font size"
+        },
+        "text_color": {
+          "type": "string",
+          "default": "white",
+          "description": "Text color"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "text"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "carousel-set",
+    "description": "Generate numbered carousel slides with consistent branding — Instagram, Facebook ad carousels",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Paths to images for each slide"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Directory to save carousel slides"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1080,
+          "description": "Slide width"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1080,
+          "description": "Slide height"
+        },
+        "show_numbers": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show slide numbers"
+        },
+        "number_style": {
+          "type": "string",
+          "enum": [
+            "circle",
+            "plain"
+          ],
+          "default": "circle",
+          "description": "Number badge style"
+        },
+        "brand_color": {
+          "type": "string",
+          "default": "#3B82F6",
+          "description": "Brand accent color"
+        },
+        "font": {
+          "type": "string",
+          "default": "Arial-Bold",
+          "description": "Font family"
+        }
+      },
+      "required": [
+        "inputs",
+        "output_dir"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "collage",
+    "description": "Combine multiple images into a grid layout — recipe steps, before/after, feature showcases",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "description": "Paths to images to combine"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output collage"
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 2,
+          "description": "Number of columns"
+        },
+        "tile_width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 400,
+          "description": "Width of each tile"
+        },
+        "tile_height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 400,
+          "description": "Height of each tile"
+        },
+        "gap": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 4,
+          "description": "Gap between tiles in pixels"
+        },
+        "background": {
+          "type": "string",
+          "default": "white",
+          "description": "Background color for gaps"
+        }
+      },
+      "required": [
+        "inputs",
+        "output"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "color-extract",
+    "description": "Extract dominant colors from an image as a hex palette — match blog accents to hero images",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20,
+          "default": 5,
+          "description": "Number of dominant colors to extract"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "composite",
+    "description": "Layer images together with blend modes (overlay, multiply, screen, etc.)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "base": {
+          "type": "string",
+          "description": "Path to the base/background image"
+        },
+        "overlay": {
+          "type": "string",
+          "description": "Path to the overlay/foreground image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "gravity": {
+          "type": "string",
+          "enum": [
+            "NorthWest",
+            "North",
+            "NorthEast",
+            "West",
+            "Center",
+            "East",
+            "SouthWest",
+            "South",
+            "SouthEast"
+          ],
+          "default": "Center",
+          "description": "Position of overlay on base"
+        },
+        "x": {
+          "type": "integer",
+          "default": 0,
+          "description": "X offset from gravity position"
+        },
+        "y": {
+          "type": "integer",
+          "default": 0,
+          "description": "Y offset from gravity position"
+        },
+        "blend": {
+          "type": "string",
+          "enum": [
+            "Over",
+            "Multiply",
+            "Screen",
+            "Overlay",
+            "HardLight",
+            "SoftLight",
+            "Difference",
+            "Dissolve",
+            "Plus",
+            "Darken",
+            "Lighten"
+          ],
+          "default": "Over",
+          "description": "Compositing blend mode"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 100,
+          "description": "Overlay opacity (0-100)"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "base",
+        "overlay"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "compress",
+    "description": "Optimize image file size with format-aware compression defaults",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "quality": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 85,
+          "description": "Compression quality (1-100)"
+        },
+        "strip": {
+          "type": "boolean",
+          "default": true,
+          "description": "Strip metadata to reduce size"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format (default: same as input)"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "crop",
+    "description": "Crop a rectangular region from an image by coordinates",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Crop width in pixels"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Crop height in pixels"
+        },
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "X offset from top-left"
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Y offset from top-left"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "cta-button",
+    "description": "Generate a call-to-action button image with rounded rectangle, gradient, shadow, and text",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "output": {
+          "type": "string",
+          "description": "Path for the output button image"
+        },
+        "text": {
+          "type": "string",
+          "description": "Button text (e.g., \"Get Started Free\")"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 300,
+          "description": "Button width"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 60,
+          "description": "Button height"
+        },
+        "color": {
+          "type": "string",
+          "default": "#3B82F6",
+          "description": "Button background color"
+        },
+        "text_color": {
+          "type": "string",
+          "default": "white",
+          "description": "Text color"
+        },
+        "font": {
+          "type": "string",
+          "default": "Arial-Bold",
+          "description": "Font family"
+        },
+        "font_size": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 20,
+          "description": "Font size"
+        },
+        "corner_radius": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 8,
+          "description": "Corner radius"
+        },
+        "shadow": {
+          "type": "boolean",
+          "default": true,
+          "description": "Add drop shadow"
+        },
+        "border_color": {
+          "type": "string",
+          "description": "Optional border color"
+        },
+        "border_width": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Border width"
+        }
+      },
+      "required": [
+        "output",
+        "text"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "drop-shadow",
+    "description": "Add a realistic drop shadow to an image — great for product shots and app screenshots",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "color": {
+          "type": "string",
+          "default": "#00000060",
+          "description": "Shadow color (with transparency)"
+        },
+        "offset_x": {
+          "type": "integer",
+          "default": 5,
+          "description": "Horizontal shadow offset"
+        },
+        "offset_y": {
+          "type": "integer",
+          "default": 5,
+          "description": "Vertical shadow offset"
+        },
+        "blur": {
+          "type": "number",
+          "minimum": 0,
+          "default": 10,
+          "description": "Shadow blur radius"
+        },
+        "background": {
+          "type": "string",
+          "default": "white",
+          "description": "Background color behind the shadow"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "email-header",
+    "description": "Generate email-safe header images at standard email width (600px) with fallback-friendly formats",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to a source image (or omit for solid color)"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output email header"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 600,
+          "description": "Email width (standard: 600)"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 200,
+          "description": "Header height"
+        },
+        "title": {
+          "type": "string",
+          "description": "Header title text"
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "Subtitle text"
+        },
+        "background_color": {
+          "type": "string",
+          "default": "#3B82F6",
+          "description": "Background color (if no input image)"
+        },
+        "text_color": {
+          "type": "string",
+          "default": "white",
+          "description": "Text color"
+        },
+        "font": {
+          "type": "string",
+          "default": "Arial-Bold",
+          "description": "Font family"
+        },
+        "format": {
+          "type": "string",
+          "default": "png",
+          "description": "Output format (png or jpg — email safe)"
+        }
+      },
+      "required": [
+        "output"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "favicon-set",
+    "description": "Generate all favicon sizes from one source image (16, 32, 48, 180, 192, 512) plus ICO bundle",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the source image (ideally square, 512px+)"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Directory to save favicon files"
+        },
+        "sizes": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          },
+          "default": [
+            16,
+            32,
+            48,
+            180,
+            192,
+            512
+          ],
+          "description": "Favicon sizes"
+        },
+        "generate_ico": {
+          "type": "boolean",
+          "default": true,
+          "description": "Generate bundled .ico file (16+32+48)"
+        }
+      },
+      "required": [
+        "input",
+        "output_dir"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "flip",
+    "description": "Flip an image horizontally or vertically",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "horizontal",
+            "vertical"
+          ],
+          "description": "Flip direction"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "direction"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "format-convert",
+    "description": "Convert an image between formats (PNG, WebP, AVIF, JPEG, TIFF, ICO, SVG rasterize)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "format": {
+          "type": "string",
+          "description": "Target format (png, webp, avif, jpg, tiff, ico, etc.)"
+        },
+        "quality": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "description": "Output quality (1-100)"
+        }
+      },
+      "required": [
+        "input",
+        "format"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "gif-from-frames",
+    "description": "Create an animated GIF from a sequence of images — recipe process animations, tutorials",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "description": "Paths to frame images (in order)"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output GIF"
+        },
+        "delay": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 50,
+          "description": "Delay between frames in centiseconds"
+        },
+        "loop": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Loop count (0 = infinite)"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Resize width"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Resize height"
+        },
+        "optimize": {
+          "type": "boolean",
+          "default": true,
+          "description": "Optimize GIF for smaller file size"
+        }
+      },
+      "required": [
+        "inputs",
+        "output"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "gradient-overlay",
+    "description": "Apply a linear or radial gradient overlay — great for making text readable over photos",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "linear",
+            "radial"
+          ],
+          "default": "linear",
+          "description": "Gradient type"
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "top-bottom",
+            "bottom-top",
+            "left-right",
+            "right-left"
+          ],
+          "default": "bottom-top",
+          "description": "Gradient direction (linear only)"
+        },
+        "color_start": {
+          "type": "string",
+          "default": "#00000000",
+          "description": "Starting color (with transparency)"
+        },
+        "color_end": {
+          "type": "string",
+          "default": "#000000CC",
+          "description": "Ending color (with transparency)"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "image-diff",
+    "description": "Compare two images and highlight differences — useful for QA, design review, and regression testing",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_a": {
+          "type": "string",
+          "description": "Path to the first image"
+        },
+        "image_b": {
+          "type": "string",
+          "description": "Path to the second image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the diff output image"
+        },
+        "highlight_color": {
+          "type": "string",
+          "default": "red",
+          "description": "Color to highlight differences"
+        },
+        "fuzz": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 5,
+          "description": "Color difference tolerance (%)"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "highlight",
+            "side-by-side",
+            "overlay"
+          ],
+          "default": "highlight",
+          "description": "highlight: diff regions. side-by-side: A | diff | B. overlay: difference"
+        }
+      },
+      "required": [
+        "image_a",
+        "image_b",
+        "output"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "info",
+    "description": "Get image metadata: dimensions, format, color space, file size, DPI, alpha channel",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "mask-apply",
+    "description": "Apply a shape mask to an image (circle, rounded rectangle, or custom SVG/image mask)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "mask": {
+          "type": "string",
+          "description": "Path to a mask image (white=visible, black=hidden)"
+        },
+        "shape": {
+          "type": "string",
+          "enum": [
+            "circle",
+            "rounded-rect",
+            "custom"
+          ],
+          "default": "circle",
+          "description": "Mask shape"
+        },
+        "radius": {
+          "type": "integer",
+          "description": "Corner radius for rounded-rect"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format (default: png)"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "nine-patch",
+    "description": "Generate an Android 9-patch image with stretch region markers",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the source image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output .9.png"
+        },
+        "stretch_x_start": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Start of horizontal stretch region"
+        },
+        "stretch_x_end": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "End of horizontal stretch region"
+        },
+        "stretch_y_start": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Start of vertical stretch region"
+        },
+        "stretch_y_end": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "End of vertical stretch region"
+        },
+        "padding_left": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Content padding left"
+        },
+        "padding_top": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Content padding top"
+        },
+        "padding_right": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Content padding right"
+        },
+        "padding_bottom": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Content padding bottom"
+        }
+      },
+      "required": [
+        "input",
+        "stretch_x_start",
+        "stretch_x_end",
+        "stretch_y_start",
+        "stretch_y_end"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "normalize",
+    "description": "Auto-level brightness and contrast for inconsistent source photos",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "normalize",
+            "equalize",
+            "auto-level",
+            "auto-gamma"
+          ],
+          "default": "normalize",
+          "description": "Normalization method"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "optimize-batch",
+    "description": "Analyze and compress all images in a directory for web — with format recommendations and size reports",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input_dir": {
+          "type": "string",
+          "description": "Directory containing images to optimize"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Directory to save optimized images"
+        },
+        "target_format": {
+          "type": "string",
+          "default": "webp",
+          "description": "Target format (webp, avif, or keep original)"
+        },
+        "quality": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 80,
+          "description": "Compression quality"
+        },
+        "max_width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Maximum width (downscale if larger)"
+        },
+        "strip_metadata": {
+          "type": "boolean",
+          "default": true,
+          "description": "Strip EXIF/metadata"
+        },
+        "recursive": {
+          "type": "boolean",
+          "default": false,
+          "description": "Process subdirectories"
+        }
+      },
+      "required": [
+        "input_dir",
+        "output_dir"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "pdf-to-image",
+    "description": "Convert PDF pages to images for web embedding or blog content",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the PDF file"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Directory to save page images"
+        },
+        "pages": {
+          "type": "string",
+          "default": "0",
+          "description": "Page range: \"0\" for first, \"0-3\" for pages 1-4, or \"all\""
+        },
+        "dpi": {
+          "type": "integer",
+          "minimum": 72,
+          "maximum": 600,
+          "default": 150,
+          "description": "Resolution in DPI"
+        },
+        "format": {
+          "type": "string",
+          "default": "png",
+          "description": "Output format"
+        },
+        "quality": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 90,
+          "description": "Output quality"
+        }
+      },
+      "required": [
+        "input",
+        "output_dir"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "pixelate-region",
+    "description": "Pixelate or blur a specific rectangular region — redact sensitive info in screenshots",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Region X position"
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Region Y position"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Region width"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Region height"
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "pixelate",
+            "blur"
+          ],
+          "default": "pixelate",
+          "description": "Redaction method"
+        },
+        "block_size": {
+          "type": "integer",
+          "minimum": 2,
+          "default": 10,
+          "description": "Pixel block size or blur sigma"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "price-badge",
+    "description": "Generate price tags, sale badges, or percentage-off circles for marketing materials",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "output": {
+          "type": "string",
+          "description": "Path for the output badge image"
+        },
+        "text": {
+          "type": "string",
+          "description": "Badge text (e.g., \"50% OFF\", \"$9.99\")"
+        },
+        "shape": {
+          "type": "string",
+          "enum": [
+            "circle",
+            "star",
+            "rectangle",
+            "ribbon"
+          ],
+          "default": "circle",
+          "description": "Badge shape"
+        },
+        "size": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 200,
+          "description": "Badge size in pixels"
+        },
+        "background_color": {
+          "type": "string",
+          "default": "#e94560",
+          "description": "Badge background color"
+        },
+        "text_color": {
+          "type": "string",
+          "default": "white",
+          "description": "Text color"
+        },
+        "font": {
+          "type": "string",
+          "default": "Arial-Bold",
+          "description": "Font family"
+        },
+        "border_color": {
+          "type": "string",
+          "description": "Optional border color"
+        }
+      },
+      "required": [
+        "output",
+        "text"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "product-mockup",
+    "description": "Place a screenshot onto a device frame (phone, laptop, tablet) for marketing and app store images",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "screenshot": {
+          "type": "string",
+          "description": "Path to the screenshot/content image"
+        },
+        "frame": {
+          "type": "string",
+          "description": "Path to the device frame image (transparent PNG)"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output mockup"
+        },
+        "screen_x": {
+          "type": "integer",
+          "description": "X position of screen area on frame"
+        },
+        "screen_y": {
+          "type": "integer",
+          "description": "Y position of screen area on frame"
+        },
+        "screen_width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Width of screen area on frame"
+        },
+        "screen_height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Height of screen area on frame"
+        },
+        "background": {
+          "type": "string",
+          "default": "white",
+          "description": "Background color behind the device"
+        }
+      },
+      "required": [
+        "screenshot",
+        "frame",
+        "output",
+        "screen_x",
+        "screen_y",
+        "screen_width",
+        "screen_height"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "qr-code-overlay",
+    "description": "Composite a QR code image onto marketing materials at a specified position and size",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the base image"
+        },
+        "qr_image": {
+          "type": "string",
+          "description": "Path to the QR code image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "size": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 150,
+          "description": "QR code display size in pixels"
+        },
+        "gravity": {
+          "type": "string",
+          "enum": [
+            "NorthWest",
+            "North",
+            "NorthEast",
+            "West",
+            "Center",
+            "East",
+            "SouthWest",
+            "South",
+            "SouthEast"
+          ],
+          "default": "SouthEast",
+          "description": "QR code position"
+        },
+        "x": {
+          "type": "integer",
+          "default": 10,
+          "description": "X offset from gravity"
+        },
+        "y": {
+          "type": "integer",
+          "default": 10,
+          "description": "Y offset from gravity"
+        },
+        "background": {
+          "type": "string",
+          "default": "white",
+          "description": "Background behind QR code"
+        },
+        "padding": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 8,
+          "description": "Padding around QR code"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "qr_image"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "quote-card",
+    "description": "Create a stylized quote image with attribution — testimonials, pull quotes, social sharing",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "quote": {
+          "type": "string",
+          "description": "The quote text"
+        },
+        "attribution": {
+          "type": "string",
+          "description": "Attribution (e.g., \"— Jane Doe, CEO\")"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1080,
+          "description": "Card width"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1080,
+          "description": "Card height"
+        },
+        "background_color": {
+          "type": "string",
+          "default": "#1a1a2e",
+          "description": "Background color"
+        },
+        "text_color": {
+          "type": "string",
+          "default": "white",
+          "description": "Quote text color"
+        },
+        "accent_color": {
+          "type": "string",
+          "default": "#e94560",
+          "description": "Accent color (quotation marks, line)"
+        },
+        "font": {
+          "type": "string",
+          "default": "Georgia",
+          "description": "Quote font"
+        },
+        "background_image": {
+          "type": "string",
+          "description": "Optional background image path"
+        }
+      },
+      "required": [
+        "output",
+        "quote"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "resize",
+    "description": "Resize an image with aspect ratio control (fit, fill, or stretch)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image (default: input_resized.ext)"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Target width in pixels"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Target height in pixels"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "fit",
+            "fill",
+            "stretch"
+          ],
+          "default": "fit",
+          "description": "fit: fit within bounds. fill: crop to fill. stretch: ignore aspect ratio"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format (png, webp, jpg, etc.)"
+        }
+      },
+      "required": [
+        "input",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "responsive-set",
+    "description": "Generate srcset variants (400w, 800w, 1200w, 1600w, 2400w) from one source image for responsive web",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the high-res source image"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Directory to save responsive variants"
+        },
+        "widths": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          },
+          "default": [
+            400,
+            800,
+            1200,
+            1600,
+            2400
+          ],
+          "description": "Target widths"
+        },
+        "format": {
+          "type": "string",
+          "default": "webp",
+          "description": "Output format (webp recommended for web)"
+        },
+        "quality": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 80,
+          "description": "Output quality"
+        },
+        "generate_2x": {
+          "type": "boolean",
+          "default": false,
+          "description": "Also generate @2x retina variants"
+        }
+      },
+      "required": [
+        "input",
+        "output_dir"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "rotate",
+    "description": "Rotate an image by degrees with optional background fill color",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "degrees": {
+          "type": "number",
+          "description": "Rotation angle in degrees (positive = clockwise)"
+        },
+        "background": {
+          "type": "string",
+          "default": "transparent",
+          "description": "Background color for exposed areas"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "degrees"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "rounded-corners",
+    "description": "Round the corners of an image with transparent background — app screenshots, UI previews",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "radius": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 20,
+          "description": "Corner radius in pixels"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format (default: png for transparency)"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "sharpen",
+    "description": "Sharpen an image using unsharp mask or adaptive sharpening",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "unsharp",
+            "adaptive"
+          ],
+          "default": "unsharp",
+          "description": "Sharpening method"
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0,
+          "description": "Radius (0=auto)"
+        },
+        "sigma": {
+          "type": "number",
+          "minimum": 0.1,
+          "default": 1,
+          "description": "Sigma/strength"
+        },
+        "amount": {
+          "type": "number",
+          "minimum": 0,
+          "default": 1,
+          "description": "Amount/gain (unsharp mask)"
+        },
+        "threshold": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0.05,
+          "description": "Threshold to prevent sharpening noise"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "smart-crop",
+    "description": "Content-aware crop that detects the focal point and crops around it",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Target width"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Target height"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "social-card",
+    "description": "Generate platform-sized social media cards (OG, Twitter, Instagram, Pinterest, LinkedIn, YouTube, Facebook Cover)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the background/hero image"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Directory to save generated cards"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title text to overlay"
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "Subtitle text"
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "og",
+              "twitter",
+              "instagram-square",
+              "instagram-portrait",
+              "instagram-story",
+              "pinterest",
+              "linkedin",
+              "facebook-cover",
+              "youtube-thumb"
+            ]
+          },
+          "default": [
+            "og",
+            "twitter"
+          ],
+          "description": "Target platforms"
+        },
+        "font": {
+          "type": "string",
+          "default": "Arial",
+          "description": "Font family"
+        },
+        "text_color": {
+          "type": "string",
+          "default": "white",
+          "description": "Text color"
+        },
+        "overlay_color": {
+          "type": "string",
+          "default": "#00000080",
+          "description": "Gradient/overlay color"
+        }
+      },
+      "required": [
+        "input",
+        "output_dir"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "splash-screen",
+    "description": "Generate splash/launch screen images for all common device sizes",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the splash screen source (logo or full design)"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Directory to save splash screens"
+        },
+        "background_color": {
+          "type": "string",
+          "default": "white",
+          "description": "Background color"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "contain",
+            "cover"
+          ],
+          "default": "contain",
+          "description": "contain: centered, cover: fill"
+        },
+        "sizes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "width": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              }
+            },
+            "required": [
+              "name",
+              "width",
+              "height"
+            ],
+            "additionalProperties": false
+          },
+          "default": [
+            {
+              "name": "iphone",
+              "width": 1170,
+              "height": 2532
+            },
+            {
+              "name": "iphone-max",
+              "width": 1290,
+              "height": 2796
+            },
+            {
+              "name": "ipad",
+              "width": 2048,
+              "height": 2732
+            },
+            {
+              "name": "android-mdpi",
+              "width": 320,
+              "height": 480
+            },
+            {
+              "name": "android-hdpi",
+              "width": 480,
+              "height": 800
+            },
+            {
+              "name": "android-xhdpi",
+              "width": 720,
+              "height": 1280
+            },
+            {
+              "name": "android-xxhdpi",
+              "width": 1080,
+              "height": 1920
+            },
+            {
+              "name": "android-xxxhdpi",
+              "width": 1440,
+              "height": 2560
+            }
+          ],
+          "description": "Target screen sizes"
+        }
+      },
+      "required": [
+        "input",
+        "output_dir"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "sprite-sheet",
+    "description": "Combine multiple small images into one sprite sheet with CSS offset data for web performance",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Paths to images to combine"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output sprite sheet"
+        },
+        "tile_size": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 32,
+          "description": "Size to resize each sprite to"
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 10,
+          "description": "Number of columns"
+        },
+        "padding": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 2,
+          "description": "Padding between sprites"
+        },
+        "background": {
+          "type": "string",
+          "default": "none",
+          "description": "Background color"
+        }
+      },
+      "required": [
+        "inputs",
+        "output"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "sticker-cutout",
+    "description": "Create a die-cut sticker effect with white border and shadow — perfect for Stories and Reels",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image (ideally with transparent background)"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output sticker"
+        },
+        "border_width": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 8,
+          "description": "White border width in pixels"
+        },
+        "shadow_offset": {
+          "type": "integer",
+          "default": 4,
+          "description": "Shadow offset"
+        },
+        "shadow_blur": {
+          "type": "number",
+          "minimum": 0,
+          "default": 6,
+          "description": "Shadow blur radius"
+        },
+        "shadow_color": {
+          "type": "string",
+          "default": "#00000040",
+          "description": "Shadow color"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "strip-metadata",
+    "description": "Remove EXIF, GPS, ICC, and other metadata from an image for privacy and smaller file size",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "template-fill",
+    "description": "Fill a reusable template with dynamic text and images — generate campaign creatives from templates",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "template": {
+          "type": "string",
+          "description": "Path to the template image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "fills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "text",
+                  "image"
+                ],
+                "description": "Fill type"
+              },
+              "content": {
+                "type": "string",
+                "description": "Text content or image path"
+              },
+              "x": {
+                "type": "integer",
+                "description": "X position"
+              },
+              "y": {
+                "type": "integer",
+                "description": "Y position"
+              },
+              "width": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "description": "Width"
+              },
+              "height": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "description": "Height"
+              },
+              "font": {
+                "type": "string",
+                "description": "Font (text only)"
+              },
+              "font_size": {
+                "type": "integer",
+                "description": "Font size (text only)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Text color"
+              },
+              "gravity": {
+                "type": "string",
+                "description": "Gravity for positioning"
+              }
+            },
+            "required": [
+              "type",
+              "content",
+              "x",
+              "y"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Array of fill operations"
+        }
+      },
+      "required": [
+        "template",
+        "output",
+        "fills"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "text-fit",
+    "description": "Auto-size text to fill a bounding box without overflow — critical for dynamic ad copy",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "text": {
+          "type": "string",
+          "description": "Text to render"
+        },
+        "box_width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Bounding box width in pixels"
+        },
+        "box_height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Bounding box height in pixels"
+        },
+        "x": {
+          "type": "integer",
+          "default": 0,
+          "description": "Box X position"
+        },
+        "y": {
+          "type": "integer",
+          "default": 0,
+          "description": "Box Y position"
+        },
+        "font": {
+          "type": "string",
+          "default": "Arial",
+          "description": "Font family"
+        },
+        "color": {
+          "type": "string",
+          "default": "white",
+          "description": "Text color"
+        },
+        "gravity": {
+          "type": "string",
+          "enum": [
+            "NorthWest",
+            "North",
+            "NorthEast",
+            "West",
+            "Center",
+            "East",
+            "SouthWest",
+            "South",
+            "SouthEast"
+          ],
+          "default": "Center",
+          "description": "Text alignment within box"
+        },
+        "background": {
+          "type": "string",
+          "description": "Background color behind text"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "text",
+        "box_width",
+        "box_height"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "text-overlay",
+    "description": "Add text to an image with full control over font, size, color, position, and rotation",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "text": {
+          "type": "string",
+          "description": "Text to overlay"
+        },
+        "font": {
+          "type": "string",
+          "default": "Arial",
+          "description": "Font family name"
+        },
+        "size": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 32,
+          "description": "Font size in points"
+        },
+        "color": {
+          "type": "string",
+          "default": "white",
+          "description": "Text color (name, hex, or rgba)"
+        },
+        "x": {
+          "type": "integer",
+          "default": 0,
+          "description": "X position from top-left"
+        },
+        "y": {
+          "type": "integer",
+          "default": 0,
+          "description": "Y position from top-left"
+        },
+        "gravity": {
+          "type": "string",
+          "enum": [
+            "NorthWest",
+            "North",
+            "NorthEast",
+            "West",
+            "Center",
+            "East",
+            "SouthWest",
+            "South",
+            "SouthEast"
+          ],
+          "default": "NorthWest",
+          "description": "Gravity anchor for positioning"
+        },
+        "rotation": {
+          "type": "number",
+          "default": 0,
+          "description": "Text rotation in degrees"
+        },
+        "stroke_color": {
+          "type": "string",
+          "description": "Text outline/stroke color"
+        },
+        "stroke_width": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Stroke width in pixels"
+        },
+        "background": {
+          "type": "string",
+          "description": "Background color behind text"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "text"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "text-path",
+    "description": "Render text along a curved or circular path — badges, stamps, logo treatments",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "text": {
+          "type": "string",
+          "description": "Text to render along the path"
+        },
+        "font": {
+          "type": "string",
+          "default": "Arial",
+          "description": "Font family"
+        },
+        "size": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 32,
+          "description": "Font size"
+        },
+        "color": {
+          "type": "string",
+          "default": "white",
+          "description": "Text color"
+        },
+        "arc_degrees": {
+          "type": "number",
+          "default": 180,
+          "description": "Arc angle in degrees (360 = full circle)"
+        },
+        "rotation": {
+          "type": "number",
+          "default": 0,
+          "description": "Starting rotation offset"
+        },
+        "gravity": {
+          "type": "string",
+          "enum": [
+            "NorthWest",
+            "North",
+            "NorthEast",
+            "West",
+            "Center",
+            "East",
+            "SouthWest",
+            "South",
+            "SouthEast"
+          ],
+          "default": "Center",
+          "description": "Position on the image"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "text"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "thumbnail",
+    "description": "Generate a video thumbnail with title text, gradient overlay, and branding",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the source image or video frame"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output thumbnail"
+        },
+        "title": {
+          "type": "string",
+          "description": "Thumbnail title text"
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "Subtitle text"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1280,
+          "description": "Thumbnail width"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 720,
+          "description": "Thumbnail height"
+        },
+        "font": {
+          "type": "string",
+          "default": "Arial-Bold",
+          "description": "Font family"
+        },
+        "text_color": {
+          "type": "string",
+          "default": "white",
+          "description": "Text color"
+        },
+        "overlay_color": {
+          "type": "string",
+          "default": "#000000AA",
+          "description": "Gradient overlay color"
+        },
+        "logo": {
+          "type": "string",
+          "description": "Path to logo image to overlay"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "title"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "tint",
+    "description": "Apply a color tint or duotone effect for brand consistency",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "tint",
+            "duotone"
+          ],
+          "default": "tint",
+          "description": "tint: single color, duotone: two-color"
+        },
+        "color": {
+          "type": "string",
+          "default": "#3B82F6",
+          "description": "Tint color (or highlight for duotone)"
+        },
+        "shadow_color": {
+          "type": "string",
+          "default": "#1E3A5F",
+          "description": "Shadow color (duotone only)"
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 50,
+          "description": "Tint intensity (0-100)"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "vignette",
+    "description": "Apply a dark edge vignette effect to draw focus to the center",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0,
+          "description": "Vignette radius (0=auto)"
+        },
+        "sigma": {
+          "type": "number",
+          "minimum": 0.1,
+          "default": 20,
+          "description": "Vignette spread/softness"
+        },
+        "x": {
+          "type": "integer",
+          "default": 10,
+          "description": "Horizontal edge offset"
+        },
+        "y": {
+          "type": "integer",
+          "default": 10,
+          "description": "Vertical edge offset"
+        },
+        "color": {
+          "type": "string",
+          "default": "black",
+          "description": "Vignette color"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "watermark",
+    "description": "Add a watermark to an image — tiled across the entire image or positioned at a specific location",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to the input image"
+        },
+        "watermark": {
+          "type": "string",
+          "description": "Path to the watermark image"
+        },
+        "output": {
+          "type": "string",
+          "description": "Path for the output image"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "tile",
+            "position"
+          ],
+          "default": "position",
+          "description": "tile: repeat, position: place once"
+        },
+        "gravity": {
+          "type": "string",
+          "enum": [
+            "NorthWest",
+            "North",
+            "NorthEast",
+            "West",
+            "Center",
+            "East",
+            "SouthWest",
+            "South",
+            "SouthEast"
+          ],
+          "default": "SouthEast",
+          "description": "Watermark position (for position mode)"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 30,
+          "description": "Watermark opacity (0-100)"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format"
+        }
+      },
+      "required": [
+        "input",
+        "watermark"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  }
+]

@@ -1,0 +1,2759 @@
+[
+  {
+    "name": "add_text",
+    "description": "Add a text layer to an image.\n\nParameters:\n- text: The text string to render\n- x, y: Position of the text layer's top-left corner (default 0, 0)\n- font: Font family name — \"Sans\" (default), \"Serif\", etc.\n- size: Font size in pixels (default 24)\n- color: Text color (CSS name, hex, or rgb() string; default \"black\")\n- image_index: Target image index (default 0)\n\nReturns: {layer_name, layer_id, text_width, text_height, position}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "x": {
+          "default": 0,
+          "title": "X",
+          "type": "integer"
+        },
+        "y": {
+          "default": 0,
+          "title": "Y",
+          "type": "integer"
+        },
+        "font": {
+          "default": "Sans",
+          "title": "Font",
+          "type": "string"
+        },
+        "size": {
+          "default": 24,
+          "title": "Size",
+          "type": "integer"
+        },
+        "color": {
+          "default": "black",
+          "title": "Color",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "add_textArguments"
+    }
+  },
+  {
+    "name": "adjust_brightness_contrast",
+    "description": "Adjust brightness and contrast of a layer.\n\nParameters:\n- brightness: -127 to +127 (default 0)\n- contrast: -127 to +127 (default 0)\n- image_index: Target image index (default 0)\n- layer_name: Layer to adjust; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "brightness": {
+          "default": 0,
+          "title": "Brightness",
+          "type": "integer"
+        },
+        "contrast": {
+          "default": 0,
+          "title": "Contrast",
+          "type": "integer"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "title": "adjust_brightness_contrastArguments"
+    }
+  },
+  {
+    "name": "adjust_color_balance",
+    "description": "Adjust color balance (shadows / midtones / highlights) of a layer.\n\nParameters:\n- cyan_red: -100 to +100 (negative = cyan, positive = red; default 0)\n- magenta_green: -100 to +100 (default 0)\n- yellow_blue: -100 to +100 (default 0)\n- range: \"shadows\", \"midtones\" (default), \"highlights\"\n- image_index: Target image index (default 0)\n- layer_name: Layer to adjust; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "cyan_red": {
+          "default": 0,
+          "title": "Cyan Red",
+          "type": "number"
+        },
+        "magenta_green": {
+          "default": 0,
+          "title": "Magenta Green",
+          "type": "number"
+        },
+        "yellow_blue": {
+          "default": 0,
+          "title": "Yellow Blue",
+          "type": "number"
+        },
+        "range": {
+          "default": "midtones",
+          "title": "Range",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "title": "adjust_color_balanceArguments"
+    }
+  },
+  {
+    "name": "adjust_curves",
+    "description": "Adjust tonal curves for a layer.\n\nParameters:\n- preset: Built-in curve shape — \"s_curve\" (default), \"lighten\", \"darken\", \"contrast\"\n- points: Custom control points as [[input, output], ...] override (overrides preset)\n- channel: \"value\" (all), \"red\", \"green\", \"blue\", \"alpha\"\n- image_index: Target image index (default 0)\n- layer_name: Layer to adjust; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "preset": {
+          "default": "s_curve",
+          "title": "Preset",
+          "type": "string"
+        },
+        "points": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Points"
+        },
+        "channel": {
+          "default": "value",
+          "title": "Channel",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "title": "adjust_curvesArguments"
+    }
+  },
+  {
+    "name": "adjust_hue_saturation",
+    "description": "Adjust hue, saturation, and lightness of a layer.\n\nParameters:\n- hue: Hue rotation -180 to +180 (default 0)\n- saturation: Saturation shift -100 to +100 (default 0)\n- lightness: Lightness shift -100 to +100 (default 0)\n- color_range: \"all\", \"red\", \"yellow\", \"green\", \"cyan\", \"blue\", \"magenta\" (default \"all\")\n- image_index: Target image index (default 0)\n- layer_name: Layer to adjust; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "hue": {
+          "default": 0,
+          "title": "Hue",
+          "type": "number"
+        },
+        "saturation": {
+          "default": 0,
+          "title": "Saturation",
+          "type": "number"
+        },
+        "lightness": {
+          "default": 0,
+          "title": "Lightness",
+          "type": "number"
+        },
+        "color_range": {
+          "default": "all",
+          "title": "Color Range",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "title": "adjust_hue_saturationArguments"
+    }
+  },
+  {
+    "name": "apply_drop_shadow",
+    "description": "Apply a drop shadow effect to a layer.\n\nParameters:\n- offset_x, offset_y: Shadow offset in pixels (default 5, 5)\n- blur_radius: Shadow softness radius (default 10)\n- color: Shadow color (default \"black\")\n- opacity: Shadow opacity 0-100 (default 60)\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "offset_x": {
+          "default": 5,
+          "title": "Offset X",
+          "type": "integer"
+        },
+        "offset_y": {
+          "default": 5,
+          "title": "Offset Y",
+          "type": "integer"
+        },
+        "blur_radius": {
+          "default": 10,
+          "title": "Blur Radius",
+          "type": "number"
+        },
+        "color": {
+          "default": "black",
+          "title": "Color",
+          "type": "string"
+        },
+        "opacity": {
+          "default": 60,
+          "title": "Opacity",
+          "type": "number"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "apply_drop_shadowArguments"
+    }
+  },
+  {
+    "name": "apply_emboss",
+    "description": "Apply an emboss (bas-relief) effect to a layer.\n\nParameters:\n- azimuth: Light direction in degrees 0-360 (default 315 = top-left)\n- elevation: Light elevation angle 0-90 (default 45)\n- depth: Effect depth/intensity (default 2)\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "azimuth": {
+          "default": 315,
+          "title": "Azimuth",
+          "type": "number"
+        },
+        "elevation": {
+          "default": 45,
+          "title": "Elevation",
+          "type": "number"
+        },
+        "depth": {
+          "default": 2,
+          "title": "Depth",
+          "type": "number"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "apply_embossArguments"
+    }
+  },
+  {
+    "name": "apply_gaussian_blur",
+    "description": "Apply Gaussian blur as a destructive filter operation.\n\nParameters:\n- radius: Blur radius in pixels (default 5.0)\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "radius": {
+          "default": 5,
+          "title": "Radius",
+          "type": "number"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "apply_gaussian_blurArguments"
+    }
+  },
+  {
+    "name": "apply_noise",
+    "description": "Add noise/grain to a layer.\n\nParameters:\n- amount: Noise intensity 0.0-1.0 (default 0.2)\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "default": 0.2,
+          "title": "Amount",
+          "type": "number"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "apply_noiseArguments"
+    }
+  },
+  {
+    "name": "apply_pixelate",
+    "description": "Pixelate a layer using a mosaic/block effect.\n\nParameters:\n- block_size: Size of each mosaic block in pixels (default 10)\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "block_size": {
+          "default": 10,
+          "title": "Block Size",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "apply_pixelateArguments"
+    }
+  },
+  {
+    "name": "apply_vignette",
+    "description": "Apply a vignette darkening effect around the edges of a layer.\n\nParameters:\n- softness: Edge softness / fade width (default 3.0)\n- shape: Shape factor — 1.0 = elliptical (default), values >1 = more rectangular\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "softness": {
+          "default": 3,
+          "title": "Softness",
+          "type": "number"
+        },
+        "shape": {
+          "default": 1,
+          "title": "Shape",
+          "type": "number"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "apply_vignetteArguments"
+    }
+  },
+  {
+    "name": "auto_levels",
+    "description": "Automatically stretch the tonal range of an image (auto levels / auto stretch contrast).\n\nParameters:\n- image_index: Index of the target image (default 0)\n- layer_name: Name of the layer to adjust; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "title": "auto_levelsArguments"
+    }
+  },
+  {
+    "name": "batch_export",
+    "description": "Export all open images (or a specific one) to a directory.\n\nParameters:\n- output_dir: Directory to write exported files into\n- format: \"png\", \"jpeg\", \"webp\", \"tiff\" (default \"png\")\n- quality: JPEG/WEBP quality (default 90)\n- name_pattern: Filename template — use {name} for image name, {index} for position\n- image_index: If set, export only that image; omit to export all open images\n\nReturns:\n- exported: list of {file_path, name, width, height}\n- count: number of files written\n- errors: list of any export errors\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "output_dir": {
+          "title": "Output Dir",
+          "type": "string"
+        },
+        "format": {
+          "default": "png",
+          "title": "Format",
+          "type": "string"
+        },
+        "quality": {
+          "default": 90,
+          "title": "Quality",
+          "type": "integer"
+        },
+        "name_pattern": {
+          "default": "{name}",
+          "title": "Name Pattern",
+          "type": "string"
+        },
+        "image_index": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image Index"
+        }
+      },
+      "required": [
+        "output_dir"
+      ],
+      "title": "batch_exportArguments"
+    }
+  },
+  {
+    "name": "batch_resize",
+    "description": "Resize all open images to a common target size.\n\nParameters:\n- width / height: Target dimensions in pixels (provide one or both)\n- scale_factor: Proportional scale (e.g. 0.5 = 50%); overrides width/height if set\n- maintain_aspect: Preserve aspect ratio when only one dimension is given (default True)\n\nReturns: {results: [{image_id, old_width, old_height, new_width, new_height}], count}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height"
+        },
+        "scale_factor": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale Factor"
+        },
+        "maintain_aspect": {
+          "default": true,
+          "title": "Maintain Aspect",
+          "type": "boolean"
+        }
+      },
+      "title": "batch_resizeArguments"
+    }
+  },
+  {
+    "name": "blur",
+    "description": "Apply Gaussian blur to a layer.\n\nParameters:\n- radius_x: Horizontal blur radius in pixels (default 5.0)\n- radius_y: Vertical blur radius in pixels (default 5.0)\n- image_index: Target image index (default 0)\n- layer_name: Layer to blur; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "radius_x": {
+          "default": 5,
+          "title": "Radius X",
+          "type": "number"
+        },
+        "radius_y": {
+          "default": 5,
+          "title": "Radius Y",
+          "type": "number"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "title": "blurArguments"
+    }
+  },
+  {
+    "name": "call_api",
+    "description": "Call GIMP 3.2 API methods through PyGObject console.\n\nGIMP MCP Protocol:\n- Use api_path=\"exec\" to execute Python code in GIMP\n- args[0] should be \"pyGObject-console\" for executing commands\n- args[1] should be array of Python code strings to execute\n- Commands execute in persistent context - imports and variables persist\n- Always call Gimp.displays_flush() after drawing operations\n\nFor image operations, use get_image_bitmap()\nwhich return proper MCP Image objects that Claude can process directly.\n\nGUIDANCE PROMPTS:\n- For common operations and best practices, invoke the 'gimp_best_practices' prompt\n- For complex multi-element drawings with layers, invoke the 'gimp_iterative_workflow' prompt\n\nOptional Initialization Pattern:\n[\"images = Gimp.get_images()\", \"image1 = images[0]\",\n \"layers = image1.get_layers()\", \"layer1 = layers[0]\", \"drawable1 = layer1\"]\n\nCommon Operations:\n- Draw line: [\"Gimp.pencil(drawable1, [0, 0, 200, 200])\", \"Gimp.displays_flush()\"]\n- Set color: [\"from gi.repository import Gegl\", \"red_color = Gegl.Color.new('red')\", \n              \"Gimp.context_set_foreground(red_color)\"]\n- Draw ellipse: [\"Gimp.Image.select_ellipse(image1, Gimp.ChannelOps.REPLACE, 100, 100, 30, 20)\",\n                 \"Gimp.Drawable.edit_fill(drawable1, Gimp.FillType.FOREGROUND)\",\n                 \"Gimp.Selection.none(image1)\", \"Gimp.displays_flush()\"]\n- Paint curve: [\"Gimp.paintbrush_default(drawable1, [50.0, 50.0, 150.0, 200.0, 250.0, 50.0, 350.0, 200.0])\", \n                \"Gimp.displays_flush()\"]\n- Draw bezier curve: [\"path = Gimp.Path.new(image1, 'my_bezier_path')\", \n                      \"image1.insert_path(path, None, 0)\",\n                      \"stroke_id = path.bezier_stroke_new_moveto(100, 100)\",\n                      \"path.bezier_stroke_cubicto(stroke_id, 150, 50, 250, 150, 300, 100)\",\n                      \"Gimp.Drawable.edit_stroke_item(drawable1, path)\",\n                      \"Gimp.Selection.none(image1)\", \"Gimp.displays_flush()\"]\n- Get open filenames: [\"print([x.get_file().get_path() for x in Gimp.get_images()])\"]\n- Copy layer between images: [\"image1 = Gimp.get_images()[0]\", \"image2 = Gimp.get_images()[1]\",\n                              \"width = image1.get_width()\", \"height = image1.get_height()\",\n                              \"image1.select_rectangle(Gimp.ChannelOps.REPLACE, 0, 0, width, height)\",\n                              \"image1_layers = image1.get_selected_layers()\", \"drawable = image1_layers[0]\",\n                              \"Gimp.edit_copy([drawable])\", \"image2_layers = image2.get_layers()\",\n                              \"target_drawable = image2_layers[0]\", \"floating_sel = Gimp.edit_paste(target_drawable, True)[0]\",\n                              \"Gimp.floating_sel_anchor(floating_sel)\", \"Gimp.displays_flush()\"]\n- New image: [\"image1 = Gimp.Image.new(350, 800, Gimp.ImageBaseType.RGB)\",\n              \"layer1 = Gimp.Layer.new(image1, 'Background', 350, 800, Gimp.ImageType.RGB_IMAGE, 100, Gimp.LayerMode.NORMAL)\",\n              \"image1.insert_layer(layer1, None, 0)\", \"drawable1 = layer1\",\n              \"white_color = Gegl.Color.new('white')\", \"Gimp.context_set_background(white_color)\",\n              \"Gimp.Drawable.edit_fill(drawable1, Gimp.FillType.BACKGROUND)\", \"Gimp.Display.new(image1)\"]\n\nImportant Tips:\n- When filling layers with color, ensure layer has alpha channel using Gimp.Layer.add_alpha()\n- Use Gimp.Drawable.fill() for reliable full-layer fills\n- Specify colors precisely with rgb(R, G, B) or rgba(R, G, B, A) to avoid transparency issues\n- After drawing operations, always call Gimp.displays_flush()\n- After selection operations for drawing, unselect with Gimp.Selection.none(image1)\n\nGIMP 3.2 API Changes:\n- Use Gimp.get_images() instead of deprecated Gimp.list_images()\n- Use image.get_layers() instead of Gimp.get_active_layer()\n- gimpfu module not available in GIMP 3.2\n- Colors created with Gegl.Color.new('color_name')\n- Full API documentation: https://developer.gimp.org/api/3.0/libgimp/\n\nParameters:\n- api_path: Use \"exec\" for Python execution\n- args: [\"pyGObject-console\", [\"python_code_array\"]] or [\"pyGObject-eval\", [\"expression\"]]\n- kwargs: Dictionary of keyword arguments (rarely used)\n\nReturns:\n- JSON string of the result or error message\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "api_path": {
+          "title": "Api Path",
+          "type": "string"
+        },
+        "args": {
+          "default": [],
+          "items": {},
+          "title": "Args",
+          "type": "array"
+        },
+        "kwargs": {
+          "additionalProperties": true,
+          "default": {},
+          "title": "Kwargs",
+          "type": "object"
+        }
+      },
+      "required": [
+        "api_path"
+      ],
+      "title": "call_apiArguments"
+    }
+  },
+  {
+    "name": "check_server",
+    "description": "Check whether the GIMP MCP plugin socket is reachable and responding.\n\nReturns a status dict:\n- connected: bool\n- host / port: where it tried\n- gimp_version: if connected successfully\n- error: description if not connected\n\nUse this before any other operation to verify the GIMP plugin is running.\nIf not connected, open GIMP and run Tools > Start MCP Server.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "close_image",
+    "description": "Close an image, optionally saving as XCF first.\n\nParameters:\n- image_index: Index of the image to close (default 0)\n- save_first: If True, save as XCF before closing (default False)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "save_first": {
+          "default": false,
+          "title": "Save First",
+          "type": "boolean"
+        }
+      },
+      "title": "close_imageArguments"
+    }
+  },
+  {
+    "name": "convert_color_mode",
+    "description": "Convert an image to a different color mode.\n\nParameters:\n- mode: \"RGB\", \"GRAY\", or \"INDEXED\"\n- num_colors: Number of colors for INDEXED mode (default 256)\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "title": "Mode",
+          "type": "string"
+        },
+        "num_colors": {
+          "default": 256,
+          "title": "Num Colors",
+          "type": "integer"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "title": "convert_color_modeArguments"
+    }
+  },
+  {
+    "name": "create_layer",
+    "description": "Create and insert a new layer into an image.\n\nParameters:\n- name: Layer name (default \"New Layer\")\n- width, height: Layer dimensions; defaults to image dimensions\n- fill: Initial fill — \"transparent\" (default), \"white\", \"black\", or any CSS color\n- opacity: Layer opacity 0-100 (default 100)\n- blend_mode: GIMP layer mode name — \"NORMAL\" (default), \"MULTIPLY\", \"SCREEN\", etc.\n- position: Stack position — -1 = top (default), 0 = bottom\n- image_index: Target image index (default 0)\n\nReturns: {layer_name, layer_id, width, height, position}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "default": "New Layer",
+          "title": "Name",
+          "type": "string"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height"
+        },
+        "fill": {
+          "default": "transparent",
+          "title": "Fill",
+          "type": "string"
+        },
+        "opacity": {
+          "default": 100,
+          "title": "Opacity",
+          "type": "number"
+        },
+        "blend_mode": {
+          "default": "NORMAL",
+          "title": "Blend Mode",
+          "type": "string"
+        },
+        "position": {
+          "default": -1,
+          "title": "Position",
+          "type": "integer"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "create_layerArguments"
+    }
+  },
+  {
+    "name": "crop_to_rect",
+    "description": "Crop the image canvas to an explicit rectangle.\n\nParameters:\n- x, y: Top-left corner of the crop rectangle\n- width, height: Dimensions of the crop rectangle\n- image_index: Target image index (default 0)\n\nReturns: {status, x, y, width, height}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "integer"
+        },
+        "y": {
+          "title": "Y",
+          "type": "integer"
+        },
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "crop_to_rectArguments"
+    }
+  },
+  {
+    "name": "crop_to_selection",
+    "description": "Crop the image canvas to the current selection bounds.\n\nParameters:\n- autocrop: If True, auto-detect crop bounds instead of using selection (default False)\n- image_index: Target image index (default 0)\n\nReturns: {status, x, y, width, height} — crop region applied\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "autocrop": {
+          "default": false,
+          "title": "Autocrop",
+          "type": "boolean"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "crop_to_selectionArguments"
+    }
+  },
+  {
+    "name": "delete_layer",
+    "description": "Delete a layer from an image.\n\nParameters:\n- layer_name: Name of the layer to delete\n- layer_index: Position index of the layer (alternative to layer_name)\n- image_index: Target image index (default 0)\n\nProvide either layer_name or layer_index. Defaults to active layer if neither given.\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "layer_index": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Index"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "delete_layerArguments"
+    }
+  },
+  {
+    "name": "denoise",
+    "description": "Reduce noise in a layer using GEGL noise-reduction.\n\nParameters:\n- strength: Noise reduction strength 0-100 (default 50)\n- image_index: Target image index (default 0)\n- layer_name: Layer to denoise; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "strength": {
+          "default": 50,
+          "title": "Strength",
+          "type": "integer"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "title": "denoiseArguments"
+    }
+  },
+  {
+    "name": "desaturate",
+    "description": "Convert a layer to grayscale (desaturate).\n\nParameters:\n- mode: Desaturation algorithm — \"luminosity\" (default), \"luma\", \"average\", \"lightness\"\n- image_index: Target image index (default 0)\n- layer_name: Layer to desaturate; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "default": "luminosity",
+          "title": "Mode",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "title": "desaturateArguments"
+    }
+  },
+  {
+    "name": "draw_ellipse",
+    "description": "Draw an ellipse outline (stroke only) on a layer.\n\nParameters:\n- x, y: Top-left corner of the bounding box\n- width, height: Bounding box dimensions\n- color: Stroke color; uses current foreground if omitted\n- line_width: Stroke width in pixels (default 2.0)\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "integer"
+        },
+        "y": {
+          "title": "Y",
+          "type": "integer"
+        },
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Color"
+        },
+        "line_width": {
+          "default": 2,
+          "title": "Line Width",
+          "type": "number"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "draw_ellipseArguments"
+    }
+  },
+  {
+    "name": "draw_line",
+    "description": "Draw a straight line on a layer.\n\nParameters:\n- x1, y1: Start point\n- x2, y2: End point\n- color: Stroke color (CSS / hex / rgb); uses current foreground if omitted\n- width: Stroke width in pixels (default 2.0)\n- tool: \"pencil\" (default, hard edge) or \"paintbrush\" (soft edge)\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "x1": {
+          "title": "X1",
+          "type": "number"
+        },
+        "y1": {
+          "title": "Y1",
+          "type": "number"
+        },
+        "x2": {
+          "title": "X2",
+          "type": "number"
+        },
+        "y2": {
+          "title": "Y2",
+          "type": "number"
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Color"
+        },
+        "width": {
+          "default": 2,
+          "title": "Width",
+          "type": "number"
+        },
+        "tool": {
+          "default": "pencil",
+          "title": "Tool",
+          "type": "string"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x1",
+        "y1",
+        "x2",
+        "y2"
+      ],
+      "title": "draw_lineArguments"
+    }
+  },
+  {
+    "name": "draw_rectangle",
+    "description": "Draw a rectangle outline (stroke only) on a layer.\n\nParameters:\n- x, y: Top-left corner\n- width, height: Rectangle dimensions\n- color: Stroke color; uses current foreground if omitted\n- line_width: Stroke width in pixels (default 2.0)\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "integer"
+        },
+        "y": {
+          "title": "Y",
+          "type": "integer"
+        },
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Color"
+        },
+        "line_width": {
+          "default": 2,
+          "title": "Line Width",
+          "type": "number"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "draw_rectangleArguments"
+    }
+  },
+  {
+    "name": "duplicate_layer",
+    "description": "Duplicate a layer and insert the copy above it.\n\nParameters:\n- layer_name: Name of the layer to duplicate; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns: {layer_name, layer_id}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "duplicate_layerArguments"
+    }
+  },
+  {
+    "name": "edit_text",
+    "description": "Edit an existing text layer's content or formatting.\n\nParameters:\n- layer_name: Name of the text layer to edit\n- text: New text content (omit to leave unchanged)\n- font: New font family (omit to leave unchanged)\n- size: New font size in pixels (omit to leave unchanged)\n- color: New text color (omit to leave unchanged)\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "layer_name": {
+          "title": "Layer Name",
+          "type": "string"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "font": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Font"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Color"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "layer_name"
+      ],
+      "title": "edit_textArguments"
+    }
+  },
+  {
+    "name": "export_icon_sizes",
+    "description": "Export an image as a complete icon set for Android or iOS.\n\nAndroid sizes: 48 (mdpi), 72 (hdpi), 96 (xhdpi), 144 (xxhdpi),\n               192 (xxxhdpi), 512 (Play Store)\niOS sizes: 20x1/2/3, 29x1/2/3, 40x2/3, 60x2/3, 76x1/2, 83.5x2, 1024x1\n\nParameters:\n- output_dir: Directory to write icon files into\n- platform: \"android\" (default) or \"ios\"\n- source_image_index: Image to use as source (default 0)\n- format: Output format — \"png\" (default)\n\nReturns: {exported: [{size, file_path}], count, platform}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "output_dir": {
+          "title": "Output Dir",
+          "type": "string"
+        },
+        "platform": {
+          "default": "android",
+          "title": "Platform",
+          "type": "string"
+        },
+        "source_image_index": {
+          "default": 0,
+          "title": "Source Image Index",
+          "type": "integer"
+        },
+        "format": {
+          "default": "png",
+          "title": "Format",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_dir"
+      ],
+      "title": "export_icon_sizesArguments"
+    }
+  },
+  {
+    "name": "export_image",
+    "description": "Export the current image to a raster file (PNG, JPEG, WEBP, TIFF).\n\nParameters:\n- file_path: Absolute path for the output file\n- format: Output format — \"png\" (default), \"jpeg\", \"webp\", \"tiff\"\n- quality: JPEG/WEBP quality 1-100 (default 90; ignored for PNG/TIFF)\n- flatten: Flatten all layers before export (default True)\n- image_index: Index of the image to export (default 0)\n\nReturns:\n- status, file_path, format, file_size_bytes\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "title": "File Path",
+          "type": "string"
+        },
+        "format": {
+          "default": "png",
+          "title": "Format",
+          "type": "string"
+        },
+        "quality": {
+          "default": 90,
+          "title": "Quality",
+          "type": "integer"
+        },
+        "flatten": {
+          "default": true,
+          "title": "Flatten",
+          "type": "boolean"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "file_path"
+      ],
+      "title": "export_imageArguments"
+    }
+  },
+  {
+    "name": "export_social_media_kit",
+    "description": "Export an image resized for multiple social media platforms.\n\nPlatform sizes (all in pixels):\n- instagram_square: 1080x1080\n- instagram_story: 1080x1920\n- twitter_header: 1500x500\n- facebook_cover: 820x312\n- youtube_thumbnail: 1280x720\n\nParameters:\n- output_dir: Directory to write output files\n- platforms: List of platform names to export (omit for all five)\n- image_index: Source image index (default 0)\n\nReturns: {exported: [{platform, file_path, width, height}], count}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "output_dir": {
+          "title": "Output Dir",
+          "type": "string"
+        },
+        "platforms": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Platforms"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "output_dir"
+      ],
+      "title": "export_social_media_kitArguments"
+    }
+  },
+  {
+    "name": "export_sprite_sheet",
+    "description": "Combine multiple frames into a sprite sheet PNG.\n\nParameters:\n- output_path: Absolute path for the output PNG file\n- columns: Number of columns in the grid (defaults to square root of frame count)\n- padding: Pixel gap between frames (default 0)\n- source: \"layers\" (each layer is a frame; default) or \"images\" (each open image)\n- image_index: Source image when source=\"layers\" (default 0)\n\nReturns: {file_path, columns, rows, frame_width, frame_height, count}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "output_path": {
+          "title": "Output Path",
+          "type": "string"
+        },
+        "columns": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Columns"
+        },
+        "padding": {
+          "default": 0,
+          "title": "Padding",
+          "type": "integer"
+        },
+        "source": {
+          "default": "layers",
+          "title": "Source",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "output_path"
+      ],
+      "title": "export_sprite_sheetArguments"
+    }
+  },
+  {
+    "name": "export_web_optimized",
+    "description": "Export an image as both JPEG and PNG, choosing the smaller format.\n\nParameters:\n- output_dir: Directory to write output files\n- jpeg_quality: JPEG quality 1-100 (default 85)\n- png_compression: PNG compression level 0-9 (default 9)\n- max_width / max_height: Optional scaling before export\n- image_index: Source image index (default 0)\n\nReturns: {jpeg_path, jpeg_size, png_path, png_size, recommendation}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "output_dir": {
+          "title": "Output Dir",
+          "type": "string"
+        },
+        "jpeg_quality": {
+          "default": 85,
+          "title": "Jpeg Quality",
+          "type": "integer"
+        },
+        "png_compression": {
+          "default": 9,
+          "title": "Png Compression",
+          "type": "integer"
+        },
+        "max_width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Width"
+        },
+        "max_height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Height"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "output_dir"
+      ],
+      "title": "export_web_optimizedArguments"
+    }
+  },
+  {
+    "name": "fill_ellipse",
+    "description": "Fill an elliptical region with a solid color.\n\nParameters:\n- x, y: Top-left corner of the bounding box\n- width, height: Bounding box dimensions\n- color: Fill color (CSS name, hex, or rgb() string)\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "integer"
+        },
+        "y": {
+          "title": "Y",
+          "type": "integer"
+        },
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "color": {
+          "title": "Color",
+          "type": "string"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height",
+        "color"
+      ],
+      "title": "fill_ellipseArguments"
+    }
+  },
+  {
+    "name": "fill_layer",
+    "description": "Fill an entire layer with a solid color.\n\nParameters:\n- color: Fill color as CSS name, hex, or rgb() string\n- layer_name: Layer to fill; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "title": "Color",
+          "type": "string"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "color"
+      ],
+      "title": "fill_layerArguments"
+    }
+  },
+  {
+    "name": "fill_rectangle",
+    "description": "Fill a rectangular region with a solid color.\n\nParameters:\n- x, y: Top-left corner\n- width, height: Rectangle dimensions\n- color: Fill color (CSS name, hex, or rgb() string)\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "integer"
+        },
+        "y": {
+          "title": "Y",
+          "type": "integer"
+        },
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "color": {
+          "title": "Color",
+          "type": "string"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height",
+        "color"
+      ],
+      "title": "fill_rectangleArguments"
+    }
+  },
+  {
+    "name": "fill_selection",
+    "description": "Fill the current selection with a color or fill type.\n\nParameters:\n- color: Fill color as CSS name, hex, or rgb() string (used when fill_type is omitted)\n- fill_type: Fill type override: \"foreground\", \"background\", or \"transparent\"\n- image_index: Target image index (default 0)\n- layer_name: Target layer; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Color"
+        },
+        "fill_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fill Type"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "title": "fill_selectionArguments"
+    }
+  },
+  {
+    "name": "flatten_image",
+    "description": "Flatten all layers into a single background layer.\n\nParameters:\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "flatten_imageArguments"
+    }
+  },
+  {
+    "name": "flip_image",
+    "description": "Flip the entire image horizontally or vertically.\n\nParameters:\n- direction: \"horizontal\" (default) or \"vertical\"\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "default": "horizontal",
+          "title": "Direction",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "flip_imageArguments"
+    }
+  },
+  {
+    "name": "get_context_state",
+    "description": "Get the current GIMP context state (colors, brush, settings).\n\nIMPORTANT: Context state can be changed by the user in GIMP UI at any time.\nCheck context state before operations that depend on specific settings.\n\nReturns information about:\n- Foreground and background colors (RGB/RGBA values)\n- Current brush and its properties\n- Opacity setting (0-100%)\n- Paint/blend mode\n- Feather state and radius\n- Antialiasing state\n\nUse cases:\n- Verify colors before drawing operations\n- Check if feathering is enabled (avoid unwanted blurry edges)\n- Ensure correct opacity and blend mode\n- Detect if user changed settings in GIMP UI\n\nReturns:\n- Dictionary containing current context state\n- Raises exception if unable to get context state\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "get_gimp_info",
+    "description": "Get comprehensive information about the GIMP installation and environment.\n\nReturns detailed information about GIMP that AI assistants need to understand\nthe current environment, including:\n- GIMP version and build information\n- Installation paths and directories\n- Available plugins and procedures\n- System configuration\n- Runtime environment details\n\nThis information helps AI assistants provide better support and troubleshooting\nby understanding the specific GIMP setup they're working with.\n\nReturns:\n- Dictionary containing comprehensive GIMP environment information\n- Raises exception if GIMP connection fails\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "get_histogram",
+    "description": "Get histogram statistics for a channel of the active layer.\n\nParameters:\n- channel: \"value\" (all; default), \"red\", \"green\", \"blue\", \"alpha\"\n- image_index: Target image index (default 0)\n\nReturns: {mean, median, std_dev, min, max, pixels, count}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "channel": {
+          "default": "value",
+          "title": "Channel",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "get_histogramArguments"
+    }
+  },
+  {
+    "name": "get_image_bitmap",
+    "description": "Get the current open image in GIMP as an Image object with optional scaling and region selection.\n\nNo size restrictions — pass any max_width/max_height you need.\nFor large images, omit max_width/max_height to get the full resolution.\n\nSupports two main use cases:\n1. Full image with optional scaling (pass max_width/max_height)\n2. Region extraction with optional scaling (pass region dict)\n\nParameters:\n- max_width, max_height: Target dimensions for scaling (aspect-ratio preserved).\n  Omit for full resolution.\n- region: Dictionary with keys:\n    - origin_x, origin_y: Top-left corner of region to extract\n    - width, height: Dimensions of region to extract\n    - max_width, max_height: Optional scaling for the extracted region\n\nExamples:\n- Full image at full res: get_image_bitmap()\n- Full image scaled: get_image_bitmap(max_width=2048, max_height=2048)\n- Region: get_image_bitmap(region={\"origin_x\": 0, \"origin_y\": 0, \"width\": 512, \"height\": 512})\n\nReturns:\n- Image object containing PNG data in MCP-compliant format\n- Includes width, height, and base64-encoded image data\n\nThe returned Image object automatically handles base64 encoding and MIME types\naccording to the Model Context Protocol specification.\n\nRaises:\n- RuntimeError if no image is open, region is invalid, or export fails\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "max_width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Width"
+        },
+        "max_height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Height"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        }
+      },
+      "title": "get_image_bitmapArguments"
+    }
+  },
+  {
+    "name": "get_image_metadata",
+    "description": "Get metadata about the current open image in GIMP without the bitmap data.\n\nReturns detailed information about the currently active image including:\n- Image dimensions (width, height)\n- Color mode and base type\n- Number of layers and channels\n- File information if available\n- Layer structure and properties\n\nThis is much faster than get_image_bitmap() since it doesn't export the actual image data.\nPerfect for when you only need to know image properties for decision making.\n\nReturns:\n- Dictionary containing comprehensive image metadata\n- Raises exception if no images are open\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "get_pixel_color",
+    "description": "Get the color of a single pixel.\n\nParameters:\n- x, y: Pixel coordinates\n- image_index: Target image index (default 0)\n- layer_name: Layer to sample from; defaults to active layer\n\nReturns: {color_hex, color_rgb: [r, g, b], alpha}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "integer"
+        },
+        "y": {
+          "title": "Y",
+          "type": "integer"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "get_pixel_colorArguments"
+    }
+  },
+  {
+    "name": "get_selection_bounds",
+    "description": "Get the bounding rectangle of the current selection.\n\nParameters:\n- image_index: Target image index (default 0)\n\nReturns: {has_selection, x, y, width, height}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "get_selection_boundsArguments"
+    }
+  },
+  {
+    "name": "get_state_snapshot",
+    "description": "Return a live visual snapshot of the current image state — no file save needed.\n\nAI agents call this to get immediate visual feedback after any edit operation,\nletting them verify results and decide next steps without saving to disk.\n\nParameters:\n- image_index: Which open image to snapshot (default: 0 = most recent)\n- max_size: Maximum width/height of the returned preview in pixels (default: 512)\n- region: Optional dict {x, y, width, height} to zoom into a specific area\n          e.g. {\"x\": 200, \"y\": 300, \"width\": 100, \"height\": 80} for mouth area\n- label: Optional annotation label (logged but not drawn — for agent bookkeeping)\n\nReturns:\n- PNG image of the current GIMP canvas state (with alpha if present)\n\nTypical agent workflow:\n    1. open_image / new_canvas\n    2. <edit operations>\n    3. get_state_snapshot()          ← see result, decide next step\n    4. <more edits>\n    5. get_state_snapshot(region={\"x\":200,\"y\":300,\"width\":100,\"height\":80})\n    6. export_image when satisfied\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "max_size": {
+          "default": 512,
+          "title": "Max Size",
+          "type": "integer"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "label": {
+          "default": "",
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "title": "get_state_snapshotArguments"
+    }
+  },
+  {
+    "name": "gradient_fill",
+    "description": "Fill a layer or selection with a gradient.\n\nParameters:\n- color1: Start color (default \"black\")\n- color2: End color (default \"white\")\n- x1, y1: Gradient start point (default top-left 0,0)\n- x2, y2: Gradient end point (defaults to bottom-right of image)\n- gradient_type: \"linear\" (default) or \"radial\"\n- layer_name: Target layer; defaults to active layer\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "color1": {
+          "default": "black",
+          "title": "Color1",
+          "type": "string"
+        },
+        "color2": {
+          "default": "white",
+          "title": "Color2",
+          "type": "string"
+        },
+        "x1": {
+          "default": 0,
+          "title": "X1",
+          "type": "number"
+        },
+        "y1": {
+          "default": 0,
+          "title": "Y1",
+          "type": "number"
+        },
+        "x2": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "X2"
+        },
+        "y2": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Y2"
+        },
+        "gradient_type": {
+          "default": "linear",
+          "title": "Gradient Type",
+          "type": "string"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "gradient_fillArguments"
+    }
+  },
+  {
+    "name": "invert_colors",
+    "description": "Invert all colors in a layer (create a negative).\n\nParameters:\n- image_index: Target image index (default 0)\n- layer_name: Layer to invert; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "title": "invert_colorsArguments"
+    }
+  },
+  {
+    "name": "invert_selection",
+    "description": "Invert the current selection (select what is not selected).\n\nParameters:\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "invert_selectionArguments"
+    }
+  },
+  {
+    "name": "list_fonts",
+    "description": "List available fonts installed in GIMP.\n\nParameters:\n- filter: Optional string to filter font names (case-insensitive substring match)\n\nReturns: {fonts: [font_name, ...], count}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "filter": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filter"
+        }
+      },
+      "title": "list_fontsArguments"
+    }
+  },
+  {
+    "name": "list_images",
+    "description": "List all images currently open in GIMP.\n\nReturns:\n- images: list of {index, image_id, name, width, height, color_mode,\n                   num_layers, file_path, is_dirty}\n- count: total number of open images\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "list_layers",
+    "description": "List all layers in an image with their properties.\n\nParameters:\n- image_index: Target image index (default 0)\n\nReturns: {layers: [{name, id, visible, opacity, blend_mode, width, height, has_alpha}], count}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "list_layersArguments"
+    }
+  },
+  {
+    "name": "merge_visible_layers",
+    "description": "Merge all visible layers into a single layer.\n\nParameters:\n- image_index: Target image index (default 0)\n\nReturns: {layer_name, layer_id}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "merge_visible_layersArguments"
+    }
+  },
+  {
+    "name": "modify_selection",
+    "description": "Grow, shrink, feather, border, or sharpen the current selection.\n\nParameters:\n- operation: \"grow\", \"shrink\", \"feather\", \"border\", \"sharpen\"\n- amount: Pixel radius for grow/shrink/feather/border; ignored for sharpen\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "title": "Operation",
+          "type": "string"
+        },
+        "amount": {
+          "title": "Amount",
+          "type": "number"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "operation",
+        "amount"
+      ],
+      "title": "modify_selectionArguments"
+    }
+  },
+  {
+    "name": "new_canvas",
+    "description": "Create a new blank canvas in GIMP and open it in a display window.\n\nParameters:\n- width: Canvas width in pixels\n- height: Canvas height in pixels\n- name: Layer/image name (default: \"Untitled\")\n- color_mode: \"RGB\" (default), \"RGBA\", \"GRAY\", \"GRAYA\"\n- fill: Fill color for the background layer. Any CSS color name or\n        hex string: \"white\" (default), \"black\", \"transparent\",\n        \"#FF5733\", \"rgb(100,200,50)\", etc.\n- resolution: DPI resolution (default: 72)\n\nReturns:\n- image_id: internal GIMP image ID\n- width / height: confirmed dimensions\n- color_mode: confirmed mode\n- display_opened: whether a GIMP window was opened\n\nExamples:\n- new_canvas(1024, 1024) — white 1024x1024 RGB canvas\n- new_canvas(1920, 1080, name=\"Background\", fill=\"black\")\n- new_canvas(512, 512, color_mode=\"RGBA\", fill=\"transparent\")\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "name": {
+          "default": "Untitled",
+          "title": "Name",
+          "type": "string"
+        },
+        "color_mode": {
+          "default": "RGB",
+          "title": "Color Mode",
+          "type": "string"
+        },
+        "fill": {
+          "default": "white",
+          "title": "Fill",
+          "type": "string"
+        },
+        "resolution": {
+          "default": 72,
+          "title": "Resolution",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "title": "new_canvasArguments"
+    }
+  },
+  {
+    "name": "open_image",
+    "description": "Open an image file in GIMP and create a display window.\n\nParameters:\n- file_path: Absolute path to the image file to open (PNG, JPEG, TIFF, etc.)\n\nReturns:\n- image_id: internal GIMP image ID\n- width / height: image dimensions in pixels\n- color_mode: RGB / Grayscale / Indexed\n- num_layers: number of layers in the image\n- display_opened: whether a GIMP display window was created\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "title": "File Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file_path"
+      ],
+      "title": "open_imageArguments"
+    }
+  },
+  {
+    "name": "redo",
+    "description": "Redo one or more previously undone operations on an image.\n\nParameters:\n- steps: Number of redo steps (default 1)\n- image_index: Target image index (default 0)\n\nReturns: {steps_redone}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "default": 1,
+          "title": "Steps",
+          "type": "integer"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "redoArguments"
+    }
+  },
+  {
+    "name": "rename_layer",
+    "description": "Rename a layer.\n\nParameters:\n- new_name: New name for the layer\n- old_name: Current name of the layer to rename\n- layer_index: Position index alternative to old_name\n- image_index: Target image index (default 0)\n\nReturns: {old_name, new_name}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "new_name": {
+          "title": "New Name",
+          "type": "string"
+        },
+        "old_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Old Name"
+        },
+        "layer_index": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Index"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "new_name"
+      ],
+      "title": "rename_layerArguments"
+    }
+  },
+  {
+    "name": "reorder_layer",
+    "description": "Move a layer to a new stack position.\n\nParameters:\n- new_position: Target stack index (0 = bottom)\n- layer_name / layer_index: Identify the layer (defaults to active layer)\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "new_position": {
+          "title": "New Position",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "layer_index": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Index"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "new_position"
+      ],
+      "title": "reorder_layerArguments"
+    }
+  },
+  {
+    "name": "resize_canvas",
+    "description": "Resize the image canvas without scaling the content.\n\nParameters:\n- width, height: New canvas dimensions in pixels\n- anchor: Position of existing content — \"center\" (default), \"top-left\", \"top\",\n          \"top-right\", \"left\", \"right\", \"bottom-left\", \"bottom\", \"bottom-right\"\n- fill: Color for new canvas areas — CSS color or \"transparent\"\n- image_index: Target image index (default 0)\n\nReturns: {status, width, height, offset_x, offset_y}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "anchor": {
+          "default": "center",
+          "title": "Anchor",
+          "type": "string"
+        },
+        "fill": {
+          "default": "transparent",
+          "title": "Fill",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "title": "resize_canvasArguments"
+    }
+  },
+  {
+    "name": "restart_server",
+    "description": "Drop and re-establish the connection to the GIMP MCP plugin.\n\nUse this when:\n- GIMP was restarted after Claude Code was already running\n- The socket connection dropped mid-session\n- check_server() shows not connected but GIMP is open\n\nReturns the new connection status (same format as check_server).\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "rotate_image",
+    "description": "Rotate the entire image.\n\nParameters:\n- angle: Rotation in degrees — 90, 180, 270 use lossless GIMP rotation;\n         other values rotate all layers with interpolation and flatten\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "angle": {
+          "title": "Angle",
+          "type": "number"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "angle"
+      ],
+      "title": "rotate_imageArguments"
+    }
+  },
+  {
+    "name": "save_xcf",
+    "description": "Save the current image as a GIMP XCF file (preserves all layers and metadata).\n\nParameters:\n- file_path: Absolute path for the output .xcf file\n- image_index: Index of the image to save (default 0 = first open image)\n\nReturns:\n- status: \"success\" or \"error\"\n- file_path: confirmed output path\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "title": "File Path",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "file_path"
+      ],
+      "title": "save_xcfArguments"
+    }
+  },
+  {
+    "name": "scale_image",
+    "description": "Scale an image to exact pixel dimensions.\n\nParameters:\n- width: Target width in pixels\n- height: Target height in pixels\n- interpolation: \"cubic\" (default), \"linear\", \"none\"\n- image_index: Target image index (default 0)\n\nReturns: {status, width, height}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "interpolation": {
+          "default": "cubic",
+          "title": "Interpolation",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "title": "scale_imageArguments"
+    }
+  },
+  {
+    "name": "scale_to_fit",
+    "description": "Scale an image to fit within a bounding box, preserving aspect ratio.\n\nParameters:\n- max_width: Maximum allowed width in pixels\n- max_height: Maximum allowed height in pixels\n- interpolation: \"cubic\" (default), \"linear\", \"none\"\n- image_index: Target image index (default 0)\n\nReturns: {status, width, height} — final dimensions after scaling\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "max_width": {
+          "title": "Max Width",
+          "type": "integer"
+        },
+        "max_height": {
+          "title": "Max Height",
+          "type": "integer"
+        },
+        "interpolation": {
+          "default": "cubic",
+          "title": "Interpolation",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_width",
+        "max_height"
+      ],
+      "title": "scale_to_fitArguments"
+    }
+  },
+  {
+    "name": "select_all",
+    "description": "Select the entire image canvas.\n\nParameters:\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "select_allArguments"
+    }
+  },
+  {
+    "name": "select_by_color",
+    "description": "Select regions by color similarity.\n\nParameters:\n- color: Target color as CSS name, hex (#rrggbb), or rgb() string\n- threshold: Color similarity tolerance 0-255 (default 15)\n- operation: \"replace\" (default), \"add\", \"subtract\", \"intersect\"\n- image_index: Target image index (default 0)\n- layer_name: Layer to sample from; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "title": "Color",
+          "type": "string"
+        },
+        "threshold": {
+          "default": 15,
+          "title": "Threshold",
+          "type": "integer"
+        },
+        "operation": {
+          "default": "replace",
+          "title": "Operation",
+          "type": "string"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "required": [
+        "color"
+      ],
+      "title": "select_by_colorArguments"
+    }
+  },
+  {
+    "name": "select_ellipse",
+    "description": "Create an elliptical selection.\n\nParameters:\n- x, y: Top-left corner of the bounding box\n- width, height: Bounding box dimensions\n- operation: \"replace\" (default), \"add\", \"subtract\", \"intersect\"\n- feather: Feather radius in pixels (default 0)\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "integer"
+        },
+        "y": {
+          "title": "Y",
+          "type": "integer"
+        },
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "operation": {
+          "default": "replace",
+          "title": "Operation",
+          "type": "string"
+        },
+        "feather": {
+          "default": 0,
+          "title": "Feather",
+          "type": "number"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "select_ellipseArguments"
+    }
+  },
+  {
+    "name": "select_none",
+    "description": "Remove / deselect all selections.\n\nParameters:\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "select_noneArguments"
+    }
+  },
+  {
+    "name": "select_rectangle",
+    "description": "Create a rectangular selection.\n\nParameters:\n- x, y: Top-left corner of the selection\n- width, height: Dimensions of the selection\n- operation: \"replace\" (default), \"add\", \"subtract\", \"intersect\"\n- feather: Feather radius in pixels (default 0 = no feather)\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "integer"
+        },
+        "y": {
+          "title": "Y",
+          "type": "integer"
+        },
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "operation": {
+          "default": "replace",
+          "title": "Operation",
+          "type": "string"
+        },
+        "feather": {
+          "default": 0,
+          "title": "Feather",
+          "type": "number"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "select_rectangleArguments"
+    }
+  },
+  {
+    "name": "set_active_image",
+    "description": "Raise a specific image to the front / make it active in GIMP.\n\nParameters:\n- image_index: Index of the image to activate (from list_images)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_index": {
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "image_index"
+      ],
+      "title": "set_active_imageArguments"
+    }
+  },
+  {
+    "name": "set_colors",
+    "description": "Set the GIMP foreground and/or background color.\n\nParameters:\n- foreground: New foreground color (CSS name, hex, rgb()); omit to leave unchanged\n- background: New background color; omit to leave unchanged\n\nReturns: {foreground, background} confirmation dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "foreground": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Foreground"
+        },
+        "background": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Background"
+        }
+      },
+      "title": "set_colorsArguments"
+    }
+  },
+  {
+    "name": "set_layer_properties",
+    "description": "Set properties on an existing layer.\n\nParameters:\n- layer_name / layer_index: Identify the layer (defaults to active layer)\n- opacity: New opacity 0-100 (omit to leave unchanged)\n- blend_mode: New GIMP layer mode name (omit to leave unchanged)\n- visible: True/False visibility (omit to leave unchanged)\n- image_index: Target image index (default 0)\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        },
+        "layer_index": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Index"
+        },
+        "opacity": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Opacity"
+        },
+        "blend_mode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Blend Mode"
+        },
+        "visible": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Visible"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "set_layer_propertiesArguments"
+    }
+  },
+  {
+    "name": "sharpen",
+    "description": "Sharpen a layer using unsharp mask.\n\nParameters:\n- amount: Sharpening strength 0-500 (default 50.0)\n- radius: Blur radius for the mask in pixels (default 3.0)\n- threshold: Minimum difference before sharpening is applied (default 0)\n- image_index: Target image index (default 0)\n- layer_name: Layer to sharpen; defaults to active layer\n\nReturns status dict.\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "default": 50,
+          "title": "Amount",
+          "type": "number"
+        },
+        "radius": {
+          "default": 3,
+          "title": "Radius",
+          "type": "number"
+        },
+        "threshold": {
+          "default": 0,
+          "title": "Threshold",
+          "type": "integer"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "title": "sharpenArguments"
+    }
+  },
+  {
+    "name": "undo",
+    "description": "Undo one or more operations on an image.\n\nParameters:\n- steps: Number of undo steps (default 1)\n- image_index: Target image index (default 0)\n\nReturns: {steps_undone}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "default": 1,
+          "title": "Steps",
+          "type": "integer"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        }
+      },
+      "title": "undoArguments"
+    }
+  },
+  {
+    "name": "warp_region",
+    "description": "Warp / liquify a region of the image by pushing pixels in a direction.\n\nUses GEGL warp (GIMP 3 native) with plug-in-iwarp fallback. Ideal for\nsubtle facial expression edits — e.g. turning a neutral mouth into a smile\nby pushing the mouth corners upward.\n\nParameters:\n- vectors: List of warp stroke dicts, each with:\n    - x, y      : center of the warp influence (pixels)\n    - dx, dy    : push direction — negative dy = push upward\n    - radius    : influence radius in pixels (default: 40)\n    - amount    : deform strength 0–1 (default: 0.3)\n- image_index: Which open image to edit (default: 0)\n- layer_name: Target layer; omit to use the active/top layer\n\nExamples — make a character smile:\n    warp_region(vectors=[\n        {\"x\": 215, \"y\": 355, \"dx\":  5, \"dy\": -8, \"radius\": 18, \"amount\": 0.45},\n        {\"x\": 295, \"y\": 355, \"dx\": -5, \"dy\": -8, \"radius\": 18, \"amount\": 0.45},\n        {\"x\": 255, \"y\": 370, \"dx\":  0, \"dy\": -4, \"radius\": 22, \"amount\": 0.30},\n    ])\n\nReturns: {\"warped_vectors\": N}\n",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "vectors": {
+          "items": {},
+          "title": "Vectors",
+          "type": "array"
+        },
+        "image_index": {
+          "default": 0,
+          "title": "Image Index",
+          "type": "integer"
+        },
+        "layer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer Name"
+        }
+      },
+      "required": [
+        "vectors"
+      ],
+      "title": "warp_regionArguments"
+    }
+  }
+]

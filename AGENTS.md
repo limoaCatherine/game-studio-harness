@@ -6,4 +6,4 @@
 
 `activated.json` 只决定开场先注入哪些正文，不是运行时防火墙。职种不预展开。写级别默认 sandbox。晋升须人准，只回写记录集。
 
-思路拆解：`docs/architecture.md`。技能正文在 `core/`。本机菜单脚本：`~/.gsh/harness/scripts/生成会话能力名单.py`。
+思路写在仓库根 `README.md`。五套齐套目录在仓根：`cursor/` `claude/` `codex/` `grok/` `deepseek/`。本机菜单脚本：`~/.gsh/harness/scripts/生成会话能力名单.py`。

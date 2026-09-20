@@ -1,0 +1,283 @@
+[
+  {
+    "name": "status",
+    "description": "CLI/GUI path check and default project dir.",
+    "inputSchema": {
+      "properties": {},
+      "title": "statusArguments",
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "statusOutput",
+      "type": "object"
+    }
+  },
+  {
+    "name": "launch_studio",
+    "description": "Launch FMOD Studio GUI; optionally open .fspro.",
+    "inputSchema": {
+      "properties": {
+        "project_fspro": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Project Fspro"
+        }
+      },
+      "title": "launch_studioArguments",
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "launch_studioOutput",
+      "type": "object"
+    }
+  },
+  {
+    "name": "list_projects",
+    "description": "Find *.fspro under project dir or given root.",
+    "inputSchema": {
+      "properties": {
+        "root": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Root"
+        }
+      },
+      "title": "list_projectsArguments",
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "list_projectsOutput",
+      "type": "object"
+    }
+  },
+  {
+    "name": "diagnostic",
+    "description": "Run fmodstudiocl -diagnostic on a .fspro.",
+    "inputSchema": {
+      "properties": {
+        "project": {
+          "title": "Project",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "title": "diagnosticArguments",
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "diagnosticOutput",
+      "type": "object"
+    }
+  },
+  {
+    "name": "build_banks",
+    "description": "Build banks via fmodstudiocl -build.",
+    "inputSchema": {
+      "properties": {
+        "project": {
+          "title": "Project",
+          "type": "string"
+        },
+        "banks": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Banks"
+        },
+        "platforms": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Desktop",
+          "title": "Platforms"
+        },
+        "export_guids": {
+          "default": false,
+          "title": "Export Guids",
+          "type": "boolean"
+        },
+        "ignore_warnings": {
+          "default": false,
+          "title": "Ignore Warnings",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "title": "build_banksArguments",
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "build_banksOutput",
+      "type": "object"
+    }
+  },
+  {
+    "name": "export_guids",
+    "description": "Export event/mixer guids via fmodstudiocl -export-guids (with build flags as supported).",
+    "inputSchema": {
+      "properties": {
+        "project": {
+          "title": "Project",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "title": "export_guidsArguments",
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "export_guidsOutput",
+      "type": "object"
+    }
+  },
+  {
+    "name": "run_script",
+    "description": "Run Studio JS via fmodstudiocl -script.",
+    "inputSchema": {
+      "properties": {
+        "project": {
+          "title": "Project",
+          "type": "string"
+        },
+        "script_js": {
+          "title": "Script Js",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project",
+        "script_js"
+      ],
+      "title": "run_scriptArguments",
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "run_scriptOutput",
+      "type": "object"
+    }
+  },
+  {
+    "name": "list_bank_outputs",
+    "description": "List *.bank under project directory tree.",
+    "inputSchema": {
+      "properties": {
+        "project_dir": {
+          "title": "Project Dir",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_dir"
+      ],
+      "title": "list_bank_outputsArguments",
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "list_bank_outputsOutput",
+      "type": "object"
+    }
+  }
+]

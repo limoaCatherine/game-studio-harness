@@ -4,4 +4,4 @@
 
 名单不是调用闸。职种只带路径第一步。默认写隔离根。
 
-拆解见 `docs/architecture.md`。正文在 `core/`。
+思路写在仓库根 `README.md`。完整包在仓根 `claude/`。

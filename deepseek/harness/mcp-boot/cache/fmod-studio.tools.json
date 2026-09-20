@@ -1,0 +1,3148 @@
+[
+  {
+    "name": "fmod_add_relationship",
+    "description": "Add an object to one of a target's relationships, e.g. relationship 'banks' on an event -> a 'bank:/...'. (target.relationships[name].add(other))",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object path ('event:/SFX/Hit', 'bank:/Master') or '{guid}'."
+        },
+        "relationship": {
+          "type": "string"
+        },
+        "other": {
+          "type": "string",
+          "description": "Path or '{guid}'."
+        }
+      },
+      "required": [
+        "target",
+        "relationship",
+        "other"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Asset_getAbsoluteAssetPath",
+    "description": "Retrieves the absolute path of the file the asset refers to. Returns the absolute path of the file the asset refers to. [method · Asset.getAbsoluteAssetPath]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Asset_getAssetPath",
+    "description": "Retrieves the path of the file the asset refers to, relative to the project assets directory. Returns the path of the file the asset refers to, relative to the project assets directory. [method · Asset.getAssetPath]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Asset_setAssetPath",
+    "description": "Sets the path of the file the asset refers to, relative to the project assets directory. Returns true if the operation succeeds, or false otherwise. [method · Asset.setAssetPath]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "filePath": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The path to move the asset to."
+        }
+      },
+      "required": [
+        "target",
+        "filePath"
+      ]
+    }
+  },
+  {
+    "name": "fmod_AudioTrack_addAutomationTrack",
+    "description": "Creates an automation track for a given property of an automatable object. Returns the automation track ManagedObject . [method · AudioTrack.addAutomationTrack]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "automatableObject": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Any model.AutomatableObject of the track such as a model.Sound , a model.MixerEffect , or the model.MixerBus of the track itself."
+        },
+        "propertyName": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Any valid automatable property of the specified model.AutomatableObject ."
+        }
+      },
+      "required": [
+        "target",
+        "automatableObject",
+        "propertyName"
+      ]
+    }
+  },
+  {
+    "name": "fmod_AutomatableObject_addAutomator",
+    "description": "Creates a model.Automator for a given property of the automatable object. Returns the automator ManagedObject . [method · AutomatableObject.addAutomator]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "propertyName": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The name of the automator to add."
+        }
+      },
+      "required": [
+        "target",
+        "propertyName"
+      ]
+    }
+  },
+  {
+    "name": "fmod_AutomatableObject_addModulator",
+    "description": "Creates a model.Modulator for a given property of the automatable object. Returns the modulator ManagedObject . [method · AutomatableObject.addModulator]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "modulatorType": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Type of modulator to add. Must be RandomizerModulator , ADSRModulator , SidechainModulator or AutopitchModulator ."
+        },
+        "propertyName": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The name of the property to modulate with the newly create modulator."
+        }
+      },
+      "required": [
+        "target",
+        "modulatorType",
+        "propertyName"
+      ]
+    }
+  },
+  {
+    "name": "fmod_AutomationCurve_addAutomationPoint",
+    "description": "Creates an automation point at the given position. Returns the automation point ManagedObject . [method · AutomationCurve.addAutomationPoint]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "position": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The timeline position to place the automation point. Must be within the range of the curve's parameter."
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The value to assign the automation point. Must be within the value range of the automated property."
+        }
+      },
+      "required": [
+        "target",
+        "position",
+        "value"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Automator_addAutomationCurve",
+    "description": "Creates a model.AutomationCurve on the parameter specified. Returns the automation curve ManagedObject . [method · Automator.addAutomationCurve]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "parameter": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Either a model.GameParameter or the model.Timeline of the event containing the object being automated."
+        }
+      },
+      "required": [
+        "target",
+        "parameter"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Bank_getPath",
+    "description": "Retrieves the bank's unique path identifier. Returns the bank's path as a string . [method · Bank.getPath]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_class_names",
+    "description": "List the project model's class/entity names (introspection: keys of studio.project.model).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_console_dump",
+    "description": "Logs all members of object. [method · console.dump]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "object"
+      ]
+    }
+  },
+  {
+    "name": "fmod_console_error",
+    "description": "Logs an error. Alias for studio.system.error . [method · console.error]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_console_log",
+    "description": "Logs a message. Alias for studio.system.print . [method · console.log]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_console_warn",
+    "description": "Logs a warning. Alias for studio.system.warn . [method · console.warn]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ConvolutionReverbEffect_setIRFromFilePath",
+    "description": "Sets the impulse response for a convolution reverb effect. [method · ConvolutionReverbEffect.setIRFromFilePath]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "filePath": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The absolute path to an audio data file."
+        }
+      },
+      "required": [
+        "target",
+        "filePath"
+      ]
+    }
+  },
+  {
+    "name": "fmod_create_event",
+    "description": "Composite: create an event, optionally import a one-shot sound onto a new audio track and assign the event to a bank. Equivalent to a create + importAudioFile + addGroupTrack + addSound + set audioFile + add bank relationship.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "sound": {
+          "type": "string",
+          "description": "Absolute path to an audio file to place as a one-shot."
+        },
+        "bank_name": {
+          "type": "string",
+          "description": "Bank to assign to, e.g. 'Master'. Omit to skip."
+        },
+        "folder_path": {
+          "type": "string",
+          "description": "Existing folder lookup path, e.g. 'event:/SFX'."
+        }
+      },
+      "required": [
+        "name"
+      ]
+    }
+  },
+  {
+    "name": "fmod_describe_class",
+    "description": "List a class's schema-defined property and relationship names — how to discover the dynamic members (use with fmod_get_property/fmod_set_property/fmod_add_relationship).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "description": "e.g. 'Event', 'SingleSound'."
+        }
+      },
+      "required": [
+        "className"
+      ]
+    }
+  },
+  {
+    "name": "fmod_entity_document",
+    "description": "Returns a string describing the entity, including its properties and relationships. Returns a string describing the entity, including its properties and relationships. [method · entity.document]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "description": "Model class name, e.g. 'Event', 'Bank', 'GroupTrack'."
+        }
+      },
+      "required": [
+        "className"
+      ]
+    }
+  },
+  {
+    "name": "fmod_entity_findInstances",
+    "description": "Returns an array of ManagedObject instances of a given entity type. Returns an array of ManagedObject instances of a given entity type. (bracketed args are optional) [method · entity.findInstances]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "description": "Model class name, e.g. 'Event', 'Bank', 'GroupTrack'."
+        },
+        "options": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": " (optional)"
+        }
+      },
+      "required": [
+        "className"
+      ]
+    }
+  },
+  {
+    "name": "fmod_entity_isAbstract",
+    "description": "A constant boolean value that is set to true if an object is the base class of another entity type. [property · entity.isAbstract]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "description": "Model class name, e.g. 'Event', 'Bank', 'GroupTrack'."
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      },
+      "required": [
+        "className"
+      ]
+    }
+  },
+  {
+    "name": "fmod_entity_isGlobal",
+    "description": "A constant boolean value that is set to true if an entity exists globally, rather than on a per project basis. [property · entity.isGlobal]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "description": "Model class name, e.g. 'Event', 'Bank', 'GroupTrack'."
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      },
+      "required": [
+        "className"
+      ]
+    }
+  },
+  {
+    "name": "fmod_entity_isSingleton",
+    "description": "A constant boolean value that is set to true if only a single ManagedObject instance of the entity can exist at any given time. [property · entity.isSingleton]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "description": "Model class name, e.g. 'Event', 'Bank', 'GroupTrack'."
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      },
+      "required": [
+        "className"
+      ]
+    }
+  },
+  {
+    "name": "fmod_entity_properties",
+    "description": "Returns an array of property description objects containing named properties that represent each ManagedObject property available for this entity. Returns an array of property description objects containing named properties that represent each ManagedObject property available for this entity. [property · entity.properties]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "description": "Model class name, e.g. 'Event', 'Bank', 'GroupTrack'."
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      },
+      "required": [
+        "className"
+      ]
+    }
+  },
+  {
+    "name": "fmod_entity_relationships",
+    "description": "Returns an array of relationship description objects, containing named relationships that represents each ManagedObject relationship available for this entity. Returns an array of relationship description objects, containing named relationships that represents each ManagedObject relationship available for this entity. [property · entity.relationships]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "description": "Model class name, e.g. 'Event', 'Bank', 'GroupTrack'."
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      },
+      "required": [
+        "className"
+      ]
+    }
+  },
+  {
+    "name": "fmod_entity_singletonInstance",
+    "description": "Returns the singleton ManagedObject instance of a particular entity type. Returns the singleton ManagedObject instance of a particular entity type. [method · entity.singletonInstance]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "description": "Model class name, e.g. 'Event', 'Bank', 'GroupTrack'."
+        }
+      },
+      "required": [
+        "className"
+      ]
+    }
+  },
+  {
+    "name": "fmod_entity_superEntities",
+    "description": "An array of strings representing the entity type inherited by this entity. [property · entity.superEntities]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "description": "Model class name, e.g. 'Event', 'Bank', 'GroupTrack'."
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      },
+      "required": [
+        "className"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_addGameParameter",
+    "description": "Adds a game parameter to the event. Returns the game parameter ManagedObject . [method · Event.addGameParameter]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "parameterDefinition": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Either a model.ParameterPreset , a model.GameParameter , or a parameterDefinition object."
+        }
+      },
+      "required": [
+        "target",
+        "parameterDefinition"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_addGroupTrack",
+    "description": "Adds an audio track with the given name to the event. Returns the newly created model. [method · Event.addGroupTrack]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "name": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The string value to assign the audio track when it is created."
+        }
+      },
+      "required": [
+        "target",
+        "name"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_addMarkerTrack",
+    "description": "Adds a marker track to the event. Returns the newly created model. [method · Event.addMarkerTrack]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_addReturnTrack",
+    "description": "Adds a return track with the given name to the event. Returns the newly created return track ManagedObject . [method · Event.addReturnTrack]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "name": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The string value to assign the return track when it is created."
+        }
+      },
+      "required": [
+        "target",
+        "name"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_get3DAttributes",
+    "description": "Retrieves the 3D attributes of an event. [method · Event.get3DAttributes]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_getCursorPosition",
+    "description": "Retrieves the cursor position. Returns the cursor position as a number . [method · Event.getCursorPosition]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "parameter": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The parameter to get to cursor postion of. Must be the event 's model.Timeline or one of the event's model.GameParameter s."
+        }
+      },
+      "required": [
+        "target",
+        "parameter"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_getParameterPresets",
+    "description": "Retrieves an array of preset parameters referenced by the event . Returns an array of all model. [method · Event.getParameterPresets]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_getPath",
+    "description": "Retrieves the event 's unique path identifier. Returns the event's path as a string . [method · Event.getPath]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_getPlayheadPosition",
+    "description": "Retrieves the playback position of a given parameter . Returns the playback position of a model. [method · Event.getPlayheadPosition]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "parameter": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The model.Timeline or model.GameParameter to retrieve the playback position of."
+        }
+      },
+      "required": [
+        "target",
+        "parameter"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_is3D",
+    "description": "Reports whether an event is 3D . Returns true if an event is 3D. [method · Event.is3D]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_isOneShot",
+    "description": "Reports whether an event is a one-shot. Returns true if an event is one-shot. [method · Event.isOneShot]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_isPaused",
+    "description": "Reports whether an event instance is paused. Returns true if an event instance is paused. [method · Event.isPaused]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_isPlaying",
+    "description": "Reports whether an event instance is playing. Returns true if an event instance is playing. [method · Event.isPlaying]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_isRecording",
+    "description": "Reports whether an event instance is being recorded in a profiler session . Returns true for profiler sessions with recording enabled. [method · Event.isRecording]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_isStopping",
+    "description": "Reports whether an event instance is stopping. Returns true if an event instance is stopping. [method · Event.isStopping]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_keyOff",
+    "description": "Sends the keyoff command to a currently playing event instance . [method · Event.keyOff]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_play",
+    "description": "Plays the event instance . [method · Event.play]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_returnToStart",
+    "description": "Moves the playback position to the cursor position if called while the event instance is playing, stopping, or paused, or to the start of the timeline while the event instance is stopped. [method · Event.returnToStart]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_set3DAttributes",
+    "description": "Sets the 3D attributes of an event instance being auditioned based on a 3D attributes object. [method · Event.set3DAttributes]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "attributes": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Object describing the 3D attributes to give to the event."
+        }
+      },
+      "required": [
+        "target",
+        "attributes"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_setCursorPosition",
+    "description": "Sets the cursor position to a number. [method · Event.setCursorPosition]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "parameter": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The parameter to set the cursor postion of. Either a model.Timeline or a model.GameParameter ."
+        },
+        "position": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical value to set the cursor postion to."
+        }
+      },
+      "required": [
+        "target",
+        "parameter",
+        "position"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_stopImmediate",
+    "description": "Stops an event instance immediately, skipping the stopping event state . [method · Event.stopImmediate]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_stopNonImmediate",
+    "description": "Commands a playing event instance to enter the stopping event state . [method · Event.stopNonImmediate]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_togglePause",
+    "description": "Toggles the pause state of an event instance . [method · Event.togglePause]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Event_toggleRecording",
+    "description": "Toggles the recording state for a profiler session. [method · Event.toggleRecording]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Folder_getItem",
+    "description": "Retrieves the item at the relative path specified. Returns the item at the relative path specified. [method · Folder.getItem]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "path": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Relative path of the item to retrieve."
+        }
+      },
+      "required": [
+        "target",
+        "path"
+      ]
+    }
+  },
+  {
+    "name": "fmod_GameParameter_getCursorPosition",
+    "description": "Retrieves the parameter 's cursor position. Returns the cursor position of the global user parameter as a number . [method · GameParameter.getCursorPosition]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_GameParameter_setCursorPosition",
+    "description": "Sets the cursor position of the global , user , or built-in parameter to a number. [method · GameParameter.setCursorPosition]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "position": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical position to set the parameter's cursor to."
+        }
+      },
+      "required": [
+        "target",
+        "position"
+      ]
+    }
+  },
+  {
+    "name": "fmod_get_property",
+    "description": "Read any property of an object — including dynamic, per-class managed properties not in the static reference (e.g. an event's 'timeline').",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object path ('event:/SFX/Hit', 'bank:/Master') or '{guid}'."
+        },
+        "property": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "target",
+        "property"
+      ]
+    }
+  },
+  {
+    "name": "fmod_global_alert",
+    "description": "Logs a message in a popup dialog (blocking). Alias for studio.system.message . [method · (global).alert]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_GroupBus_getItem",
+    "description": "Retrieves the mixer bus at the relative path specified. Returns the model. [method · GroupBus.getItem]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "path": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Relative path of the entity to get the model.MixerBus of."
+        }
+      },
+      "required": [
+        "target",
+        "path"
+      ]
+    }
+  },
+  {
+    "name": "fmod_GroupTrack_addSound",
+    "description": "Adds an instrument to the track on the model.Parameter specified. Returns the model. [method · GroupTrack.addSound]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "parameter": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The parameter sheet to add the sound to."
+        },
+        "soundType": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The type of the model.Sound . Must be model.SingleSound , model.MultiSound , or model.ProgrammerSound ."
+        },
+        "start": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical position of the new model.Sound . The value must be within the parameter 's range."
+        },
+        "length": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical length of the new model.Sound ."
+        }
+      },
+      "required": [
+        "target",
+        "parameter",
+        "soundType",
+        "start",
+        "length"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ManagedObject_document",
+    "description": "Returns a string describing this ManagedObject 's entity type. Returns a string describing this ManagedObject 's entity type. [method · ManagedObject.document]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ManagedObject_dump",
+    "description": "Logs all members. [method · ManagedObject.dump]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ManagedObject_entity",
+    "description": "A string representing the object's project.Entity type. [property · ManagedObject.entity]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ManagedObject_id",
+    "description": "The object's unique ID. [property · ManagedObject.id]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ManagedObject_isOfExactType",
+    "description": "Returns true if the object type matches the provided entity name. Returns true if the object type matches the provided entity name. [method · ManagedObject.isOfExactType]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "entityName": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The name of the project.Entity type to compare against."
+        }
+      },
+      "required": [
+        "target",
+        "entityName"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ManagedObject_isOfType",
+    "description": "Returns true if the object has an entity that matches the entity name, or is of a derived type. Returns true if the object has an entity that matches the entity name, or is of a derived type. [method · ManagedObject.isOfType]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "entityName": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The name of the project.Entity type to compare against."
+        }
+      },
+      "required": [
+        "target",
+        "entityName"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ManagedObject_isValid",
+    "description": "Returns whether an object is in a valid state. Returns whether an object is in a valid state. [property · ManagedObject.isValid]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ManagedObject_properties",
+    "description": "Provides access to an object's properties. Returns a ManagedPropertyMap . [property · ManagedObject.properties]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ManagedObject_relationships",
+    "description": "Provides access to an object's relationships. Returns a ManagedRelationshipMap . [property · ManagedObject.relationships]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_MarkerTrack_addNamedMarker",
+    "description": "Adds a destination marker to the marker track at the given position. Returns the named marker ManagedObject . [method · MarkerTrack.addNamedMarker]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "name": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The string value to assign the marker when created."
+        },
+        "position": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical position to place marker."
+        }
+      },
+      "required": [
+        "target",
+        "name",
+        "position"
+      ]
+    }
+  },
+  {
+    "name": "fmod_MarkerTrack_addRegion",
+    "description": "Adds a destination region to the marker track at the given position with the given length. Returns the newly created region's ManagedObject . [method · MarkerTrack.addRegion]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "position": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        },
+        "length": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical length of the new region."
+        },
+        "name": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The string value to assign the new region."
+        },
+        "loopMode": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "A number representing the region's loop mode. Defaults to project.regionLoopMode.Looping if loopMode is undefined . The loop mode can be set by passing in a valid loopMode argument, as described by the Project.regionLoopMode enum."
+        }
+      },
+      "required": [
+        "target",
+        "position",
+        "length",
+        "name",
+        "loopMode"
+      ]
+    }
+  },
+  {
+    "name": "fmod_MarkerTrack_addSustainPoint",
+    "description": "Adds a sustain point to the track at the given position. Returns the SustainPoint ManagedObject . [method · MarkerTrack.addSustainPoint]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "position": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical position to place the new sustain point at."
+        }
+      },
+      "required": [
+        "target",
+        "position"
+      ]
+    }
+  },
+  {
+    "name": "fmod_MarkerTrack_addTransitionMarker",
+    "description": "Adds a transition marker to the track at the given position. Returns the newly created TransitionMarker ManagedObject . [method · MarkerTrack.addTransitionMarker]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "position": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical position to place the new transition marker at."
+        },
+        "destination": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "A ManagedObject of type NamedMarker or LoopRegion ."
+        }
+      },
+      "required": [
+        "target",
+        "position",
+        "destination"
+      ]
+    }
+  },
+  {
+    "name": "fmod_MarkerTrack_addTransitionRegion",
+    "description": "Adds a transition region to the track at the given position with the given length. Returns the TransitionRegion ManagedObject . [method · MarkerTrack.addTransitionRegion]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "position": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical position to place the new transition region at."
+        },
+        "length": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical length of the new transition region."
+        },
+        "destination": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Either a NamedMarker or a LoopRegion ."
+        }
+      },
+      "required": [
+        "target",
+        "position",
+        "length",
+        "destination"
+      ]
+    }
+  },
+  {
+    "name": "fmod_MasterAssetFolder_getAsset",
+    "description": "Retrieves the asset at the path specified. Returns the model. [method · MasterAssetFolder.getAsset]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "path": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Relative path of the asset to retrieve."
+        }
+      },
+      "required": [
+        "target",
+        "path"
+      ]
+    }
+  },
+  {
+    "name": "fmod_menu_addMenuItem",
+    "description": "Registers a menu item under the \"Scripts\" menu, based on the description object: Returns true if the operation succeeds, or false otherwise. [method · menu.addMenuItem]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "required"
+      ]
+    }
+  },
+  {
+    "name": "fmod_menu_menuItems",
+    "description": "Returns an Array of menu item descriptions added with menu.addMenuItem() . The order of the Array matches the order in which the items were added. Returns an Array of menu item descriptions added with menu. [method · menu.menuItems]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_menu_removeMenuItem",
+    "description": "Removes a menu item that was added with menu.addMenuItem() . The description argument must match a description that the menu item was added with. Returns true if the operation succeeds, or false otherwise. [method · menu.removeMenuItem]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "description"
+      ]
+    }
+  },
+  {
+    "name": "fmod_MixerBus_getInputFormat",
+    "description": "Retrieves the input format of the bus . Returns the effective input format for a model. [method · MixerBus.getInputFormat]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_MixerBus_getOutputFormat",
+    "description": "Retrieves the output format of the bus . Returns the effective output format for a model. [method · MixerBus.getOutputFormat]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_MixerBusEffectChain_addEffect",
+    "description": "Creates an effect and adds it to the end of the chain. Returns the effect ManagedObject . [method · MixerBusEffectChain.addEffect]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "effectDefinition": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Either an EffectPreset , a model.MixerEffect that is a preset , or one of the following strings: - ThreeEQEffect - ChannelMixEffect - ChorusEffect - CompressorEffect - ConvolutionReverbEffect - DistortionEffect - DelayEffect - FlangerEffect - GainEffect - LimiterEffect - MultibandEqEffect - PitchShifterEffect - SFXReverbEffect - TransceiverEffect - TremoloEffect - HighpassEffect - HighpassSimpleEffect - LowpassEffect - LowpassSimpleEffect - ParamEqEffect - SpatialiserEffect - ObjectSpatialiserEffect - LoudnessMeter"
+        }
+      },
+      "required": [
+        "target",
+        "effectDefinition"
+      ]
+    }
+  },
+  {
+    "name": "fmod_MixerStrip_getPath",
+    "description": "Retrieves the mixer strip's unique path identifier. Returns the model. [method · MixerStrip.getPath]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Parameter_getPlayheadPosition",
+    "description": "Retrieves the playback position of a parameter, within the context of the associated model.Event . [property · Parameter.getPlayheadPosition]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ParameterPreset_getPath",
+    "description": "Retrieves the preset parameter's unique path identifier. Returns the parameter's path as a string . [method · ParameterPreset.getPath]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ParameterProxy_getCursorPosition",
+    "description": "Retrieves the preset parameter 's cursor position. Returns the cursor position as a number , within the context of the associated event . [method · ParameterProxy.getCursorPosition]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ParameterProxy_setCursorPosition",
+    "description": "Sets the cursor position of the preset parameter to a number. [method · ParameterProxy.setCursorPosition]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "position": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical position to set the parameter proxy's cursor to."
+        }
+      },
+      "required": [
+        "target",
+        "position"
+      ]
+    }
+  },
+  {
+    "name": "fmod_project_audioFileImported",
+    "description": "Callback triggered when an audio file has finished being imported. [property · project.audioFileImported]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_project_audioFileImported_connect",
+    "description": "Sets a function to be called when an audio file is imported, with the signature function(audioFile) . [method · project.audioFileImported.connect]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "callback": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "A callback function that will be called when an audio file import has completed."
+        }
+      },
+      "required": [
+        "callback"
+      ]
+    }
+  },
+  {
+    "name": "fmod_project_audioFileImported_disconnect",
+    "description": "Disconnects the connectFunction once it is no longer needed. It is important to disconnect the connected signals when they are no longer needed, otherwise they can accumulate and cause unexpected behavior. [method · project.audioFileImported.disconnect]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "connectFunction": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "connectFunction"
+      ]
+    }
+  },
+  {
+    "name": "fmod_project_build",
+    "description": "Builds all the banks to all the platforms listed in the build tab of the preferences dialog. Returns true if the operation succeeds, or false otherwise. [method · project.build]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_project_buildEnded",
+    "description": "A callback that will be fired when a build has completed. [property · project.buildEnded]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_project_buildEnded_connect",
+    "description": "Sets a function to be called after banks are built, with the signature function(success) . The success argument will be false if a build error occurs or the build is cancelled by the user, and true otherwise. For example: [method · project.buildEnded.connect]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "callback": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "A callback function that will be called when the build has ended."
+        }
+      },
+      "required": [
+        "callback"
+      ]
+    }
+  },
+  {
+    "name": "fmod_project_buildEnded_disconnect",
+    "description": "Disconnects the connectFunction once it is no longer needed. It is important to disconnect the connected signals when they are no longer needed, otherwise they can accumulate and cause unexpected behavior. [method · project.buildEnded.disconnect]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_project_buildStarted",
+    "description": "A callback that will be fired when a build has commenced. [property · project.buildStarted]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_project_buildStarted_connect",
+    "description": "Sets a function to be called before banks are built, with the signature function() . For example: [method · project.buildStarted.connect]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "callback": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "A callback function that will be called when the build has started."
+        }
+      },
+      "required": [
+        "callback"
+      ]
+    }
+  },
+  {
+    "name": "fmod_project_buildStarted_disconnect",
+    "description": "Disconnects the connectFunction once it is no longer needed. It is important to disconnect the connected signals when they are no longer needed, otherwise they can accumulate and cause unexpected behavior. [method · project.buildStarted.disconnect]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "connectFunction": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "connectFunction"
+      ]
+    }
+  },
+  {
+    "name": "fmod_project_create",
+    "description": "Returns a new instance of a ManagedObject of the given entity name. Returns a new instance of a ManagedObject of the given entity name. [method · project.create]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityName": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The name of the entity to create."
+        }
+      },
+      "required": [
+        "entityName"
+      ]
+    }
+  },
+  {
+    "name": "fmod_project_deleteObject",
+    "description": "Deletes the ManagedObject and its references, if any, from the project. Returns true if the operation succeeds, or false otherwise. [method · project.deleteObject]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "managedObject": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The managed object to delete."
+        }
+      },
+      "required": [
+        "managedObject"
+      ]
+    }
+  },
+  {
+    "name": "fmod_project_distanceRolloffType",
+    "description": "An enum corresponding to different distance attenuation roll-off types available to spatial effects. [property · project.distanceRolloffType]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_project_exportGUIDs",
+    "description": "Exports project \"guids.txt\". Returns true if the operation succeeds, or false otherwise. [method · project.exportGUIDs]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_project_filePath",
+    "description": "The absolute path to the project's \".fspro` file on disk. [property · project.filePath]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_project_findAvailablePlugins",
+    "description": "Returns an array of strings that lists all available plugins. Returns an array of strings that lists all available plugins. [method · project.findAvailablePlugins]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_project_importAudioFile",
+    "description": "Imports an audio asset into the project. Returns an model. [method · project.importAudioFile]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "filePath": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The absolute path to the file's location."
+        }
+      },
+      "required": [
+        "filePath"
+      ]
+    }
+  },
+  {
+    "name": "fmod_project_lookup",
+    "description": "Lookup a ManagedObject by path or GUID. Returns a ManagedObject found by GUID or path. [method · project.lookup]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "idOrPath": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "GUID or path of the ManageObject."
+        }
+      },
+      "required": [
+        "idOrPath"
+      ]
+    }
+  },
+  {
+    "name": "fmod_project_parameterType",
+    "description": "An enum corresponding to different model.Parameter types available. [property · project.parameterType]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_project_regionLoopMode",
+    "description": "An enum corresponding to different loop modes of a loop region. [property · project.regionLoopMode]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_project_save",
+    "description": "Saves the project. Returns true if the operation succeeds, or false otherwise. [method · project.save]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_remove_relationship",
+    "description": "Remove an object from one of a target's relationships. (target.relationships[name].remove(other))",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object path ('event:/SFX/Hit', 'bank:/Master') or '{guid}'."
+        },
+        "relationship": {
+          "type": "string"
+        },
+        "other": {
+          "type": "string",
+          "description": "Path or '{guid}'."
+        }
+      },
+      "required": [
+        "target",
+        "relationship",
+        "other"
+      ]
+    }
+  },
+  {
+    "name": "fmod_set_property",
+    "description": "Set any property of an object (e.g. instrument 'audioFile' = an asset, or 'name'). Value is auto-embedded: numbers/booleans as literals, a path or '{guid}' as an object reference, else a string.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object path ('event:/SFX/Hit', 'bank:/Master') or '{guid}'."
+        },
+        "property": {
+          "type": "string"
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        }
+      },
+      "required": [
+        "target",
+        "property",
+        "value"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Sound_setFadeInCurve",
+    "description": "Sets the fade-in curve of the instrument to the specified length and curve shape. [method · Sound.setFadeInCurve]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "length": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical duration of the new fade-in curve."
+        },
+        "curveShape": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical velocity of the curve. A value of 0 creates a linear fade-in, a positive value creates an accelerating fade-in, and a negative negative value creates a decelerating fade-in."
+        }
+      },
+      "required": [
+        "target",
+        "length",
+        "curveShape"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Sound_setFadeOutCurve",
+    "description": "Sets the fade-out curve of the instrument to the specified length and curve shape. [method · Sound.setFadeOutCurve]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "length": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical duration of the new fade-out curve."
+        },
+        "curveShape": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical velocity of the curve. A value of 0 creates a linear fade-out, a positive value creates an accelerating fade-out, and a negative negative value creates a decelerating fade-out."
+        }
+      },
+      "required": [
+        "target",
+        "length",
+        "curveShape"
+      ]
+    }
+  },
+  {
+    "name": "fmod_studio_application_filePath",
+    "description": "The absolute file path of the FMOD Studio process's executable. [property · studio.application.filePath]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_studio_os_platform",
+    "description": "The current operating system of the computer. Returns either \"mac\" for Mac OS X or \"win\" for all Windows versions. Returns either \"mac\" for Mac OS X or \"win\" for all Windows versions. [property · studio.os.platform]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_studio_version",
+    "description": "An object containing version information for the Studio tool: [property · studio.version]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_system_backtrace",
+    "description": "Returns the callstack as an array of strings. Returns the callstack as an array of strings. [method · system.backtrace]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_system_error",
+    "description": "Logs an error. [method · system.error]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_system_getFile",
+    "description": "Returns a studio.system.File object representing the file at filePath . Returns a studio. [method · system.getFile]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "filePath": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "filePath"
+      ]
+    }
+  },
+  {
+    "name": "fmod_system_getNumber",
+    "description": "Prompts for numeric input and returns the value, or null if cancelled (blocking). (bracketed args are optional) [method · system.getNumber]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        },
+        "defaultText": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": " (optional)"
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_system_getText",
+    "description": "Prompts for text input and returns the string, or null if cancelled (blocking). (bracketed args are optional) [method · system.getText]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        },
+        "defaultText": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": " (optional)"
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_system_message",
+    "description": "Logs a message in a popup dialog (blocking). [method · system.message]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_system_openMode",
+    "description": "An enumeration used with studio.system.File.open() to describe the mode in which a file is opened. Possible values are: [property · system.openMode]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_system_permission",
+    "description": "An enumeration used with studio.system.File.setPermissions() to alter the permissions of a file. The permissions of a file can be queried using studio.system.File.permissions . The values may be OR-ed together to test multiple permissions and ownership values. Possible values are: [property · system.permission]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_system_print",
+    "description": "Logs a message. [method · system.print]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_system_question",
+    "description": "Prompts for a 'yes'/'no' response to a given message and returns a boolean value (blocking). [method · system.question]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_system_readDir",
+    "description": "Returns a string array from the filters specified by readDirFiltersFlag from the filePath . If readDirFiltersFlag is not defined in the function call, a default of system.readDirFilters.AllEntries will be used. The available options are described by the system.readDirFilters enum. Returns a string array from the filters specified by readDirFiltersFlag from the filePath . [method · system.readDir]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "filePath": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        },
+        "readDirFiltersFlag": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "filePath",
+        "readDirFiltersFlag"
+      ]
+    }
+  },
+  {
+    "name": "fmod_system_readDirFilters",
+    "description": "An enumeration used with studio.system.readDir(filePath, readDirFiltersFlag) to describe the filters in which a string array will be returned. The filter value is specified by combining values from the following list using the bitwise OR operator: [property · system.readDirFilters]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_system_require",
+    "description": "Loads a javascript file as a library. The fileName passed can be either a relative or absolute path. The file being loaded should contain a module. For example: Returns the loaded js module object or null if unsuccessful. [method · system.require]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_system_start",
+    "description": "Runs an external process with options object { workingDir, args, timeout (milliseconds) } (blocking). Returns a result object { exitCode, standardOutput, standardError } . [method · system.start]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "pathToExecutable": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        },
+        "processOptions": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "pathToExecutable",
+        "processOptions"
+      ]
+    }
+  },
+  {
+    "name": "fmod_system_startAsync",
+    "description": "Runs an external asynchronous process with options object { workingDir, args } . Returns a studio. [method · system.startAsync]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "pathToExecutable": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        },
+        "processOptions": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "pathToExecutable",
+        "processOptions"
+      ]
+    }
+  },
+  {
+    "name": "fmod_system_verbose",
+    "description": "Logs a verbose message. [method · system.verbose]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_system_warn",
+    "description": "Logs a warning. [method · system.warn]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Timeline_getCursorPosition",
+    "description": "Retrieves the timeline 's cursor position. Returns the cursor position as a number , within the context of the associated event . [method · Timeline.getCursorPosition]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Timeline_setCursorPosition",
+    "description": "Sets the cursor position of the timeline to a number. [method · Timeline.setCursorPosition]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "position": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The numerical position to set the timeline to."
+        }
+      },
+      "required": [
+        "target",
+        "position"
+      ]
+    }
+  },
+  {
+    "name": "fmod_Triggerable_addParameterCondition",
+    "description": "Adds a parameter condition for a given parameter to a triggerable object. Returns the parameter condition ManagedObject . [method · Triggerable.addParameterCondition]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Object to act on: a path (e.g. 'event:/SFX/Hit', 'bank:/Master') or a '{guid}'."
+        },
+        "parameter": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "Can be either a model.ParameterPreset or a model.GameParameter ."
+        },
+        "min": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The minimum value of the parameter condition."
+        },
+        "max": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The maximum value of the parameter condition."
+        }
+      },
+      "required": [
+        "target",
+        "parameter",
+        "min",
+        "max"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ui_alignment",
+    "description": "An enumeration corresponding to the alignment of an item within a layout widget. Possible values are: [property · ui.alignment]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_ui_echoMode",
+    "description": "An enumeration corresponding to the echo mode of a LineEdit widget. This can be used to display asterisks instead of characters when entering a password. Possible values are: [property · ui.echoMode]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_ui_layoutType",
+    "description": "An enumeration corresponding to different layout types available within a UI widget description of widgetType.Layout . Possible values are: [property · ui.layoutType]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_ui_orientation",
+    "description": "An enumeration representing an orientation. Possible values are: [property · ui.orientation]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_ui_pathType",
+    "description": "An enumeration corresponding to the different path types the PathLineEdit supports. This controls the behavior of browser dialog presented. Possible values are: [property · ui.pathType]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_ui_showModalDialog",
+    "description": "Displays a dialog window. The function returns once the dialog has been closed. [method · ui.showModalDialog]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "description"
+      ]
+    }
+  },
+  {
+    "name": "fmod_ui_showModelessDialog",
+    "description": "Displays a dialog window. The function returns once the dialog is shown. Returns a sibling widget with the matching widgetId . [method · ui.showModelessDialog]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_ui_sizePolicy",
+    "description": "An enumeration corresponding to the size policy of a widget. This determines how much space it will try to consume within its layout, and how it will react when more or less space is made available. [property · ui.sizePolicy]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_ui_widgetType",
+    "description": "An enumeration corresponding to different widget types available within a UI widget description. Possible values are: [property · ui.widgetType]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_window_actions",
+    "description": "An enumeration used with studio.window.triggerAction() to trigger the execution of an action. Possible values are: [property · window.actions]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "New value to assign. Omit to read the current value."
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_window_browserCurrent",
+    "description": "Returns the currently selected ManagedObject in the active browser tab of the last active window. A tabName can optionally be specified to select from a different browser tab. Returns the currently selected ManagedObject in the active browser tab of the last active window. (bracketed args are optional) [method · window.browserCurrent]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "tabName": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": " (optional)"
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_window_browserSelection",
+    "description": "Returns an Array of selected ManagedObject s in the active browser tab of the last active window. A tabName can optionally be specified to select from a different browser tab. Returns an Array of selected ManagedObject s in the active browser tab of the last active window. (bracketed args are optional) [method · window.browserSelection]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "tabName": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": " (optional)"
+        }
+      }
+    }
+  },
+  {
+    "name": "fmod_window_deckCurrent",
+    "description": "Returns the currently selected ManagedObject in the deck of the last active window. Returns the currently selected ManagedObject in the deck of the last active window. [method · window.deckCurrent]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_window_deckSelection",
+    "description": "Returns an array of selected ManagedObject s in the deck of the last active window. Returns an array of selected ManagedObject s in the deck of the last active window. [method · window.deckSelection]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_window_editorCurrent",
+    "description": "Returns the currently selected ManagedObject in the last active editor (e.g. in the multitrack view). Returns the currently selected ManagedObject in the last active editor (e. [method · window.editorCurrent]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_window_editorSelection",
+    "description": "Returns an array of selected ManagedObject s in the last active editor (e.g. in the multitrack view). Returns an array of selected ManagedObject s in the last active editor (e. [method · window.editorSelection]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "fmod_window_navigateTo",
+    "description": "Attempts to navigate to a ManagedObject in the UI. Will open a new window if required. Returns true if successful. Returns true if successful. [method · window.navigateTo]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "managedObject": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "managedObject"
+      ]
+    }
+  },
+  {
+    "name": "fmod_window_open",
+    "description": "Opens a new window of the given window type (e.g. \"Event Editor\"). Returns true if the window request is valid, or false otherwise. [method · window.open]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "windowType": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "windowType"
+      ]
+    }
+  },
+  {
+    "name": "fmod_window_triggerAction",
+    "description": "Attempts to trigger the actionType action for the last active window. The available options are described by the window.actions enum. [method · window.triggerAction]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "actionType": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "actionType"
+      ]
+    }
+  },
+  {
+    "name": "fmod_workspace_addEvent",
+    "description": "Adds an event with the given name to the project . Returns the event's ManagedObject . [method · workspace.addEvent]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The string value to assign the new event."
+        },
+        "withSpatializer": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "A bool value determining whether to add an FMOD spatializer to the new event's master track ."
+        }
+      },
+      "required": [
+        "name",
+        "withSpatializer"
+      ]
+    }
+  },
+  {
+    "name": "fmod_workspace_addGameParameter",
+    "description": "Adds a preset parameter to the project. Returns the preset parameter ManagedObject . [method · workspace.addGameParameter]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "parameterDefinition": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "The object describing the parameter to add."
+        }
+      },
+      "required": [
+        "parameterDefinition"
+      ]
+    }
+  },
+  {
+    "name": "fmod_workspace_addTag",
+    "description": "Adds a tag with the given name to the project . Returns the tag ManagedObject . [method · workspace.addTag]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": "name of tag to add."
+        }
+      },
+      "required": [
+        "name"
+      ]
+    }
+  },
+  {
+    "name": "fmod_workspace_createPlugin",
+    "description": "Creates either a plug-in effect or a plug-in instrument . Returns the plug-in effect or plug-in instrument ManagedObject . [method · workspace.createPlugin]",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "identfier": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "description": ""
+        }
+      },
+      "required": [
+        "identfier"
+      ]
+    }
+  }
+]
