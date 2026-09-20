@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 760" width="560" height="760">
+  <rect width="560" height="760" fill="#ffffff"/>
+  <rect x="80" y="24" width="400" height="80" rx="12" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+  <text x="280" y="72" text-anchor="middle" font-size="20" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">一件交付一个会话</text>
+  <line x1="280" y1="104" x2="280" y2="144" stroke="#1e1e1e" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="80" y="144" width="400" height="80" rx="12" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+  <text x="280" y="192" text-anchor="middle" font-size="20" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">口径变了先改合同</text>
+  <line x1="280" y1="224" x2="280" y2="264" stroke="#1e1e1e" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="80" y="264" width="400" height="80" rx="12" fill="#d0bfff" stroke="#7048e8" stroke-width="2"/>
+  <text x="280" y="312" text-anchor="middle" font-size="20" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">岗位不同就分开做</text>
+  <line x1="280" y1="344" x2="280" y2="384" stroke="#1e1e1e" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="80" y="384" width="400" height="80" rx="12" fill="#ffd8a8" stroke="#e8590c" stroke-width="2"/>
+  <text x="280" y="432" text-anchor="middle" font-size="20" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">试错留在隔离根</text>
+  <line x1="280" y1="464" x2="280" y2="504" stroke="#1e1e1e" stroke-width="2" marker-end="url(#a)"/>
+  <ellipse cx="280" cy="572" rx="200" ry="44" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+  <text x="280" y="578" text-anchor="middle" font-size="20" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">人准之后才动正式面</text>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e"/>
+    </marker>
+  </defs>
+</svg>

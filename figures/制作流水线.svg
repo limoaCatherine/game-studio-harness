@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 760" width="560" height="760">
+  <rect width="560" height="760" fill="#ffffff"/>
+  <rect x="80" y="24" width="400" height="88" rx="12" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+  <text x="280" y="60" text-anchor="middle" font-size="22" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">方向</text>
+  <text x="280" y="90" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#364fc7">支柱 · 范围 · 体验裁决</text>
+  <line x1="280" y1="112" x2="280" y2="148" stroke="#1e1e1e" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="80" y="148" width="400" height="88" rx="12" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+  <text x="280" y="184" text-anchor="middle" font-size="22" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">规则与数值</text>
+  <text x="280" y="214" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#2b8a3e">系统 · 战斗 · 养成与经济</text>
+  <line x1="280" y1="236" x2="280" y2="272" stroke="#1e1e1e" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="80" y="272" width="400" height="88" rx="12" fill="#d0bfff" stroke="#7048e8" stroke-width="2"/>
+  <text x="280" y="308" text-anchor="middle" font-size="22" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">体验与资产</text>
+  <text x="280" y="338" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#5f3dc4">叙事交互 · 关卡 · 美术音频</text>
+  <line x1="280" y1="360" x2="280" y2="396" stroke="#1e1e1e" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="80" y="396" width="400" height="88" rx="12" fill="#ffd8a8" stroke="#e8590c" stroke-width="2"/>
+  <text x="280" y="432" text-anchor="middle" font-size="22" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">工程与验收</text>
+  <text x="280" y="462" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#d9480f">客户端 · 服务端 · 测试</text>
+  <line x1="280" y1="484" x2="280" y2="520" stroke="#1e1e1e" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="80" y="520" width="400" height="88" rx="12" fill="#ffec99" stroke="#e8590c" stroke-width="2"/>
+  <text x="280" y="556" text-anchor="middle" font-size="22" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">运营</text>
+  <text x="280" y="586" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#e67700">活服 · 商业化 · 发版</text>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e"/>
+    </marker>
+  </defs>
+</svg>

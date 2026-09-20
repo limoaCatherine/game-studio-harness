@@ -153,9 +153,9 @@ def main() -> int:
         pack / "codex",
         pack / "grok",
         pack / "deepseek",
-        pack / "docs",
-        pack / "scripts" / "install.py",
-        pack / "scripts" / "verify_install.py",
+        pack / "figures",
+        pack / "install" / "install.py",
+        pack / "install" / "verify_install.py",
         pack / "README.md",
     ]
     for root in scan_roots:

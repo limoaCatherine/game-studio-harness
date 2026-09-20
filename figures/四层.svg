@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 640" width="560" height="640">
+  <rect width="560" height="640" fill="#ffffff"/>
+  <rect x="80" y="24" width="400" height="88" rx="12" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+  <text x="280" y="60" text-anchor="middle" font-size="22" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">第一层 宪法</text>
+  <text x="280" y="90" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#364fc7">每轮固定税，必须薄</text>
+  <line x1="280" y1="112" x2="280" y2="152" stroke="#1e1e1e" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="80" y="152" width="400" height="88" rx="12" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+  <text x="280" y="188" text-anchor="middle" font-size="22" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">第二层 定档</text>
+  <text x="280" y="218" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#2b8a3e">对第三层握手，加载切片</text>
+  <line x1="280" y1="240" x2="280" y2="280" stroke="#1e1e1e" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="80" y="280" width="400" height="88" rx="12" fill="#d0bfff" stroke="#7048e8" stroke-width="2"/>
+  <text x="280" y="316" text-anchor="middle" font-size="22" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">第三层 能力库</text>
+  <text x="280" y="346" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#5f3dc4">技能、职种、外接</text>
+  <line x1="280" y1="368" x2="280" y2="408" stroke="#1e1e1e" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="80" y="408" width="400" height="88" rx="12" fill="#ffd8a8" stroke="#e8590c" stroke-width="2"/>
+  <text x="280" y="444" text-anchor="middle" font-size="22" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#1e1e1e">第四层 档案柜</text>
+  <text x="280" y="474" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#d9480f">状态在文件里，不推理</text>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e"/>
+    </marker>
+  </defs>
+</svg>

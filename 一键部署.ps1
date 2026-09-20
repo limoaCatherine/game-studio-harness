@@ -54,8 +54,8 @@ if (-not $CursorOnly -and -not $Workspace) {
     }
 }
 
-$install = @($py) + $pyArgs + @((Join-Path $Root "scripts\install.py"))
-$verify = @($py) + $pyArgs + @((Join-Path $Root "scripts\verify_install.py"))
+$install = @($py) + $pyArgs + @((Join-Path $Root "install\install.py"))
+$verify = @($py) + $pyArgs + @((Join-Path $Root "install\verify_install.py"))
 if ($CursorOnly) {
     $install += "--cursor-only"
     $verify += "--cursor-only"
@@ -82,10 +82,6 @@ if (-not $DryRun) {
 Write-Host ""
 Write-Host "部署完成。" -ForegroundColor Green
 if (-not $CursorOnly) {
-    Write-Host "下一步：用 Cursor / Claude Code / Codex / Grok / DeepSeek Harness 打开 $Workspace"
-    Write-Host "1. 改 $Workspace\.harness\surfaces.json 的 official / sandbox"
-    Write-Host "2. 写 .harness\sessions\<短名>\loadplan.json"
-    Write-Host "3. python $env:USERPROFILE\.gsh\harness\scripts\生成会话能力名单.py <短名>"
+    Write-Host "用 Cursor / Claude Code / Codex / Grok / DeepSeek Harness 打开 $Workspace"
 }
-Write-Host "外接软件不是本包的一部分。需要哪些、怎么用：docs\\tools\\总览.md"
 exit 0

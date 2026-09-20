@@ -3,6 +3,6 @@
   "layout": "five-complete-harness-roots",
   "software_in_pack": false,
   "public": true,
-  "entry": ["一键部署.bat", "一键部署.ps1", "scripts/install.py"],
+  "entry": ["一键部署.bat", "一键部署.ps1", "install/install.py"],
   "tools": ["cursor", "claude", "codex", "grok", "deepseek"]
 }
