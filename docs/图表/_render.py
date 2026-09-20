@@ -99,10 +99,7 @@ def radar(path: Path) -> None:
         "多工具适配",
     ]
     series = [
-        ("通用编程助手", "#8b939c", [2.0, 1.2, 0.8, 1.5, 0.6, 2.4, 1.4, 2.0, 1.0, 1.2]),
-        ("48h 黑客马拉松技能包", "#cf222e", [2.6, 2.0, 1.4, 2.2, 1.8, 3.4, 1.6, 2.2, 1.2, 2.4]),
-        ("引擎向 GameStudio 类仓", "#fb8f44", [3.6, 2.4, 2.0, 3.4, 3.2, 4.6, 2.2, 3.6, 2.0, 4.6]),
-        ("本仓（清单计分）", "#1f6feb", [4.6, 4.8, 4.7, 4.2, 4.6, 4.0, 4.7, 4.6, 4.9, 4.8]),
+        ("本仓清单：该面有岗可点", "#1f6feb", [4.6, 4.8, 4.7, 4.2, 4.6, 4.0, 4.7, 4.6, 4.9, 4.8]),
     ]
     W, H = 920, 560
     cx, cy, r = 360, 300, 190
@@ -138,7 +135,7 @@ def radar(path: Path) -> None:
             f'<polygon fill="{color}" fill-opacity="{opacity}" stroke="{color}" stroke-width="2" points="{" ".join(pts)}"/>'
         )
 
-    body = [poly(vals, color, "0.10" if i < 3 else "0.22") for i, (_, color, vals) in enumerate(series)]
+    body = [poly(vals, color, "0.28") for _, color, vals in series]
     legend = []
     for i, (name, color, _) in enumerate(series):
         legend.append(
@@ -147,8 +144,8 @@ def radar(path: Path) -> None:
         )
     path.write_text(
         svg_head(W, H, "制作流程覆盖雷达")
-        + '<text x="40" y="32" class="title">全制作流程覆盖雷达</text>'
-        + '<text x="40" y="54" class="sub">按本仓 35 职种 / 106 技能 / 36 外接清单计分，对照公开的通用助手、Jam 包与引擎向 GameStudio 类仓。不是第三方评测、不是实测 SLA。</text>'
+        + '<text x="40" y="32" class="title">本仓制作面覆盖（清单计分）</text>'
+        + '<text x="40" y="54" class="sub">按 35 职种 / 106 技能 / 36 外接计分：该面有没有岗和做法可点。不是评测榜，也不是某项目完成度。</text>'
         + "".join(rings) + "".join(spokes) + "".join(body) + "".join(labels) + "".join(legend)
         + "</svg>\n",
         encoding="utf-8",
@@ -187,64 +184,31 @@ def bars(path: Path) -> None:
     )
 
 
-def jam(path: Path) -> None:
-    hours = [0, 8, 16, 24, 36, 48]
-    generic = [8, 18, 24, 28, 30, 31]
-    ours = [12, 28, 44, 58, 70, 78]
-    chart(
-        path,
-        "48 小时黑客马拉松可覆盖工作面（示意模型）",
-        "同一支小队、同一套代理：通用助手停在写代码；本仓按职种拆开后能同时推进策划、表、美术挂点、权威与验收。",
-        "Jam 已过小时",
-        "已覆盖工作面（相对指数）",
-        [
-            ("一个通用编程助手", "#8b939c", hours, generic),
-            ("本仓：职种拆分 + 点名注入", "#1f6feb", hours, ours),
-        ],
-        0,
-        90,
-    )
-
-
-def compare(path: Path) -> None:
-    items = [
-        ("引擎代码技能堆", 3, 5, 3),
-        ("制作操作系统（定档/结案）", 5, 2, 2),
-        ("写隔离 + 记录集晋升", 5, 2, 1),
-        ("Excel / 配表生产", 5, 1, 0),
-        ("DCC / 音频 / 关卡外接", 5, 3, 1),
-        ("服务端战斗权威", 5, 2, 1),
-        ("活服 / 商业化 / 经济", 5, 2, 1),
-        ("多工具适配", 5, 5, 3),
+def funnel(path: Path) -> None:
+    rows = [
+        ("菜单全集", "106 技能 · 35 职种 · 36 外接", 760, "#d0d7de"),
+        ("第二层点名", "只把本轮 id 写入计划", 620, "#8b939c"),
+        ("activated.json", "职种不预展开，只留 craft_open", 480, "#8250df"),
+        ("开场注入", "宪法 + 现行卡 + 点名正文", 340, "#1f6feb"),
+        ("记忆按键", "retrieve_keys 命中的 canon / adr", 220, "#1a7f37"),
+        ("制作中按步打开", "路径下一步 · 当场调用的外接", 160, "#bf3989"),
     ]
-    W, H = 920, 480
-    L, T = 260, 78
-    body = []
-    colors = ("#1f6feb", "#fb8f44", "#8b939c")
-    names = ("本仓", "引擎向公开仓", "通用 Superpowers 类")
-    for i, (label, a, b, c) in enumerate(items):
-        y = T + i * 44
-        body.append(f'<text x="248" y="{y + 16}" text-anchor="end" class="lab">{label}</text>')
-        for j, val in enumerate((a, b, c)):
-            x = L + j * 200
-            w = 36 * val
-            body.append(
-                f'<rect x="{x}" y="{y}" width="{w}" height="22" rx="3" fill="{colors[j]}" fill-opacity="0.9"/>'
-                f'<text x="{x + w + 6}" y="{y + 16}" class="tick">{val}</text>'
-            )
-    legend = []
-    for i, (name, color) in enumerate(zip(names, colors)):
-        legend.append(
-            f'<rect x="{260 + i * 180}" y="440" width="14" height="14" rx="2" fill="{color}"/>'
-            f'<text x="{280 + i * 180}" y="452" class="leg">{name}</text>'
+    W, H = 840, 460
+    parts = [
+        '<text x="40" y="32" class="title">上下文注入漏斗</text>',
+        '<text x="40" y="54" class="sub">名单决定开场先读谁，不是调用闸。过程中仍可打开未点名的技能，只是不预交税。</text>',
+    ]
+    y = 78
+    for i, (title, sub, w, color) in enumerate(rows):
+        x = 40 + (760 - w) / 2
+        ink = "#1f2328" if i <= 1 else "#ffffff"
+        parts.append(
+            f'<rect x="{x:.1f}" y="{y}" width="{w}" height="52" rx="6" fill="{color}"/>'
+            f'<text x="420" y="{y + 22}" text-anchor="middle" class="leg" fill="{ink}">{title}</text>'
+            f'<text x="420" y="{y + 40}" text-anchor="middle" class="cap" fill="{ink}">{sub}</text>'
         )
-    path.write_text(
-        svg_head(W, H, "能力对照")
-        + '<text x="40" y="32" class="title">和公开顶级 harness 仓比什么</text>'
-        + '<text x="40" y="54" class="sub">对照 GameStudio / YJack 一类引擎技能堆，以及 Superpowers 一类通用编程方法论。分数是架构定位，不是下载量或评测榜。</text>'
-        + "".join(body) + "".join(legend) + "</svg>\n",
-        encoding="utf-8",
-    )
+        y += 60
+    path.write_text(svg_head(W, H, "注入漏斗") + "".join(parts) + "</svg>\n", encoding="utf-8")
 
 
 def kpi(path: Path) -> None:
@@ -280,8 +244,8 @@ def pipeline(path: Path) -> None:
         ("9 能运营", "活动 / 邮件 / 商业化 KPI"),
     ]
     W, H = 920, 300
-    parts = ['<text x="40" y="32" class="title">一条游戏制作流水线，而不是一堆代码技能</text>',
-             '<text x="40" y="54" class="sub">九段都能点到职种主路径。引擎向公开仓通常在 6 段最厚；本仓在 3 / 7 / 9 段明显更厚。</text>']
+    parts = ['<text x="40" y="32" class="title">九段制作面，每一段都能点到岗</text>',
+             '<text x="40" y="54" class="sub">点职种只打开路径第一步。数值、权威、活服和验收与引擎导入走同一套定档口径。</text>']
     for i, (title, sub) in enumerate(stages):
         x = 28 + (i % 9) * 98
         y = 86
@@ -341,11 +305,10 @@ def main() -> None:
     )
     radar(OUT / "覆盖雷达.svg")
     bars(OUT / "职种覆盖.svg")
-    jam(OUT / "黑客马拉松.svg")
-    compare(OUT / "能力对照.svg")
+    funnel(OUT / "注入漏斗.svg")
     kpi(OUT / "清单KPI.svg")
     pipeline(OUT / "全流程.svg")
-    print("wrote 9 charts")
+    print("wrote charts")
 
 
 if __name__ == "__main__":
