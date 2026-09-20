@@ -152,6 +152,7 @@ def land_shared(pack: Path, h, profile: str, dry: bool, copied: list[str]) -> di
     copy_tree(pack / "harness" / "mcp-tools", h.gsh_harness / "mcp-tools", dry, copied)
     copy_tree(pack / "harness" / "docs", h.gsh_harness / "docs", dry, copied)
     copy_tree(pack / "harness" / "mcp-boot", h.gsh_harness / "mcp-boot", dry, copied)
+    copy_tree(pack / "harness" / "templates", h.gsh_harness / "templates", dry, copied)
     copy_file(
         pack / "harness" / "host-paths.example.json",
         h.gsh_harness / "host-paths.example.json",

@@ -18,6 +18,7 @@ Do **not** add `cursor/skills`, `claude/skills`, or `.cursor/skills`. After you 
 ```bash
 python -m gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
 python -m gsh verify --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --tools all
+python -m gsh menu --kind craft -q ttk
 python -m unittest discover -s tests -v
 ```
 

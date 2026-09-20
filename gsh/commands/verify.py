@@ -25,6 +25,7 @@ NEED_SCRIPTS = (
     "应用外接档位.py",
     "拉起外接.py",
     "gsh_paths.py",
+    "职种路径.py",
 )
 USER_PATH = re.compile(r"[A-Za-z]:\\Users\\(?!\$\{)[A-Za-z0-9._-]+")
 DRIVE_HOST = re.compile(r"[A-Za-z]:\\Harness-Apps|[A-Za-z]:/Harness-Apps")

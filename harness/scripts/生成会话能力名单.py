@@ -6,12 +6,29 @@ import json
 import sys
 from pathlib import Path
 
-try:
-    from gsh_paths import find_catalog
+import os
 
-    CATALOG = find_catalog()
-except Exception:
-    CATALOG = Path.home() / ".cursor" / "harness" / "catalog.json"
+
+def resolve_catalog() -> Path:
+    env = (os.environ.get("GSH_CATALOG") or "").strip()
+    if env and Path(env).is_file():
+        return Path(env)
+    try:
+        from gsh_paths import find_catalog, find_pack_root
+
+        found = find_catalog()
+        if found.is_file():
+            return found
+        pack = find_pack_root()
+        cand = pack / "harness" / "catalog.json"
+        if cand.is_file():
+            return cand
+        return found
+    except Exception:
+        return Path.home() / ".cursor" / "harness" / "catalog.json"
+
+
+CATALOG = resolve_catalog()
 
 
 def load_json(path: Path):
@@ -71,12 +88,13 @@ def main(argv: list[str]) -> int:
     if not plan_path.is_file():
         print(f"missing loadplan: {plan_path}", file=sys.stderr)
         return 2
-    if not CATALOG.is_file():
-        print(f"missing catalog: {CATALOG} (run 刷新菜单.py)", file=sys.stderr)
+    catalog_path = CATALOG if CATALOG.is_file() else resolve_catalog()
+    if not catalog_path.is_file():
+        print(f"missing catalog: {catalog_path} (run 刷新菜单.py or gsh setup)", file=sys.stderr)
         return 2
 
     plan = load_json(plan_path)
-    catalog = load_json(CATALOG)
+    catalog = load_json(catalog_path)
     ids = catalog_ids(catalog)
     aliases = catalog_alias_map(catalog)
 
@@ -128,6 +146,10 @@ def main(argv: list[str]) -> int:
         if uses:
             craft_open[cid] = uses[0]
 
+    from 职种路径 import build_paths  # type: ignore
+
+    craft_path = build_paths(catalog, crafts, craft_open)
+
     mcp_tools = {}
     for row in catalog.get("mcp") or []:
         if row.get("id") in mcps and row.get("tools"):
@@ -144,11 +166,12 @@ def main(argv: list[str]) -> int:
         "retrieve_keys": plan.get("retrieve_keys") or [],
         "forbid": plan.get("forbid") or [],
         "source": "生成会话能力名单.py",
-        "catalog": str(CATALOG),
+        "catalog": str(catalog_path),
         "ok": len(errors) == 0,
         "skills": skills,
         "crafts": crafts,
         "craft_open": craft_open,
+        "craft_path": craft_path,
         "mcp_allow": mcps,
         "mcp_expanded": expanded,
         "mcp_tools": mcp_tools,

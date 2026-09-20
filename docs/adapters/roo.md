@@ -6,7 +6,7 @@
 
 - `gsh-director`：定档，写 loadplan，不改正式面
 - `gsh-maker`：只做当前 `craft_open` 或点名技能，默认 sandbox
-- `gsh-closer`：写 verify-report，拒绝口头绿
+- `gsh-closer`：运行 `python -m gsh close` 并附上证据路径
 
 没有事件钩子。`HOOKS.md` 补开场与关项。
 

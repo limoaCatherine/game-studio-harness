@@ -1,5 +1,7 @@
 # 架构文档
 
+四层各自做什么、你用哪条命令。
+
 - [L1 宪法](l1-constitution.md)
 - [L2 定档](l2-director.md)
 - [L3 能力库](l3-capability.md)

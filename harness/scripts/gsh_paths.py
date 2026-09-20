@@ -142,6 +142,10 @@ def find_catalog(h: Homes | None = None) -> Path:
     for path in catalog_candidates(homes):
         if path.is_file():
             return path
+    pack = find_pack_root()
+    pack_cat = pack / "harness" / "catalog.json"
+    if pack_cat.is_file():
+        return pack_cat
     return homes.gsh_harness / "catalog.json"
 
 

@@ -1,26 +1,28 @@
 # Changelog
 
+## 0.3.0
+
+- Craft paths are a runnable pipeline: `activated.json` now stores `craft_path`, and `python -m gsh next` advances the current step.
+- Session continuity: `python -m gsh status` / `resume` read `current.md`, `state.json`, and the latest verify report.
+- Close workflow: `python -m gsh close` writes `verify-report.json` from a template and appends the audit log.
+- Director menu: `python -m gsh menu` looks up craft/skill ids. Boot context refuses a dumped catalog.
+- `python -m gsh activate <session>` generates the roster from a loadplan.
+- README / architecture rewritten capability-first (install → start using → what's inside → concepts → philosophy → guides → platform → MCP → security). No hero image. No defect-catalog chapters.
+
 ## 0.2.1
 
-- Each selected tool home is now a complete native tree: entry files, rules, skills, crafts, hooks or `HOOKS.md`, MCP example, `gsh-capability.json`.
-- 19 adapters: Cursor, Claude Code, Codex, Windsurf, Cline, Roo Code, Continue.dev, GitHub Copilot, OpenCode, Gemini CLI, Aider, Zed, Amazon Q Developer, Trae, JetBrains Junie, Grok, DeepSeek, Kimi Code, Qwen Code.
-- Claude Code `settings.json` invokes the same Python hooks (`开场.py` / `命令前.py` / `读文件前.py` / `结束.py`).
-- Studio roots receive native convention files for those tools (no second 106-skill copy in the pack).
-- README / README.en design philosophy rewritten in GSH's own voice. Negative-definition lists removed.
-- Default `--tools` is `all`. `legacy` still means cursor+claude+codex+grok+deepseek.
+- Each selected tool home is a complete native tree.
+- 19 adapters. Claude Code `settings.json` invokes the same Python hooks.
+- Default `--tools all`.
 
 ## 0.2.0
 
-Layout refactor: one content source, generated projections, GSH game-production semantics.
+Layout refactor: one content source, generated projections.
 
 - Single source of truth at repo root: `skills/`, `agents/`, `rules/`, `hooks/`, `harness/`.
-- Removed the in-repo copies under `cursor/`, `claude/`, `codex/`, `grok/`, `deepseek/`.
-- Python 3.11+ CLI: `python -m gsh setup|sync|verify|doctor|uninstall` with profiles and isolate root.
+- Python 3.11+ CLI: setup / sync / verify / doctor / uninstall.
 - Honest MCP policy (0 live servers shipped).
-- Bilingual README + architecture / adapter / cookbook docs.
-- Tests for catalog, unique IDs, no craft pre-expand, secret scan, SSOT layout, isolate CLI.
 
 ## 0.1.0
 
-- Four-layer freeze: constitution, director, capability library, filing cabinet.
-- Five complete tool trees and a one-shot installer.
+- Four-layer freeze and a one-shot installer.

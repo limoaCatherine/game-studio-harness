@@ -67,8 +67,9 @@ def main() -> None:
                     return
         if not verdict_is_pass(report):
             out["followup_message"] = (
-                f"结案未完成：工作项 {bead} 的验证结论还不是通过。"
-                f"先写出 {path.as_posix()} 且为通过，再关项或宣称完成。"
+                f"工作项 {bead} 还没有通过的验证报告。运行 "
+                f"`python -m gsh close --kind smoke --evidence <产物路径>` "
+                f"写出 {path.as_posix()} 后再关项。"
             )
             print(json.dumps(out, ensure_ascii=False))
             return
