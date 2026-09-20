@@ -1,20 +1,38 @@
-# 安全
+# Security
 
-## 报告
+## Report
 
-请用 GitHub 私密漏洞报告，不要开公开 issue。
+Use a [GitHub private vulnerability report](https://github.com/limoaCatherine/game-studio-harness/security/advisories/new). Do not open a public issue for secrets, hook bypasses, or a way to skip confirmation on destructive Git operations.
 
-## 范围
+## Supported versions
 
-本仓、安装器、五套工具目录里的架构文件。
+| Version | Supported |
+|---|---|
+| 0.4.x | Yes |
+| < 0.4 | Best effort on the current `main` only |
 
-## 密钥
+## Scope
 
-- 密钥不进仓库。`mcp.json.example` 只放占位符。
-- 安装器不会覆盖已有的 `mcp.json`。
-- 若密钥误提交：立即轮换，再重写历史，不要只 revert。
+This repository, the `gsh` CLI, hook scripts, generated projections, and GitHub Release wheels. Host DCC processes and third-party MCP servers that you install locally are **out of scope** for GSH itself.
 
-## 供应链
+## Secrets
 
-- 发布与安装只指向本仓。
-- 第三方包未列入官方面之前按非官方处理。
+- Secrets do not belong in git or in a Release asset. `harness/mcp.json.example` uses `${PLACEHOLDER}` only.
+- Setup never overwrites an existing `mcp.json`.
+- Cursor `beforeReadFile` denies common secret paths. Other tools do not get that gate — do not assume they do.
+- If a secret is committed: rotate it, then rewrite history. A revert commit is not enough.
+
+## Supply chain
+
+- Install from this GitHub repository or from its GitHub Release assets (`*.whl`, `*.tar.gz`, `SHA256SUMS`).
+- Verify the checksum before `pipx install ./game_studio_harness-*.whl`.
+- Treat unofficial zips and mirrors as untrusted.
+- PyPI (`game-studio-harness`) is not published yet. When it is, install only that project name from PyPI via Trusted Publisher builds. See [docs/release.md](docs/release.md).
+- This pack ships **zero** live MCP servers. A file under `harness/mcp-tools/` is a purpose stub.
+
+## Isolate before real homedirs
+
+```bash
+gsh setup --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
+gsh verify --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws
+```

@@ -1,25 +1,70 @@
-# 贡献
+# Contributing
 
-## 技能
+## Environment
 
-落在 `skills/<id>/SKILL.md`。frontmatter 写 `name`、`description`，常用外接写 `needs_mcp`。当次数字、当次路径不进技能正文。
+Python 3.11+. From a clone:
 
-## 职种
+```bash
+python -m pip install -e ".[dev]"
+gsh --version
+```
 
-落在 `agents/<id>.md`。`uses_skills` 是序列，不是开场必读清单。
+Runtime has no third-party dependencies. `requirements.txt` is a pointer; `requirements-dev.txt` pins contributor tools.
 
-## 外接
+## Single source of truth
 
-键写进 `mcp.json` 示例，刷新菜单补用途桩。新外接默认懒接。
+Edit capability files **once**, at the repository root:
 
-## 目录
+| Kind | Path |
+|---|---|
+| Skill | `skills/<id>/SKILL.md` |
+| Craft | `agents/<id>.md` |
+| Rule | `rules/*.mdc` |
+| Hook | `hooks/` |
+| Runtime | `harness/` |
+| CLI | `gsh/` |
 
-五套工具目录各自齐套。改一套，其余四套同步。
+Do **not** add `cursor/skills`, `claude/skills`, or `.cursor/skills`. Do **not** commit `gsh/pack_data/` — hatchling copies the root trees into the wheel at build time.
 
-## 文档
+After you change the root:
 
-公共说明是双语的：[README.md](README.md) 与 [README.en.md](README.en.md)。索引见 [docs/README.md](docs/README.md)。新增职种或技能后，两份 README 的部门能力地图都要补上对应 id，保持 35/35、106/106 全覆盖。
+```bash
+gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
+gsh verify --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --tools all
+gsh menu --kind craft -q ttk
+python -m unittest discover -s tests -v
+```
 
-## 提交
+Optional: `ruff check gsh tests`.
 
-`feat:` / `fix:` / `docs:` / `chore:`。改架构先写决策。
+A pull request that changes `gsh/` or pack layout should also survive `python -m build` and `pip install` of the wheel from an empty working directory (see `.github/workflows/ci.yml` job `pack`).
+
+## Skills
+
+Frontmatter must include `name` and `description`. Common hosts go in `needs_mcp` as catalog ids, not as invented names. Session numbers and machine paths stay out of the body.
+
+## Crafts
+
+`uses_skills` is a sequence. The roster generator must open only the first skill. Do not paste session TTK numbers into a craft file.
+
+## MCP
+
+Add a purpose stub under `harness/mcp-tools/<id>.json` and a placeholder block in `harness/mcp.json.example`. New hosts default to lazy. Do not commit a live server, a secret, or a Windows user-profile absolute path.
+
+## Architecture
+
+The four layers are frozen. Changing them requires a steer, a new loadplan, and an ADR under the studio filing cabinet — not a drive-by new top-level folder.
+
+## Docs
+
+Depth lives under `docs/`. README keeps the purpose → capabilities → problems → philosophy → concepts → guides → platform → install order. Do not add decorative images; badges must be absolute shields.io URLs.
+
+Public docs are bilingual: [README.md](README.md) and [README.en.md](README.en.md). After adding a craft or skill, both department capability maps must mention the id (35/35 crafts, 106/106 skills). `python install/verify_readme_catalog.py` checks this.
+
+## Releases
+
+Maintainers cut versions per [docs/release.md](docs/release.md). Contributors do not push tags.
+
+## Commit style
+
+`feat:` / `fix:` / `docs:` / `chore:`.

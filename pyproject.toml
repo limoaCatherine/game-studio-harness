@@ -1,0 +1,101 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "game-studio-harness"
+dynamic = ["version"]
+description = "Four-layer context OS for game-production agents."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Game Studio Harness contributors" }]
+keywords = ["game-studio", "harness", "agents", "skills", "cli"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Games/Entertainment",
+    "Topic :: Software Development",
+]
+# Runtime is the Python 3.11+ standard library only.
+
+[project.urls]
+Homepage = "https://github.com/limoaCatherine/game-studio-harness"
+Repository = "https://github.com/limoaCatherine/game-studio-harness"
+Issues = "https://github.com/limoaCatherine/game-studio-harness/issues"
+Changelog = "https://github.com/limoaCatherine/game-studio-harness/blob/main/CHANGELOG.md"
+Documentation = "https://github.com/limoaCatherine/game-studio-harness/tree/main/docs"
+
+[project.scripts]
+gsh = "gsh.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.2",
+    "ruff>=0.6",
+]
+
+[tool.hatch.version]
+path = "gsh/__init__.py"
+
+[tool.hatch.build]
+# Pack data is SSOT at repo root. The wheel copies it under gsh/pack_data/.
+
+[tool.hatch.build.targets.wheel]
+packages = ["gsh"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"skills" = "gsh/pack_data/skills"
+"agents" = "gsh/pack_data/agents"
+"rules" = "gsh/pack_data/rules"
+"hooks" = "gsh/pack_data/hooks"
+"harness" = "gsh/pack_data/harness"
+"AGENTS.md" = "gsh/pack_data/AGENTS.md"
+"studio/.harness/templates/verify-report.json" = "gsh/pack_data/studio_harness/templates/verify-report.json"
+"studio/.harness/state.json" = "gsh/pack_data/studio_harness/state.json"
+"studio/.harness/surfaces.json" = "gsh/pack_data/studio_harness/surfaces.json"
+"studio/.harness/memory/canon/四层运行口径.md" = "gsh/pack_data/studio_harness/memory/canon/四层运行口径.md"
+"studio/.harness/memory/canon/四层封版.md" = "gsh/pack_data/studio_harness/memory/canon/四层封版.md"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/gsh",
+    "/skills",
+    "/agents",
+    "/rules",
+    "/hooks",
+    "/harness",
+    "/studio",
+    "/tests",
+    "/docs",
+    "/AGENTS.md",
+    "/LICENSE",
+    "/README.md",
+    "/README.en.md",
+    "/CHANGELOG.md",
+    "/pyproject.toml",
+    "/requirements.txt",
+    "/requirements-dev.txt",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+src = ["gsh", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

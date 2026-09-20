@@ -1,0 +1,9 @@
+{
+  "bead_id": "",
+  "verify_kind": "smoke",
+  "command": "python -m gsh close",
+  "exit_code": 0,
+  "evidence_paths": [],
+  "verdict": "pass",
+  "notes": ""
+}

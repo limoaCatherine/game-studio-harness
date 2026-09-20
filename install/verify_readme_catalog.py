@@ -7,8 +7,8 @@ import sys
 from pathlib import Path
 
 PACK = Path(__file__).resolve().parents[1]
-AGENTS = PACK / "cursor" / "agents"
-SKILLS = PACK / "cursor" / "skills"
+AGENTS = PACK / "agents"
+SKILLS = PACK / "skills"
 READMES = (PACK / "README.md", PACK / "README.en.md")
 
 

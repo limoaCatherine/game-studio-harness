@@ -1,0 +1,11 @@
+{
+  "harness": "codex",
+  "runtime": "instruction",
+  "source": {
+    "constitution": "../AGENTS.md",
+    "skills": "../skills",
+    "agents": "../agents"
+  },
+  "installs_to": ["~/.codex", "${isolate}/codex", "${isolate}/agents/skills"],
+  "notes": "Codex reads AGENTS.md. No GSH hook runtime."
+}

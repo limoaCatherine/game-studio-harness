@@ -1,68 +1,63 @@
-# Game Studio Harness (GSH)
+# Game Studio Harness
 
-**游戏工作室的上下文操作系统。** 35 条职种路径、106 份技能做法、36 条外接与写隔离，一次性部署到 Cursor、Claude Code、Codex、Grok、DeepSeek。本仓不附带引擎或 DCC，附带的是制作会话的编排：这一轮读什么、写到哪、何时关项、如何把试错变成可晋升的记录集。
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://img.shields.io/github/actions/workflow/status/limoaCatherine/game-studio-harness/ci.yml?branch=main)](https://github.com/limoaCatherine/game-studio-harness/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/badge/version-0.4.0-informational.svg)](CHANGELOG.md)
 
-[English](README.en.md) · [文档索引](docs/README.md) · [库存盘点](#库存盘点) · [部门能力地图](#部门能力地图) · [安装与部署](#安装与部署)
+Game Studio Harness（GSH）是面向游戏制作流水线的**四层上下文操作系统**。它把大模型代理接入定档、职种路径、隔离制作与验收晋升：用文件合同约束本轮范围，按步骤打开技能，默认写入隔离面，验收通过后再由制作方批准回写正式面。
 
-| 职种 Crafts | 技能 Skills | 外接 MCP | 适配工具链 |
-| :---: | :---: | :---: | :---: |
-| 35 | 106 | 36 | Cursor · Claude Code · Codex · Grok · DeepSeek |
+适用对象：制作人、技术总监、主策划、主程序，以及在同一业务根上协作的 AI 编程工具。
+
+```text
+定档 → 切片 → 隔离制作 → 验收 → 晋升
+```
+
+[English](README.en.md) ·
+[仓库内容](#仓库内容) ·
+[能承接的工作](#能承接的工作) ·
+[部门能力地图](#部门能力地图) ·
+[要解决的问题](#要解决的问题) ·
+[设计哲学](#设计哲学) ·
+[关键概念](#关键概念) ·
+[指南](#指南) ·
+[平台支持](#平台支持) ·
+[文档](docs/README.md) ·
+[安装](#安装)
+
+---
+
+## 仓库内容
+
+| 类别 | 数量 | 说明 |
+|---|---:|---|
+| 职种路径（crafts） | 35 | 制作、系统数值、关卡体验、工程、品质、美术音频 |
+| 技能做法（skills） | 106 | 定档、表格、公式、验收、交接等可复用程序 |
+| 原生适配器 | 19 | 各工具完整原生目录：入口、规则、技能/职种树、钩子或等价文件 |
+| MCP | 0 条活服务器 / 36 条用途桩 | 本仓不配送可连接进程 |
+
+```text
+game-studio-harness/
+├── skills/                 # 106 技能（唯一内容源）
+├── agents/                 # 35 职种路径（唯一内容源）
+├── rules/ hooks/ harness/  # 宪法、钩子、运行时、菜单
+├── gsh/                    # setup / sync / verify / menu / status / next / close
+├── studio/.harness/        # 业务根脚手架
+├── .cursor/ .claude/ …     # 各工具原生约定（仓库内不复制技能全树）
+└── docs/ tests/
+```
+
+安装后，共享运行时位于 `~/.gsh`（隔离试装则为 `<isolate>/gsh`）。每个选中的工具家目录再得到一份该工具可识别的完整原生树。
 
 ---
 
-## 仓库目的
+## 能承接的工作
 
-Game Studio Harness（GSH）是给游戏工作室用的**上下文操作系统**。它把大模型在制作里真正缺的东西做成四层可审计机制：始终生效的运转规则、本轮加载合同、可复用的职种/技能库、以及跨会话不断线的档案柜。GSH 不是提示词合集，也不是美术/引擎插件。它回答的是制作人每天都要面对的问题：**这一轮代理该扮演哪条岗、打开哪几份做法、允许写到哪一层表面、用什么证据才能关项。**
-
-### 谁在用
-
-| 角色 | 在 GSH 里做什么 |
-| :--- | :--- |
-| 制作人 / 执行制作人 / 项目管理 | 定里程碑与交付包、点名职种、对齐依赖与风险、推动验收与发版口径 |
-| 创意总监 | 冻结体验支柱、批注垂直切片、裁决 fantasy 冲突、批准 Canon |
-| 主策（系统 / 战斗 / 数值 / 商业化 / 活服） | 把规则、公式、表、活动与付费点写成可引用规格，再按配方改表 |
-| 主程（客户端 / 服务端 / 工具） | 按契约做竖切、权威结算、存档迁移、管线工具与 CI 冒烟 |
-| 主美 / 技术美术 | 从风格锚与 Brief 走到可导入资产，过命名/LOD/Shader/VFX 预算门禁 |
-| QA 负责人与各专项 | 定验收口径、写用例与回归包、跑兼容/性能/自动化，签发带证据的结论 |
-
-同一诉求里岗位不同时，主会话只负责点名与收口，优先按职种各开子代理。专注度的边界是岗位，不是「请同时当数值策划和客户端」。
-
-### 「跑一条垂直切片」指什么
-
-垂直切片不是把整条流水线灌进一轮对话。它是一次**有边界的制作会话**：锁定一个可在 3～5 分钟内试玩裁决的问题（例如「这套技能循环在灰盒里是否可读、是否可结算」），然后：
-
-1. **定档** — `route-task` 对照 `catalog.json` 点名本轮 `craft` / `skill` / `mcp`，写入 `.harness/sessions/<会话>/loadplan.json`（档位、写级别、禁改、`retrieve_keys`）。
-2. **激活** — `生成会话能力名单.py` 写出 `activated.json` 与现行卡 `current.md`。点了职种只注入职种正文和路径第一步（`craft_open`），其余技能做到那一步再打开。
-3. **制作** — 按职种步骤打开技能文件；正式面改动先落到隔离根（表沙箱、代码 worktree、引擎 Sandbox、资产 `_Dev`）。
-4. **关项** — `verify-gate` 按档位只核核心证据，写出 `verify-report.json`；人准后只回写记录集，禁止整文件覆盖正式面。
-
-成功的切片长这样：名单可审计、试错进沙箱、验证报告 `verdict=pass`、晋升有人准与可回滚 diff。会话会断、工具会换；下一手读现行卡而不是聊天记录。
-
-### 四层如何配合
-
-上下文预算是硬约束。宪法必须每轮都在，所以必须薄；做法必须可复用，所以必须厚。这两件事不能写在同一层。加载计划也不能并进能力库：库回答「这件事怎么做」，导演回答「这一轮点谁」。档案柜承认自己不会推理，只记做到哪、正式面在哪、哪句已经批准。
-
-| 层 | 英文 | 本轮职责 | 关键文件 |
-| :--- | :--- | :--- | :--- |
-| 宪法 | Constitution | 每轮固定税：读序、写隔离、密钥拦截、关项只认验证报告 | `constitution.md`、`rules/全局.mdc`、`hooks.json` |
-| 加载计划 | Load-plan | 把诉求收成可审计的点名集合、档位与写级别 | `loadplan.json` → `activated.json` → `current.md` |
-| 能力库 | Capability library | 35 职种路径 + 106 技能正文 + 36 外接用途桩；不含当次数字 | `agents/<id>.md`、`skills/<id>/SKILL.md`、`catalog.json` |
-| 档案柜 | Filing cabinet | 会话状态、正式面地图、已批准事实、产物索引 | `.harness/state.json`、`surfaces.json`、`canon/`、`adr/`、`artifacts/` |
-
-四层已封版。改架构须转向、改计划并写决策（`promote-adr`）。口头讨论、未关项草稿不得冒充 Canon。
-
-### 成功长什么样
-
-- **激活集合**：`activated.json` 只含本轮点名的 skill / craft / mcp；职种未预展开全路径；`craft_open` 指向当前步。
-- **沙箱写入**：改表进正式表同级 `沙箱/`，改代码进 `.harness/worktrees/`，改资产进 `_Dev/`；`**/沙箱/` 进入 `.gitignore`。
-- **验证报告**：`.harness/artifacts/<工作项>/verify-report.json` 的 `verdict` 为 `pass`，路径已登记到 `artifacts/index.jsonl`。
-- **晋升**：人准后只合并 changeset / 记录集；禁改列未动；回读抽样通过。结束钩子不认口头绿。
-
----
+GSH 承接的是一条游戏竖切里需要跨职种、跨会话、跨客户端完成的制作工作。下列路径均可按 catalog id 指定、按步骤执行。部门能力地图覆盖 **35/35 职种** 与 **106/106 技能**（每条 id 至少出现一次）。
 
 ## 库存盘点
 
-权威来源是安装后由 `刷新菜单.py` 扫描 `agents/` 与 `skills/` frontmatter 生成的 `catalog.json`。本仓五套工具目录各自齐套；下列清单与 `cursor/agents/`（35）和 `cursor/skills/`（106）一致。
+权威来源是 `catalog.json`（`gsh menu` 扫描仓库根 `agents/` 与 `skills/` frontmatter）。下列清单与唯一内容源 `agents/`（35）和 `skills/`（106）一致。
 
 ### 职种 35
 
@@ -85,7 +80,7 @@ Game Studio Harness（GSH）是给游戏工作室用的**上下文操作系统**
 
 `accurig` · `audacity` · `blender-mcp` · `cascadeur` · `chrome-devtools` · `cloudcompare` · `docker-mcp` · `everything-search` · `excalidraw` · `excelMCP` · `ffmpeg` · `fmod-cli` · `fmod-studio` · `gaea` · `gamedev-mcp` · `gimp` · `imagemagick` · `inkscape` · `instant-meshes` · `krita-mcp` · `lark-mcp` · `ldtk` · `magicavoxel` · `materialize` · `materialpilot` · `meshlab` · `meshroom` · `miro` · `pureref` · `renderdoc` · `rokoko` · `roslyn-mcp` · `tiled` · `treeit` · `xmind` · `xnormal`
 
-核心档默认直连 `excelMCP`；其余懒接，第一次调用再拉子进程。见 [外接 MCP](#外接-mcp)。
+核心档默认直连 `excelMCP`；其余懒接，第一次调用再拉子进程。见 [MCP 政策](#mcp-政策)。本仓配送 0 条活服务器、36 条用途桩。
 
 ---
 
@@ -97,10 +92,10 @@ Game Studio Harness（GSH）是给游戏工作室用的**上下文操作系统**
 
 | 命令 | 脚本 / 技能 | 写出 |
 | :--- | :--- | :--- |
-| `menu` | `~/.cursor/harness/scripts/刷新菜单.py` | `catalog.json` |
-| `activate` | `route-task` → `生成会话能力名单.py <会话>` | `loadplan.json`、`activated.json`、`current.md` |
-| `next` | 打开 `craft_open` 指向的技能；多事件时 `assemble-craft-flow` → `建议执行单.py` | 下一步技能正文、`flow.json` |
-| `close` | `verify-gate`（必要时 `artifacts-append` / `sync-state` / `handoff-pack`） | `verify-report.json`、产物索引、状态回写 |
+| `menu` | `gsh menu` / `python -m gsh menu` | `catalog.json` |
+| `activate` | `gsh activate <会话>`（`route-task` → 生成会话能力名单） | `loadplan.json`、`activated.json`、`current.md` |
+| `next` | `gsh next`（打开 `craft_open` 指向的技能；多事件时 `assemble-craft-flow`） | 下一步技能正文、`flow.json` |
+| `close` | `gsh close` / 技能 `verify-gate`（必要时 `artifacts-append` / `sync-state` / `handoff-pack`） | `verify-report.json`、产物索引、状态回写 |
 
 ---
 
@@ -708,207 +703,327 @@ QA 把「能过」收成可观察的开测/收测条件与证据包。负责人�
 
 ---
 
-## 本仓要解决的问题
+## 要解决的问题
 
-短列，与能力地图分开。GSH 针对的是制作代理在长流水线里的确定性行为，而不是某一品类的内容排障手册。
+以下是制作现场反复出现、且无法靠单次提示词稳定处理的问题。GSH 用四层文件合同与 CLI 处理它们。
 
-- **相关性猜测**：不经加载计划打开「可能用到」的全部技能，串岗、抢写、口径混用。
-- **正式面试错**：直接改产品表、主工作区代码或发包资产，失败不可回滚。
-- **口头绿**：未写 `verify-report.json` 就关项；结束钩子会拦截。
-- **会话失忆**：换窗口或压缩上下文后丢掉目标、禁改与产物路径；现行卡是下一手的事实源。
-- **开场过载**：三十六条外接全量握手拖死发现阶段；核心直连、其余懒接。
-- **幻觉事实**：把讨论稿当成 Canon；无 `retrieve_keys` 不打开决策库。
+**上下文预算被菜单占满。** 一次把 106 条技能与 35 条职种全文注入对话后，模型会在同一步同时改公式、谈存档、改正式表。GSH 将 `catalog.json` 作为导演检索菜单（`gsh menu`），开场只注入宪法、现行卡与已指定正文。
+
+**多工种路径被一次性展开。** 战斗数值从锚点到系数表有固定顺序。若点名职种即读完全部 `uses_skills`，第一步会按最后一步的口径填表。GSH 只打开 `craft_open`，由 `gsh next` 前进。
+
+**正式面与草稿混写。** 策划表、引擎资产与已提交历史回滚成本由制作方承担。GSH 默认 `write_class=sandbox`，正式面回写需制作方批准，且只回写记录集。
+
+**会话中断、客户端切换后丢失进度。** 聊天记录不是档案。进度写在 `current.md`、`state.json`、`tasks.jsonl`；任意已安装工具上可用 `gsh status` / `gsh resume` 读取。
+
+**缺少可归档的验收记录。** 「感觉可以」无法进入发版材料。`gsh close` 按模板写出 `verify-report.json`（`verify_kind`、`evidence_paths`、`verdict`），并追加审计流水。
+
+**外接进程在 IDE 启动时全部握手。** 数十个 MCP 的 `tools/list` 会拖垮启动并占用上下文。GSH 只对 `mcp-tiers.json` 的 core 档位键做开场握手，其余懒加载。本仓不配送活服务器。
+
+**密钥进入模型上下文；破坏性命令缺少确认。** Cursor 与 Claude Code 在读取与 Shell 前拦截常见密钥路径，并对 `git reset --hard` 等操作要求确认。
 
 ---
 
 ## 设计哲学
 
-### 第二层对第三层握手
+原则与「要解决的问题」分开陈述。下列条目说明**为什么这样设计、制作方得到什么**。
 
-大模型的上下文预算装不下一条完整制作流水线。若把 106 份技能一次注入，代理会同时扮演多个岗位，并用错误口径改表或改引擎资产。GSH 不靠提示词里的「请专注」。**加载计划对能力库握手**：先选职种或事件，再只取这一轮切片。职种是路径，不是清单——点一条岗，先看第一步，走到哪一步再打开哪一份做法。外接同样：开场只握核心手，其余用到再拉。
+**上下文预算（context window / context budget）。** 每轮固定税保持简短：宪法、现行卡、已指定技能或职种正文。其余技能在执行到该步时再打开。`minimal` / `core` / `full` 决定磁盘投影范围，不决定本轮注入量。
 
-```text
-[用户诉求] → route-task 对照 catalog.json → loadplan.json
-        → 生成会话能力名单.py → activated.json + current.md
-        → 只注入点名正文与 craft_open → 按步 next → verify-gate
-```
+**职种路径。** 职种文件是步骤序列（`uses_skills`），技能文件是单步程序。`activated.json` 的 `craft_path` 记录步号、当前技能与下一步；`gsh next` 推进并回写现行卡。
 
-### 四层不能合成三层
+**正式面与隔离面。** 隔离根由 `.harness/surfaces.json` 声明。模型在隔离面执行；晋升正式面是制作流程，不是模型默认权限。
 
-| 层级 | 解决的确定性问题 | 缺席时的崩溃模式 |
-| :--- | :--- | :--- |
-| 宪法 | 每轮固定税；拦截密钥、破坏性命令与口头绿 | 窗口被菜单填满；未验证即关项 |
-| 加载计划 | 把「相关性」收成显式集合 | 代理串岗、直连正式面、中途迷失 |
-| 能力库 | 标准做法不掺杂当次数字 | 每轮重发明「怎么改表」「怎么写用例」 |
-| 档案柜 | 会话中断后的状态连续性 | 换窗口忘记进度；口头想法当已批准 |
+**会话连续性。** 业务根 `.harness` 是跨工具档案柜。探测会话以 `_` 开头，不覆盖 `LATEST`。
 
-五套编程工具目录是同一套四层的五份齐套拷贝，不是第五层。落点会变，运转法不该变。
+**验收证据。** 关项命令是 `gsh close`。Cursor `stop` 与 Claude Code `Stop` 核验同一份报告。其他工具通过 CLI 与 `HOOKS.md` 执行同一流程。
+
+**MCP 懒加载。** `core` 是握手名单，不是「已安装服务器」名单。`lazy_stdio` 在首次 `tools/call` 时再拉起子进程。
+
+**密钥隔离。** 密钥不得进入仓库，也不得进入模型上下文。`mcp.json.example` 仅含占位符；安装器不覆盖已有 `mcp.json`。
+
+**危险操作确认。** 不可逆的 Git 与批量删除需要人工确认后执行。
 
 ---
 
 ## 关键概念
 
-| 概念 | 含义 |
-| :--- | :--- |
-| 职种 Craft | `agents/<id>.md` 上的岗位路径。`uses_skills` 是序列，开场不预展开。 |
-| 技能 Skill | `skills/<id>/SKILL.md` 上的一件事做法。当次数字与当次路径不进正文。 |
-| 菜单 catalog | `刷新菜单.py` 从 frontmatter 生成的唯一 id 表。定档禁止现场发明 id。 |
-| 加载计划 | `.harness/sessions/<会话>/loadplan.json`：`tier`、`items`、`write_class`、`retrieve_keys`、`forbid`。 |
-| 激活名单 | `activated.json`：开场注入哪些正文。不是运行时防火墙。过程中缺技能可当场打开。 |
-| 现行卡 | `current.md`：目标、进度、写级别、正式面、隔离根、禁改、下一步。 |
-| 写级别 | `read` / `sandbox` / `promote` / `destroy`。默认 `sandbox`。 |
-| 正式面 / 隔离根 | `surfaces.json` 里每类业务的 `official` 与 `sandbox`。 |
-| 档位 tier | Discuss / T0 / T1 / T2 / T3，决定 `verify-gate` 核多少核心证据。 |
-| Canon / ADR | 已批准事实与架构决策；必须被 `retrieve_keys` 命中才打开。 |
-| 子代理 | 岗位不同时按职种各开一只；主会话点名与收口。 |
-
----
-
-## 使用指南
-
-1. 用适配工具打开业务根（含 `.harness/`）。
-2. 开场钩子打印现行卡摘要与点名列表；不要把 `catalog.json` 全文灌进上下文。
-3. 新交付：复述目标后走 `route-task`，写 `loadplan.json`，执行 `activate`。
-4. 点了职种：只读职种正文 + 当前 `craft_open` 技能；`next` 再打开下一步。
-5. 写入前读 `write-isolation` 与 `surfaces.json`；改表先 `excel-read`。
-6. 多事件且执行类 ≥ 3：`assemble-craft-flow`。
-7. 关项：`verify-gate` 写报告；钩子校验 schema 与 `pass`。
-8. 换岗：`handoff-pack` + `sync-state`，必要时新会话。
-
-意图与工作模式见 `skills/route-task/SKILL.md`（`continue` / `steer` / `park` / `new` / `parallel` / `discuss`；`work_mode` 为 `agent` 或 `plan`）。
-
----
-
-## 平台适配
-
-| 目录 | 工具 | 宪法落点 |
-| :--- | :--- | :--- |
-| `cursor/` | Cursor | `constitution.md`、`rules/`、`hooks/`、`hooks.json` |
-| `claude/` | Claude Code | 同构齐套 |
-| `codex/` | Codex | 同构齐套 |
-| `grok/` | Grok | 同构齐套 |
-| `deepseek/` | DeepSeek | 同构齐套 |
-
-安装器把共享运行时落到 `~/.gsh`，再适配各工具家目录。已有 `mcp.json` 不会被覆盖。本包装架构，不装宿主软件。`studio/` 是业务根 `.harness` 模板（`surfaces.json`、`state.json`、Canon 样例）。
-
----
-
-## 安装与部署
-
-Windows，Python 3.11+。克隆本仓，双击 `一键部署.bat`，填写业务根路径（将创建 `.harness`）。
-
-```powershell
-# 部署到指定业务根，默认适配所有工具
-.\一键部署.ps1 -Workspace D:\MyStudio
-
-# 仅适配指定工具
-.\一键部署.ps1 -Workspace D:\MyStudio -Tools cursor,claude
-```
-
-隔离试装（不写真实用户家目录）：
-
-```powershell
-python install/install.py --isolate-root D:\probe --workspace D:\probe\ws --tools all
-python install/verify_install.py --isolate-root D:\probe --workspace D:\probe\ws
-```
-
-入口：`一键部署.bat`、`一键部署.ps1`、`install/install.py`。`install/pack.json` 声明五套齐套根。
-
----
-
-## CLI 与会话命令
-
-没有单独的 `gsh` 二进制。会话命令对应用户级脚本（Cursor 示例路径；共享运行时亦在 `~/.gsh/harness/scripts/`）：
+| 概念 | 定义与用法 |
+|---|---|
+| 四层 | 宪法（始终生效）→ 导演（指定 id）→ 能力库（按需打开）→ 档案柜（进度与证据） |
+| 职种 | `agents/<id>.md`。可前进的路径。`gsh next` 更新 `craft_open` |
+| 技能 | `skills/<id>/SKILL.md`。当前步骤的程序，不含当次数值 |
+| 导演菜单 | `gsh menu` 按关键词检索 id。`catalog.json` 是菜单文件，不是系统提示 |
+| 现行卡 | `.harness/sessions/<id>/current.md`。更换客户端后首先读取 |
+| 关项 | `gsh close` 写出 `verify-report.json` 并追加 `tasks.jsonl` |
+| 写隔离 | 默认 `sandbox`。正式面回写需制作方批准，且只回写记录集 |
+| 档位 | `minimal` / `core` / `full` 决定投影到家目录的技能与职种 |
+| Isolate | 试装根，不写入真实用户家目录 |
 
 ```text
-# menu — 从 skills/ agents/ mcp.json 重建菜单
-python %USERPROFILE%\.cursor\harness\scripts\刷新菜单.py
-
-# activate — 校验 loadplan 中的 id，写 activated.json 与 current.md
-python %USERPROFILE%\.cursor\harness\scripts\生成会话能力名单.py <会话短名>
-
-# next — 多事件推荐序（执行类在前，收口类在后）
-python %USERPROFILE%\.cursor\harness\scripts\建议执行单.py <会话短名> --force
-
-# close — 技能 verify-gate 写报告；结束钩子 hooks/结束.py 校验 verdict
+[制作诉求]
+  → gsh menu 指定 id
+  → loadplan + activate
+  → 当前步骤技能
+  → 隔离面执行
+  → gsh close
+  → 制作方批准后晋升
 ```
-
-收口类 id（执行单链尾）：`verify-gate`、`artifacts-append`、`handoff-pack`、`sync-state`。
-
-其他脚本：`项目库.py`（现行卡）、`接线自检.py`、`握手四层.py`、`整接.py`、`回归四层.py`、`应用外接档位.py`、`拉起外接.py`、`目录夹具.py`、`gsh_paths.py`。
 
 ---
 
-## 外接 MCP
+## 指南
 
-外接不设运行时 deny 闸。名单里的外接列表只是开场提示：点名技能声明的 `needs_mcp`，加上计划里显式点的 mcp。职种点名不预展开路径上的外接。做到那一步再打开对应技能。过程中直接调用未点名外接是允许的。
+### 战斗数值竖切
 
-档位见 `harness/mcp-tiers.json`：核心启动即握手（当前仅 `excelMCP`），其余 35 条懒接，第一次调用再拉子进程。默认按换行 JSON 帧。`lazy_stdio.py` 在 IDE 启动时只暴露工具声明。URL 直通（如 `miro`）不套本机包装。拉起脚本在用户级 `harness/scripts/`。用途桩在 `harness/mcp-tools/<id>.json`。
+```bash
+python -m gsh setup --workspace /path/to/studio --tools cursor --profile core --yes
+cd /path/to/studio
+python -m gsh menu --kind craft -q 战斗数值
+```
 
-各工具目录内的调度说明：`cursor/harness/docs/MCP调度.md`（claude / codex / grok / deepseek 各有同构副本）。
+编写 `.harness/sessions/combat-ttk/loadplan.json`，在 `items` 中指定 `combat-numeric-designer`。然后：
 
-三十六条外接 id：`accurig` · `audacity` · `blender-mcp` · `cascadeur` · `chrome-devtools` · `cloudcompare` · `docker-mcp` · `everything-search` · `excalidraw` · `excelMCP` · `ffmpeg` · `fmod-cli` · `fmod-studio` · `gaea` · `gamedev-mcp` · `gimp` · `imagemagick` · `inkscape` · `instant-meshes` · `krita-mcp` · `lark-mcp` · `ldtk` · `magicavoxel` · `materialize` · `materialpilot` · `meshlab` · `meshroom` · `miro` · `pureref` · `renderdoc` · `rokoko` · `roslyn-mcp` · `tiled` · `treeit` · `xmind` · `xnormal`。
+```bash
+python -m gsh activate combat-ttk
+python -m gsh resume
+# 打开 craft_open 所指技能，在隔离面修改表格
+python -m gsh next --craft combat-numeric-designer
+python -m gsh close --kind schema --evidence .harness/sandbox/ttk-notes.md
+```
+
+`activated.json` 中的 `craft_path` 显示如 `2/9` 的进度。现行卡与 `state.json` 保持同步。制作方批准后再回写正式表记录格。
+
+完整步骤：[docs/cookbook/combat-numeric-slice.md](docs/cookbook/combat-numeric-slice.md)。文档地图：[docs/README.md](docs/README.md)（架构、适配器、cookbook、发版）。
+
+### 更换客户端后续作
+
+在 Cursor 完成定档后，于另一客户端打开同一业务根：
+
+```bash
+python -m gsh status --workspace /path/to/studio
+python -m gsh resume --workspace /path/to/studio
+```
+
+两端读取同一套 `.harness`。Cursor 在 `sessionStart` 注入现行卡摘要；Claude Code 的 `settings.json` 调用同一 `hooks/开场.py`。
+
+### 导演检索，不注入菜单全文
+
+```bash
+python -m gsh menu --kind skill -q excel
+python -m gsh menu --kind craft -q qa
+```
+
+输出为 id 与一行 description。不要将 `catalog.json` 写入系统提示。开场钩子若检测到菜单全文进入上下文，会改写为提示使用 `gsh menu`。
+
+---
+
+## 平台支持
+
+每个选中的工具均获得完整的技能/职种树，以及该工具已支持的入口文件。
+
+| 工具 | 入口 | 钩子 / 自动化 | 其他原生文件 |
+|---|---|---|---|
+| Cursor | `rules/全局.mdc` | 执行 `hooks.json` | harness、lazy MCP |
+| Claude Code | `CLAUDE.md` | 执行 `settings.json` → 同一组 `hooks/*.py` | `HOOKS.md` |
+| Codex | `AGENTS.md` | `HOOKS.md` + `gsh status/next/close` | `~/.agents/skills` |
+| Windsurf | `.windsurfrules` | 同上 | `.windsurf/rules` |
+| Cline | `.clinerules/` | 同上 | — |
+| Roo Code | `.roo/rules` | `.roomodes`：director / maker / closer | — |
+| Continue.dev | `config.yaml` | prompts：route-task / close / status / next | — |
+| GitHub Copilot | instructions + prompts | 同上 | — |
+| OpenCode | `opencode.json` | `HOOKS.md` + CLI | — |
+| Gemini CLI | `GEMINI.md` | 同上 | — |
+| Aider | `CONVENTIONS.md` | `.aider.conf.yml` 只读加载宪法 | — |
+| Zed | `AGENTS.md` + `.rules` | 同上 | — |
+| Amazon Q / Trae / Junie | 各自 rules / guidelines | 同上 | — |
+| Grok / DeepSeek / Kimi / Qwen | `AGENTS.md` / `QWEN.md` | 同上 | — |
+
+CLI 可在上述工具对应的业务根上执行。事件钩子运行时目前接入 Cursor 与 Claude Code。
+
+分篇说明：[docs/adapters/](docs/adapters/)。
+
+---
+
+## 安装
+
+需要 **Python 3.11+**。Windows 为游戏生产环境的一等目标平台；Linux / macOS 用于隔离试装与 CI。安装器只投影架构文件与技能，不附带任何制作软件安装包，不写入密钥。
+
+只从官方仓库或该仓库的 GitHub Release 安装：[github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness)。第三方打包不在本项目维护范围内。PyPI 尚未发布。
+
+内容只在仓库根修改：`skills/` `agents/` `rules/` `hooks/` `harness/`。wheel 将这些目录打进包内，因此 `pip install .` / `pipx install .` 之后不必保持 clone。`gsh setup` / `gsh sync` 将同一份内容写成各工具的完整原生目录。
+
+```bash
+git clone https://github.com/limoaCatherine/game-studio-harness.git
+cd game-studio-harness
+python -m pip install .
+gsh setup --guided
+```
+
+Windows：`py -3.11 -m pip install .`，然后 `gsh setup --workspace D:\studio-root --yes`。
+
+非交互：
+
+```bash
+gsh setup \
+  --workspace /path/to/studio-root \
+  --tools cursor,claude \
+  --profile core \
+  --yes
+```
+
+| 入口 | 命令 |
+|---|---|
+| PATH 上的 CLI | `gsh setup` |
+| 模块 | `python -m gsh setup` |
+| Unix | `./install.sh` |
+| Windows | `.\install.ps1` 或 `.\一键部署.ps1` |
+
+| `--profile` | 投影内容 | 适用 |
+|---|---|---|
+| `minimal` | 导演 / 隔离 / 关项 12 技能 + 4 职种 | 先完成一次四层回路 |
+| `core` | 日产导演、表格、切片、验收 | 多数制作会话 |
+| `full`（默认） | 106 技能 + 35 职种 | 完整菜单落盘 |
+
+`--tools all`（默认）为 19 个客户端各写一套完整原生树。`legacy` = cursor,claude,codex,grok,deepseek。
+
+隔离试装（不写入真实家目录）：
+
+```bash
+python -m gsh setup \
+  --isolate-root /tmp/gsh-probe \
+  --workspace /tmp/gsh-probe/ws \
+  --tools all \
+  --profile full \
+  --yes
+
+python -m gsh verify \
+  --isolate-root /tmp/gsh-probe \
+  --workspace /tmp/gsh-probe/ws
+```
+
+```bash
+gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
+gsh uninstall --isolate-root /tmp/gsh-probe --yes
+```
+
+pipx、Release wheel、`GSH_PACK_ROOT` 与未来 PyPI：[docs/install.md](docs/install.md)。发版与资产：[docs/release.md](docs/release.md)。
+
+---
+
+## 开始使用
+
+打开**业务根**，不要只打开本仓库。将 `.harness/surfaces.json` 中的占位符改为本机路径；不要把真实盘符提交回 GSH 仓库。
+
+| 任务 | 入口 |
+|---|---|
+| 定档一轮竖切 | `python -m gsh menu --kind craft -q 竖切`，阅读 `skills/route-task/SKILL.md` |
+| 战斗数值 / TTK | 指定 `combat-numeric-designer`，`gsh activate`，以 `gsh next` 前进 |
+| 经济 / 养成 | `economy-numeric-designer` / `progression-numeric-designer` |
+| 关卡灰盒 | `level-designer` |
+| 客户端 / 服务端 | `client-engineer` / `server-engineer` |
+| QA 验收 | `qa-lead` 或 `qa-functional`，`gsh close` |
+| 活服档期 | `liveops-designer` |
+| 续作当前会话 | `python -m gsh resume` |
+| 查看进度 | `python -m gsh status` |
+| 关项 | `python -m gsh close --kind smoke --evidence <产物>` |
+
+```text
+gsh menu -q ttk
+  → 编写 loadplan.json（指定职种 id）
+  → gsh activate <会话>
+  → 阅读 current.md，只执行当前步骤
+  → gsh next
+  → gsh close --evidence <隔离面产物>
+  → 制作方批准后回写正式面记录格
+```
+
+### CLI
+
+```text
+python -m gsh setup | sync | verify | doctor | uninstall
+python -m gsh menu [--kind craft|skill] [-q 词]
+python -m gsh activate <会话>
+python -m gsh status | resume
+python -m gsh next [--craft <id>]
+python -m gsh close --kind smoke --evidence <路径>
+```
+
+---
+
+## MCP 政策
+
+本仓配送 **0** 条活服务器、36 条用途桩，以及 `mcp.json.example`。`mcp-tiers.json` 的 `core` 是开场握手名单。excelMCP 出现在 core 中，表示表格管线需要该档位键；本机服务器仍须自行安装。实际拉起走 `lazy_stdio`。
+
+全文：[docs/mcp-policy.md](docs/mcp-policy.md)。
+
+---
+
+## 上下文预算
+
+| 做法 | 节省的注入 |
+|---|---|
+| L1 保持简短 | 每轮固定税 |
+| `gsh menu` 检索 | 100+ 条 description |
+| `gsh next` 只打开一步 | 职种路径的后半段 |
+| `retrieve_keys` 才打开 canon | 世界观全文 |
+| MCP 懒加载 | 开场 `tools/list` |
+| minimal / core | 不投影本轮用不到的技能 |
 
 ---
 
 ## 安全
 
-- 密钥不进仓库。`mcp.json.example` 只放占位符（如 `${LARK_APP_ID}`）。安装器不会覆盖已有 `mcp.json`。
-- 读拦截器 `hooks/读文件前.py` 拦截 `.env`、`credentials.json`、`secrets.json`、`id_rsa`、`*.pem`。
-- 命令拦截器 `hooks/命令前.py` 对 `git push --force`、`git reset --hard`、`git clean -fdx` 要求终端确认；关项命令核 `verify-report.json`。
-- 若密钥误提交：立即轮换，再重写历史，不要只 revert。
-- 漏洞请用 GitHub 私密报告，不要开公开 issue。范围见 [SECURITY.md](SECURITY.md)。
+- 密钥不进入 Git。`mcp.json.example` 仅为占位符。
+- 安装器不覆盖已有 `mcp.json`。
+- Cursor / Claude Code 拦截常见密钥路径。
+- 破坏性 Git 操作需要确认。
+- `verify` 与 `tests/test_no_secrets.py` 扫描用户主目录绝对路径、`Harness-Apps`、`ghp_` / `sk-`。
+- 漏洞请使用 GitHub 私密报告，见 [SECURITY.md](SECURITY.md)。
 
 ---
 
-## 故障排除
+## 排障
 
-| 现象 | 先查什么 |
-| :--- | :--- |
-| 激活失败 / 名单报 unknown id | `menu` 刷新；跑 `doctor`；对照 `catalog.json` 与 `agents/`、`skills/` |
-| 开场 0 工具或外接挂掉 | `mcp-autostart`；`mcp-tiers.json`；已有 `mcp.json` 是否缺核心键 |
-| 现行卡与聊天不一致 | 读 `.harness/sessions/<会话>/current.md` 与 `LATEST`；跑 `sync-state` |
-| 改表打到正式簿 | `write-isolation` + `surfaces.json`；沙箱应在正式表同级 `沙箱/` |
-| 关项被结束钩子拦住 | 补 `verify-report.json` 且 `verdict=pass`；Discuss 档且无交付则不要写报告 |
-| 职种第一步就用最后一步口径 | 名单是否预展开了 `uses_skills`；应只注入 `craft_open` |
-| 隔离试装失败 | `install/verify_install.py --isolate-root …` 的缺项列表 |
+| 现象 | 处理 |
+|---|---|
+| `verify` 提示 missing catalog | 先执行 `setup`，使用同一 `--isolate-root` |
+| 投影与根目录 skills 不一致 | `python -m gsh sync` |
+| 不清楚当前步骤 | `python -m gsh status` |
+| 职种路径未前进 | `python -m gsh next --craft <id>` |
+| 关项钩子等待报告 | `python -m gsh close --evidence <路径>` |
+| 菜单不宜写入提示 | `gsh menu -q …` |
+| MCP 全部不可用 | 预期：本仓不配送活服务器 |
+| `doctor` 提示 Python 版本过低 | 升级到 3.11+ |
 
 ---
 
 ## 测试
 
-架构验收不依赖宿主 DCC：
-
-```powershell
-python install/verify_install.py --isolate-root D:\probe --workspace D:\probe\ws
+```bash
+python -m unittest discover -s tests -v
 ```
 
-四层灰度与回归（业务根 cwd，脚本已部署到用户级 harness）：
-
-```text
-python ~/.cursor/harness/scripts/接线自检.py
-python ~/.cursor/harness/scripts/握手四层.py
-python ~/.cursor/harness/scripts/整接.py
-python ~/.cursor/harness/scripts/回归四层.py
-```
-
-`verify_install.py` 核验必要技能（`route-task`、`write-isolation`、`doctor`、`verify-gate`、`mcp-autostart`）、钩子与脚本是否落地，并扫描密钥形态路径。README 职种/技能覆盖由 `install/verify_readme_catalog.py` 核对（35/35、106/106）。
+覆盖菜单解析、职种路径不预展开、密钥扫描、原生树投影、隔离 CLI，以及 `menu` / `activate` / `next` / `close` 回路。
 
 ---
 
 ## 贡献
 
-见 [CONTRIBUTING.md](CONTRIBUTING.md) 与 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
+见 [CONTRIBUTING.md](CONTRIBUTING.md) · [SUPPORT.md](SUPPORT.md)。
 
-- 技能落在 `skills/<id>/SKILL.md`，frontmatter 写 `name`、`description`，常用外接写 `needs_mcp`。当次数字不进正文。
-- 职种落在 `agents/<id>.md`。`uses_skills` 是序列，不是开场必读清单。
-- 外接键写进 `mcp.json` 示例，刷新菜单补用途桩。新外接默认懒接。
-- 五套工具目录各自齐套。改一套，其余四套同步。
-- 提交前缀：`feat:` / `fix:` / `docs:` / `chore:`。改架构先写 `promote-adr`。
-- 新增职种或技能后，必须同时更新 `README.md` 与 `README.en.md` 的部门能力地图，保证 35/35、106/106 仍全覆盖。
+1. 技能只修改 `skills/<id>/SKILL.md`。
+2. 职种只修改 `agents/<id>.md`。`uses_skills` 为序列，由 `gsh next` 前进。
+3. 新增 MCP：用途桩 + 占位符。不提交可连接服务器或密钥。
+4. 新增职种或技能后，两份 README 的部门能力地图都要补上对应 id（35/35、106/106）。
+5. 变更四层须先转向并撰写 ADR。
+6. PR 须在隔离根上 `verify` 通过，且 `unittest` 通过。
+
+0.1 布局中的 `cursor/skills` 等重复树已删除。在仓库根修改后执行 `sync`。
 
 ---
 
 ## 许可
 
-[MIT](LICENSE)。Copyright (c) 2026 Game Studio Harness contributors。
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · [LICENSE](LICENSE) MIT · [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md)
+
+四层已封版。进度写入 `.harness`。官方源仅为上述 GitHub 仓库。

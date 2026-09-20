@@ -1,0 +1,13 @@
+{
+  "harness": "cursor",
+  "runtime": "full",
+  "source": {
+    "skills": "../skills",
+    "agents": "../agents",
+    "rules": "../rules",
+    "hooks": "../hooks",
+    "harness": "../harness"
+  },
+  "installs_to": ["~/.cursor", "${isolate}/cursor"],
+  "notes": "Cursor executes hooks.json, rules, skills, agents, harness, and lazy MCP wrappers as the GSH hook runtime."
+}

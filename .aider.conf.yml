@@ -1,0 +1,4 @@
+# GSH — always load the constitution as read-only context.
+read:
+  - CONVENTIONS.md
+  - AGENTS.md
