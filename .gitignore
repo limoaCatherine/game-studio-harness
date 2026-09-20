@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+.cursor/
+mcp.json
+catalog.json
+mcp-health.json
+*.zip
+_probe/
+.env
+.env.*
+!.env.example

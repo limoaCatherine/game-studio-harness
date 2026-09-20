@@ -1,0 +1,23 @@
+{
+  "note": "Local host path map. Software is not in this repo. Fill after you install hosts.",
+  "hosts": {
+    "excel": {
+      "exe": "${EXCEL_EXE}"
+    },
+    "blender": {
+      "exe": "${BLENDER_EXE}"
+    },
+    "unity": {
+      "exe": "${UNITY_EXE}"
+    },
+    "cascadeur": {
+      "exe": "${CASCADEUR_EXE}"
+    },
+    "gamedev-mcp-server": {
+      "exe": "${GAMEDEV_MCP_EXE}"
+    },
+    "fmod-studio": {
+      "exe": "${FMOD_STUDIO_EXE}"
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "title": "Four-layer architecture deploy",
+  "software_in_pack": false,
+  "includes": [
+    "rules",
+    "skills",
+    "mcp-logic",
+    "crafts",
+    "hooks",
+    "harness-scripts",
+    "workspace-scaffold"
+  ],
+  "excludes": [
+    "dcc",
+    "engines",
+    "mcp-backends",
+    "venvs",
+    "secrets",
+    "business-tables"
+  ],
+  "steps": [
+    {
+      "id": "read",
+      "do": "Read README.md and READ_ME_AGENT.md",
+      "required": true
+    },
+    {
+      "id": "install",
+      "do": "python install.py --workspace <workspace>",
+      "required": true
+    },
+    {
+      "id": "verify",
+      "do": "python verify_install.py --workspace <workspace>",
+      "pass": "ok architecture install",
+      "required": true
+    },
+    {
+      "id": "surfaces",
+      "do": "Edit <workspace>/.harness/surfaces.json official/sandbox to this project",
+      "required": true
+    },
+    {
+      "id": "first-session",
+      "do": "Write loadplan.json then run 生成会话能力名单.py",
+      "required": true
+    },
+    {
+      "id": "mcp-optional",
+      "do": "Only if backends exist: fill mcp.json from example, run 应用外接档位.py",
+      "required": false
+    }
+  ]
+}
