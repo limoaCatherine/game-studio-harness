@@ -1,10 +1,10 @@
 # 文档
 
-README 只保留目的、能力、问题、哲学与安装入口。细节在本目录。
+README 保留目的、先了解的三件事（全流程 / 人机边界 / 能力曲线）、能力地图、问题、哲学与安装入口。细节在本目录。
 
 | 文档 | 内容 |
 |---|---|
-| [architecture/](architecture/README.md) | 四层：宪法、导演、能力库、档案柜；跨工具运行时 |
+| [architecture/](architecture/README.md) | 四层：宪法、导演、能力库、档案柜；跨工具运行时。[en](architecture/README.en.md) |
 | [adapters/](adapters/README.md) | 19 个客户端装上之后的原生目录与钩子边界 |
 | [cookbook/combat-numeric-slice.md](cookbook/combat-numeric-slice.md) | 战斗数值竖切：定档 → next → close |
 | [crafts/index.md](crafts/index.md) | 职种路径表 |

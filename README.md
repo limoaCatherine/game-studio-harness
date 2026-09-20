@@ -5,15 +5,18 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/limoaCatherine/game-studio-harness/ci.yml?branch=main)](https://github.com/limoaCatherine/game-studio-harness/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/badge/version-0.4.0-informational.svg)](CHANGELOG.md)
 
-Game Studio Harness（GSH）是面向游戏制作流水线的**四层上下文操作系统**。它把大模型代理接入定档、职种路径、隔离制作与验收晋升：用文件合同约束本轮范围，按步骤打开技能，默认写入隔离面，验收通过后再由制作方批准回写正式面。
+Game Studio Harness（GSH）是面向**完整游戏制作流水线**的四层上下文操作系统，而不是只服务少数竖切的提示词包。它把大模型代理接入从体验方向、范围冻结、系统数值、关卡叙事、工程实现、品质发版、美术音频到活服运营的整条制作链：用文件合同约束本轮范围，按步骤打开技能，默认写入隔离面，验收通过后再由制作方批准回写正式面。
 
-适用对象：制作人、技术总监、主策划、主程序，以及在同一业务根上协作的 AI 编程工具。
+设计主张是**有界自主、可审计 diff、人闸收口**——不是无人值守发版。公开评测把「代理」定义为 Harness 加模型；本仓用点名名单与验收闸，把每一步限制在可核验的短地平线内。
+
+适用对象：制作人、技术总监、主策划、主程序、品质与美术负责人，以及在同一业务根上协作的 AI 编程工具。
 
 ```text
 定档 → 切片 → 隔离制作 → 验收 → 晋升
 ```
 
 [English](README.en.md) ·
+[你需要先了解的三件事](#你需要先了解的三件事) ·
 [仓库内容](#仓库内容) ·
 [能承接的工作](#能承接的工作) ·
 [要解决的问题](#要解决的问题) ·
@@ -23,6 +26,80 @@ Game Studio Harness（GSH）是面向游戏制作流水线的**四层上下文�
 [平台支持](#平台支持) ·
 [文档](docs/README.md) ·
 [安装](#安装)
+
+---
+
+## 你需要先了解的三件事
+
+先读这三节，再看职种地图。它们说明 GSH **覆盖整条流水线**、**人机各管什么**、以及**为什么必须把自主边界收紧**。下列百分比全部来自已发表评测，**不是本工作室的实测成功率**。
+
+### 1. 全流程覆盖
+
+GSH 的目标是整条游戏制作流水线。菜单里现有 **35 / 35** 条职种路径与 **106 / 106** 条技能，按制作与方向、系统与数值、叙事关卡体验、工程、品质、美术音频编目；活服、商业化与交接也在同一菜单中。点名一条路径只打开当前步；未点名的职种仍在 catalog 里，需要时再激活，不从菜单里拿掉。
+
+完整职种表：[docs/crafts/index.md](docs/crafts/index.md)。完整技能表：[docs/skills/index.md](docs/skills/index.md)。音频事件与 Bank 构建是技能（`audio-fmod-checklist`、`fmod-bank-build`），挂在技美 / 管线步骤上，不另造第 36 条职种。
+
+### 2. 人机边界
+
+对齐四层：宪法规定写隔离与破坏闸；导演把诉求写成 `loadplan.json`；能力库按步执行技能；档案柜收下证据。晋升正式面是制作流程，不是模型默认权限。AI 始终在已激活名单内工作，关项必须过验收闸。
+
+| 必须由人 | GSH 约束下 AI 可做 | 共担 |
+|---|---|---|
+| 体验支柱 / fantasy 调性终裁 | 定档：写 loadplan、生成点名名单 | 里程碑计划选项 |
+| 砍范围（scope-cut）批准 | 按 `craft_open` 执行当前步，默认写入隔离面 | 试玩笔记 |
+| 隔离面晋升正式面（只回写记录集） | 技能检查表、GDD 功能切片草稿 | 性能预算草案 |
+| 活服经济 / IAP 定价终裁 | 隔离面表 diff | QA 豁免提案 |
+| 不可逆破坏、密钥保管 | 缺陷单、测试用例、API 契约草稿 | |
+| 法务 / 合规 | 实现 + 测试回路，并收集 `verify-report` 证据 | |
+| 发版签字 | 状态摘要 / 周报草稿 | |
+
+人闸不得交给模型代签。AI 不得在未激活集合外改正式面，也不得跳过 `gsh close` 把草稿当成已验收。
+
+### 3. 能力曲线
+
+公开评测呈现同一形态：任务变长、人闸变少时，**无闸长程自主的成功可靠度沿 logistic 下降**；加上计划、交互或 Harness 后，同一模型的成绩可以高出数倍（见下表依据，例如同一模型在不同 Harness 上约 6×）。GSH 据此把代理限制在短步（一步一技能）、隔离 diff 与人闸，而不是拉长无人值守地平线。下图左轴数字只复述被引文献的区间；GSH 曲线标为 **ILLUSTRATIVE（示意）**，不是工作室百分比。
+
+**图 A — METR 拟合形态（复述其公开区间）**
+
+成功概率随「人类专家完成该任务所需时间」下降。原文用 logistic 拟合；50% 时间地平线自 2019 年起约每七个月加倍。80% 地平线大约短五倍。杂乱、欠规格任务上成绩更低。
+
+```text
+成功概率（METR 公开区间，不是 GSH 实测）
+~100% │●
+      │  ●
+ ~50% │     ●········ 50% 时间地平线（约每 7 个月加倍）
+      │        ●
+ ~10% │           ●●
+      └────────────────────────────→ 人类专家完成该任务所需时间
+        < ~4 分钟                 > ~4 小时
+```
+
+**图 B — 自主时长 vs 可靠度（ILLUSTRATIVE / 示意）**
+
+形状取自上述评测的共同方向：无闸长程下跌；短步 + 人闸把工作留在高可靠区。**不是本仓基准分数。**
+
+```text
+成功可靠度（ILLUSTRATIVE，非实测百分比）
+  高 │ ■■■■■■■■■  GSH：短步 + 隔离 diff + 人闸
+     │ ■
+     │ ●
+     │  ●●
+     │    ●●●     无闸长程自主（示意 METR 下降形态）
+  低 │       ●●
+     └────────────────────────────→ 自主时长 / 任务跨度 / 人闸变少
+       单技能          多步无闸         长程无人值守
+```
+
+依据（百分比均属原文，勿当作 GSH 产线 KPI）：
+
+1. Anthropic：评「代理」= Harness + 模型；SWE-bench Verified 约一年内从 ~40% 到 >80%。<https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents>
+2. SWE-Bench Mobile：最好约 12%；同一模型 Cursor ~12%、OpenCode ~2%（约 6×）。<https://arxiv.org/abs/2602.09540>
+3. Harness 消融：收紧上下文窗口时，**上下文管理**贡献最大（主要来自避免溢出失败）。<https://arxiv.org/abs/2609.20804>
+4. METR：人类任务 <~4 分钟时成功率约 100%，>~4 小时时 <~10%；50% 地平线约每 7 个月加倍。<https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/>
+5. LongCLI-Bench：自主通过率 <20%；注入计划约 58%；计划 + 交互约 62%。<https://arxiv.org/abs/2602.14337>
+6. SWE-Marathon：pass@1 <30%；13.8% 的 rollout 出现 reward-hack 尝试。<https://www.swe-marathon.org/>
+7. Chen 等：相对副驾驶，代理条件正确率高约 35 个百分点，用户耗时约一半。<https://arxiv.org/abs/2507.08149>
+8. CentaurEval：该协作必要题上，LLM 单独 ~0.67%、人单独 ~18.89%、人机协作 ~31.11%。<https://arxiv.org/abs/2512.04111>
 
 ---
 
@@ -52,38 +129,62 @@ game-studio-harness/
 
 ## 能承接的工作
 
-GSH 承接的是一条游戏竖切里需要跨职种、跨会话、跨客户端完成的制作工作。下列路径均可按 catalog id 指定、按步骤执行。
+GSH 承接整条游戏制作流水线上、需要跨职种、跨会话、跨客户端完成的工作。下列部门地图覆盖 catalog 中全部 **35** 条职种路径；每条均可按 id 指定、按步骤执行。技能共 **106** 条，一步一开。这不是「只做数值竖切」的子集。
+
+### 制作与方向
+
+`producer`：里程碑目标、构建验收推动、发版说明口径。  
+`associate-producer`：交付包、跨组协调、阻塞闭环与齐套催收。  
+`project-manager`：风险台账、依赖图、状态摘要与纠偏选项。  
+`creative-director`：体验支柱、切片批注、fantasy 冲突与砍范围原则。  
+支柱终裁、scope-cut 批准与发版签字仍由人做；AI 出选项、清单与隔离面草稿。
 
 ### 定档与范围冻结
 
 将「本里程碑只需证明近战 3 秒 TTK」一类诉求写成 `loadplan.json`：指定职种或技能 id、写级别（默认 `sandbox`）、验收种类。`python -m gsh menu` 检索 id；`python -m gsh activate <会话>` 生成 `activated.json` 与现行卡。范围保存在文件中，供后续会话与其他工具读取。
 
-### 战斗数值
+### 系统、战斗与数值
 
-`combat-numeric-designer` 路径：建模锚点 → 属性框架 → 公式 / 克制 / 技能系数 → 表写入 → 边角用例 → 表 diff。每一步对应一条技能。`python -m gsh next` 将 `craft_open` 从 `combat-modeling` 推进到 `attribute-framework`，后半段系数表不进入本轮上下文。
+`systems-designer`：系统索引、功能 GDD 切片、规则可行性。  
+`combat-designer`：战斗流程、技能组、手感清单。  
+`combat-numeric-designer`：建模锚点 → 属性框架 → 公式 / 克制 / 技能系数 → 表写入 → 边角用例 → 表 diff。每一步对应一条技能。`python -m gsh next` 将 `craft_open` 从 `combat-modeling` 推进到 `attribute-framework`，后半段系数表不进入本轮上下文。
 
-### 经济与养成
+### 经济、养成与商业化
 
 `economy-numeric-designer`：产销循环、物价、通胀压力、表晋升。  
 `progression-numeric-designer`：成长曲线、解锁节奏、属性挂接。  
-执行方式与战斗数值相同：一步一技能，在隔离面改表，关项时附上证据路径。
+`monetization-designer`：付费点、IAP / 礼包 / 通行证目录与 KPI 口径。  
+执行方式与战斗数值相同：一步一技能，在隔离面改表，关项时附上证据路径。活服经济与 IAP 定价终裁仍由人签。
 
 ### 关卡、叙事与交互
 
 `level-designer`：目标链、灰盒动线、遭遇与节奏。  
 `narrative-designer`：节拍表、任务门闸、对白。  
+`copywriter-designer`：系统 / 引导文案、对白润色、命名与字数。  
 `ux-designer`：信息架构与界面五态。  
 指定一条职种后，本轮只执行当前步骤（例如仅灰盒，或仅 beat），不并行改写文案主键。
 
-### 客户端与服务端
+### 客户端、服务端与工具
 
-`client-engineer`、`server-engineer` 及战斗 / UI 细分职种，将契约、功能竖切、存档迁移拆成步骤。正式 Git 面仍经隔离面与制作方批准。工程技能约束未冻结的策划数字不得写入代码常量。
+`client-engineer`、`client-combat-engineer`、`client-ui-engineer`：功能竖切、战斗帧 / 判定表现、界面逻辑与红点。  
+`server-engineer`、`server-combat-engineer`：API 契约、存档迁移、战斗权威与反作弊挂点。  
+`tools-engineer`：管线工具规格、导出修复、CI 工具入口。  
+正式 Git 面仍经隔离面与制作方批准。工程技能约束未冻结的策划数字不得写入代码常量。实现 + 测试回路必须带 `verify-report`。
 
 ### 品质与发版
 
-`qa-lead`：测试计划与验收口径。  
+`qa-lead`：测试计划、验收口径、风险豁免治理。豁免提案可共担，豁免批准由人做。  
 `qa-functional`：用例与缺陷。  
-自动化、兼容、性能各有独立路径。关项使用 `python -m gsh close --kind playtest` 或 `--kind build`，证据为用例包或构建日志。
+`qa-automation`、`qa-compatibility`、`qa-performance`：自动化脚手架、N/N-1 兼容、性能预算实测。  
+关项使用 `python -m gsh close --kind playtest` 或 `--kind build`，证据为用例包或构建日志。
+
+### 美术、动画与技美
+
+`character-concept-artist` / `environment-concept-artist`：角色与场景概念、可制作 Brief。  
+`character-artist` / `environment-artist` / `ui-artist`：角色、场景、UI Kit 资产清单与导出规范。  
+`animator` / `rigger`：动作集、事件挂点、绑定与蒙皮。  
+`vfx-artist` / `tech-artist`：特效预算、导入校验、LOD / Shader 与性能预算衔接。  
+音频入库与 Bank 构建走 `audio-fmod-checklist` / `fmod-bank-build`。风格锚点与体验调性终裁仍由人做。
 
 ### 活服运营
 
@@ -93,7 +194,7 @@ GSH 承接的是一条游戏竖切里需要跨职种、跨会话、跨客户端�
 
 `handoff-pack`、`collab-protocol` 与 `python -m gsh status`。下一班次打开业务根后执行 `python -m gsh resume`，读取现行卡与下一步技能，无需依赖即时通讯记录。
 
-完整职种表见 [docs/crafts/index.md](docs/crafts/index.md)，技能表见 [docs/skills/index.md](docs/skills/index.md)。
+完整职种表见 [docs/crafts/index.md](docs/crafts/index.md)，技能表见 [docs/skills/index.md](docs/skills/index.md)。35 与 106 是现行 catalog 全量，不是摘录。
 
 ---
 
@@ -119,7 +220,7 @@ GSH 承接的是一条游戏竖切里需要跨职种、跨会话、跨客户端�
 
 ## 设计哲学
 
-原则与「要解决的问题」分开陈述。下列条目说明**为什么这样设计、制作方得到什么**。
+原则与「要解决的问题」分开陈述。下列条目说明**为什么这样设计、制作方得到什么**。总口径仍是有界自主、可审计 diff、人闸收口。
 
 **上下文预算（context window / context budget）。** 每轮固定税保持简短：宪法、现行卡、已指定技能或职种正文。其余技能在执行到该步时再打开。`minimal` / `core` / `full` 决定磁盘投影范围，不决定本轮注入量。
 
@@ -310,11 +411,13 @@ pipx、Release wheel、`GSH_PACK_ROOT` 与未来 PyPI：[docs/install.md](docs/i
 
 | 任务 | 入口 |
 |---|---|
-| 定档一轮竖切 | `python -m gsh menu --kind craft -q 竖切`，阅读 `skills/route-task/SKILL.md` |
+| 定档一轮制作 | `python -m gsh menu --kind craft -q 里程碑`，阅读 `skills/route-task/SKILL.md` |
+| 制作 / 方向 | `producer` / `creative-director` |
 | 战斗数值 / TTK | 指定 `combat-numeric-designer`，`gsh activate`，以 `gsh next` 前进 |
-| 经济 / 养成 | `economy-numeric-designer` / `progression-numeric-designer` |
+| 经济 / 养成 / 商业化 | `economy-numeric-designer` / `progression-numeric-designer` / `monetization-designer` |
 | 关卡灰盒 | `level-designer` |
 | 客户端 / 服务端 | `client-engineer` / `server-engineer` |
+| 美术 / 技美 | `character-artist` / `tech-artist` |
 | QA 验收 | `qa-lead` 或 `qa-functional`，`gsh close` |
 | 活服档期 | `liveops-designer` |
 | 续作当前会话 | `python -m gsh resume` |

@@ -57,7 +57,7 @@ The four layers are frozen. Changing them requires a steer, a new loadplan, and 
 
 ## Docs
 
-Depth lives under `docs/`. README keeps the purpose → capabilities → problems → philosophy → concepts → guides → platform → install order. Do not add decorative images; badges must be absolute shields.io URLs.
+Depth lives under `docs/`. README keeps the purpose → three framing notes (full pipeline / human–AI boundaries / capability curve) → inventory → department map → problems → philosophy → concepts → guides → platform → install order. Do not add decorative images; badges must be absolute shields.io URLs. Do not invent studio success percentages.
 
 ## Releases
 
