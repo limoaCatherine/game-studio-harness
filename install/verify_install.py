@@ -157,6 +157,10 @@ def main() -> int:
         pack / "install" / "install.py",
         pack / "install" / "verify_install.py",
         pack / "README.md",
+        pack / "SECURITY.md",
+        pack / "CONTRIBUTING.md",
+        pack / "CODE_OF_CONDUCT.md",
+        pack / "CHANGELOG.md",
     ]
     for root in scan_roots:
         paths = [root] if root.is_file() else list(root.rglob("*")) if root.is_dir() else []
