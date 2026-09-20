@@ -10,14 +10,17 @@ import shutil
 import sys
 from pathlib import Path
 
-PACK = Path(__file__).resolve().parent
-CURSOR_SRC = PACK / "cursor"
-WORKSPACE_SRC = PACK / "workspace-scaffold"
-CONSTITUTION = PACK / "adapters" / "_shared" / "CONSTITUTION.md"
+PACK = Path(__file__).resolve().parents[1]
+CORE = PACK / "core"
+STUDIO = PACK / "studio"
+ADAPTERS = PACK / "adapters"
+CONSTITUTION = CORE / "constitution.md"
+if not CONSTITUTION.is_file():
+    CONSTITUTION = ADAPTERS / "_shared" / "CONSTITUTION.md"
 ALL_TOOLS = ("cursor", "claude", "codex", "grok", "deepseek")
 
-if str(CURSOR_SRC / "harness" / "scripts") not in sys.path:
-    sys.path.insert(0, str(CURSOR_SRC / "harness" / "scripts"))
+if str(CORE / "harness" / "scripts") not in sys.path:
+    sys.path.insert(0, str(CORE / "harness" / "scripts"))
 from gsh_paths import Homes, homes_from_env  # noqa: E402
 
 
@@ -77,7 +80,7 @@ def constitution_text() -> str:
 
 
 def write_tiers(harness_dst: Path, dry: bool) -> None:
-    src = CURSOR_SRC / "harness" / "mcp-tiers.json"
+    src = CORE / "harness" / "mcp-tiers.json"
     raw = json.loads(src.read_text(encoding="utf-8"))
     boot_dir = harness_dst / "mcp-boot"
     raw["boot"] = {
@@ -91,7 +94,7 @@ def write_tiers(harness_dst: Path, dry: bool) -> None:
 
 
 def maybe_write_mcp(cursor: Path, write_mcp: bool, dry: bool) -> str:
-    example = CURSOR_SRC / "mcp.json.example"
+    example = ADAPTERS / "cursor" / "mcp.json.example"
     dest_example = cursor / "mcp.json.example"
     if not dry:
         cursor.mkdir(parents=True, exist_ok=True)
@@ -167,25 +170,25 @@ def parse_tools(raw: str) -> list[str]:
 
 
 def land_shared(h: Homes, dry: bool, copied: list[str]) -> None:
-    copy_tree(CURSOR_SRC / "skills", h.gsh_skills, dry, copied)
-    copy_tree(CURSOR_SRC / "agents", h.gsh_agents, dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "scripts", h.gsh_harness / "scripts", dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "surfaces.default.json", h.gsh_harness / "surfaces.default.json", dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "mcp-tools", h.gsh_harness / "mcp-tools", dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "docs", h.gsh_harness / "docs", dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "mcp-boot", h.gsh_harness / "mcp-boot", dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "host-paths.example.json", h.gsh_harness / "host-paths.example.json", dry, copied)
-    copy_tree(CURSOR_SRC / "mcp.json.example", h.gsh / "mcp.json.example", dry, copied)
+    copy_tree(CORE / "skills", h.gsh_skills, dry, copied)
+    copy_tree(CORE / "agents", h.gsh_agents, dry, copied)
+    copy_tree(CORE / "harness" / "scripts", h.gsh_harness / "scripts", dry, copied)
+    copy_tree(CORE / "harness" / "surfaces.default.json", h.gsh_harness / "surfaces.default.json", dry, copied)
+    copy_tree(CORE / "harness" / "mcp-tools", h.gsh_harness / "mcp-tools", dry, copied)
+    copy_tree(CORE / "harness" / "docs", h.gsh_harness / "docs", dry, copied)
+    copy_tree(CORE / "harness" / "mcp-boot", h.gsh_harness / "mcp-boot", dry, copied)
+    copy_tree(CORE / "harness" / "host-paths.example.json", h.gsh_harness / "host-paths.example.json", dry, copied)
+    copy_tree(ADAPTERS / "cursor" / "mcp.json.example", h.gsh / "mcp.json.example", dry, copied)
     write_tiers(h.gsh_harness, dry)
     write_text(h.gsh / "AGENTS.md", constitution_text(), dry, copied)
 
 
 def land_cursor(h: Homes, write_mcp: bool, dry: bool, copied: list[str]) -> str:
-    copy_tree(CURSOR_SRC / "rules", h.cursor / "rules", dry, copied)
-    copy_tree(CURSOR_SRC / "skills", h.cursor / "skills", dry, copied)
-    copy_tree(CURSOR_SRC / "agents", h.cursor / "agents", dry, copied)
-    copy_tree(CURSOR_SRC / "hooks", h.cursor / "hooks", dry, copied)
-    copy_tree(CURSOR_SRC / "hooks.json", h.cursor / "hooks.json", dry, copied)
+    copy_tree(ADAPTERS / "cursor" / "rules", h.cursor / "rules", dry, copied)
+    copy_tree(CORE / "skills", h.cursor / "skills", dry, copied)
+    copy_tree(CORE / "agents", h.cursor / "agents", dry, copied)
+    copy_tree(CORE / "hooks", h.cursor / "hooks", dry, copied)
+    copy_tree(ADAPTERS / "cursor" / "hooks.json", h.cursor / "hooks.json", dry, copied)
     copy_tree(h.gsh_harness, h.cursor / "harness", dry, copied)
     return maybe_write_mcp(h.cursor, write_mcp, dry)
 
@@ -216,7 +219,7 @@ def land_other(h: Homes, tools: list[str], dry: bool, copied: list[str]) -> None
 def land_workspace(root: Path, dry: bool, copied: list[str]) -> str:
     if not dry:
         root.mkdir(parents=True, exist_ok=True)
-    merge_missing(WORKSPACE_SRC / ".harness", root / ".harness", dry, copied)
+    merge_missing(STUDIO / ".harness", root / ".harness", dry, copied)
     text = constitution_text()
     write_text(root / "AGENTS.md", text, dry, copied)
     write_text(root / "CLAUDE.md", text, dry, copied)
@@ -233,8 +236,8 @@ def main() -> int:
     p.add_argument("--write-mcp", action="store_true", help="仅当目标没有 mcp.json 时从示例创建")
     p.add_argument("--dry-run", action="store_true")
     args = p.parse_args()
-    if not CURSOR_SRC.is_dir():
-        print("missing cursor/; clone the repo root and run from there", file=sys.stderr)
+    if not CORE.is_dir():
+        print("missing core/; clone the repo root and run from there", file=sys.stderr)
         return 2
     if not args.cursor_only and not args.workspace:
         print("need --workspace or --cursor-only", file=sys.stderr)

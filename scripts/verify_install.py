@@ -8,9 +8,9 @@ import re
 import sys
 from pathlib import Path
 
-PACK = Path(__file__).resolve().parent
-if str(PACK / "cursor" / "harness" / "scripts") not in sys.path:
-    sys.path.insert(0, str(PACK / "cursor" / "harness" / "scripts"))
+PACK = Path(__file__).resolve().parents[1]
+if str(PACK / "core" / "harness" / "scripts") not in sys.path:
+    sys.path.insert(0, str(PACK / "core" / "harness" / "scripts"))
 from gsh_paths import homes_from_env  # noqa: E402
 
 NEED_SKILLS = ("route-task", "write-isolation", "doctor", "verify-gate", "mcp-autostart")
@@ -143,13 +143,12 @@ def main() -> int:
 
     pack = Path(args.pack_root)
     scan_roots = [
-        pack / "cursor",
+        pack / "core",
         pack / "docs",
         pack / "adapters",
-        pack / "install.py",
-        pack / "verify_install.py",
+        pack / "scripts" / "install.py",
+        pack / "scripts" / "verify_install.py",
         pack / "README.md",
-        pack / "自述.md",
         pack / "AGENTS.md",
     ]
     for root in scan_roots:
@@ -168,7 +167,7 @@ def main() -> int:
             if SECRET_A.search(text) or SECRET_LIKE.search(text):
                 fail(errors, f"{path.as_posix()} still looks like a live secret")
 
-    example = pack / "cursor" / "mcp.json.example"
+    example = pack / "adapters" / "cursor" / "mcp.json.example"
     if example.is_file():
         text = example.read_text(encoding="utf-8")
         if "-a" in text and "${LARK_APP_ID}" not in text:

@@ -1,56 +1,33 @@
 {
-  "version": 1,
-  "canonical": "cursor/",
+  "version": 2,
+  "canonical": "core/",
   "runtime": "~/.gsh",
-  "note": "技能/职种只在 cursor/ 存一份。各工具目录是适配落点，不是第二套产品。",
+  "note": "技能/职种只在 core/ 存一份。adapters/<工具>/ 只放该工具的落点说明与特有文件。",
   "tools": {
     "cursor": {
       "label": "Cursor",
-      "home": "~/.cursor",
-      "skills": "~/.cursor/skills",
-      "agents": "~/.cursor/agents",
-      "rules": "~/.cursor/rules",
-      "hooks": true,
-      "instruction": "~/.cursor/rules/全局.mdc",
-      "harness": "~/.cursor/harness",
-      "docs": "https://cursor.com/docs"
+      "readme": "adapters/cursor/README.md",
+      "home": "~/.cursor"
     },
     "claude": {
       "label": "Claude Code",
-      "home": "~/.claude",
-      "skills": "~/.claude/skills",
-      "agents": "~/.claude/agents",
-      "instruction": "~/.claude/CLAUDE.md",
-      "project_instruction": "CLAUDE.md",
-      "docs": "https://code.claude.com/docs"
+      "readme": "adapters/claude/README.md",
+      "home": "~/.claude"
     },
     "codex": {
       "label": "OpenAI Codex",
-      "home": "~/.codex",
-      "skills": "~/.agents/skills",
-      "agents": "~/.codex/agents",
-      "instruction": "~/.codex/AGENTS.md",
-      "project_instruction": "AGENTS.md",
-      "docs": "https://developers.openai.com/codex/guides/agents-md"
+      "readme": "adapters/codex/README.md",
+      "home": "~/.codex"
     },
     "grok": {
-      "label": "Grok Build / grokbot",
-      "home": "~/.grok",
-      "skills": "~/.grok/skills",
-      "agents": "~/.grok/agents",
-      "instruction": "~/.grok/AGENTS.md",
-      "project_instruction": "AGENTS.md",
-      "compat": ["Cursor skills/rules", "Claude CLAUDE.md"],
-      "docs": "https://docs.x.ai/build/overview"
+      "label": "Grok Build",
+      "readme": "adapters/grok/README.md",
+      "home": "~/.grok"
     },
     "deepseek": {
       "label": "DeepSeek Harness",
-      "home": "~/.dsh",
-      "skills": "~/.dsh/skills",
-      "skills_extra": "~/.agents/skills",
-      "instruction": "~/.dsh/AGENTS.md",
-      "project_instruction": "AGENTS.md",
-      "docs": "https://github.com/deepseek-ai/deepseek-harness"
+      "readme": "adapters/deepseek/README.md",
+      "home": "~/.dsh"
     }
   }
 }
