@@ -7,5 +7,5 @@
     "agents": "../agents"
   },
   "installs_to": ["~/.claude", "${isolate}/claude"],
-  "notes": "Claude Code reads CLAUDE.md. GSH hooks.json is Cursor-native and is not claimed as a Claude runtime."
+  "notes": "Claude Code reads CLAUDE.md. settings.json maps SessionStart/PreToolUse/Stop onto the same Python hooks as Cursor."
 }

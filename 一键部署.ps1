@@ -2,7 +2,7 @@
 [CmdletBinding()]
 param(
     [string]$Workspace = "",
-    [string]$Tools = "legacy",
+    [string]$Tools = "all",
     [ValidateSet("minimal", "core", "full")]
     [string]$Profile = "full",
     [switch]$CursorOnly,

@@ -17,10 +17,39 @@ BANNED = (
     "grok/skills/route-task/SKILL.md",
     "deepseek/skills/route-task/SKILL.md",
     ".cursor/skills/route-task/SKILL.md",
+    ".claude/skills/route-task/SKILL.md",
+    ".roo/skills/route-task/SKILL.md",
+)
+
+REPO_NATIVES = (
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "CONVENTIONS.md",
+    "QWEN.md",
+    ".windsurfrules",
+    ".rules",
+    ".clinerules/gsh.md",
+    ".windsurf/rules/gsh.md",
+    ".roo/rules/gsh.md",
+    ".roomodes",
+    ".continue/config.yaml",
+    ".aider.conf.yml",
+    ".amazonq/rules/gsh.md",
+    ".trae/rules/gsh.md",
+    ".junie/guidelines.md",
+    ".kimi-code/AGENTS.md",
+    ".qwen/QWEN.md",
+    ".opencode/opencode.json",
+    ".claude/settings.json",
+    ".github/copilot-instructions.md",
+    ".github/instructions/gsh.instructions.md",
+    ".cursor/hooks.json",
+    ".cursor/rules/全局.mdc",
 )
 
 
-class ThinAdapterTests(unittest.TestCase):
+class SsotAndNativeConventionTests(unittest.TestCase):
     def test_no_five_full_copies(self) -> None:
         for rel in BANNED:
             self.assertFalse((ROOT / rel).is_file(), rel)
@@ -32,16 +61,15 @@ class ThinAdapterTests(unittest.TestCase):
         self.assertTrue((ROOT / "hooks" / "hooks.json").is_file())
         self.assertTrue((ROOT / "harness" / "scripts" / "刷新菜单.py").is_file())
 
-    def test_cursor_adapter_is_pointer(self) -> None:
+    def test_repo_natives_are_convention_files(self) -> None:
+        for rel in REPO_NATIVES:
+            self.assertTrue((ROOT / rel).is_file(), rel)
+        self.assertFalse((ROOT / ".cursor" / "skills").is_dir())
         adapter = json.loads((ROOT / ".cursor" / "adapter.json").read_text(encoding="utf-8"))
         self.assertEqual(adapter["runtime"], "full")
         self.assertEqual(adapter["source"]["skills"], "../skills")
-        self.assertTrue((ROOT / ".cursor" / "hooks.json").is_file())
-        self.assertFalse((ROOT / ".cursor" / "skills").is_dir())
-
-    def test_other_adapters_are_instruction(self) -> None:
         claude = json.loads((ROOT / ".claude" / "adapter.json").read_text(encoding="utf-8"))
-        self.assertEqual(claude["runtime"], "instruction")
-        self.assertTrue((ROOT / "CLAUDE.md").is_file())
-        self.assertTrue((ROOT / ".codex" / "AGENTS.md").is_file())
-        self.assertTrue((ROOT / ".github" / "copilot-instructions.md").is_file())
+        self.assertTrue((ROOT / ".claude" / "settings.json").is_file())
+        self.assertIn("settings.json", claude["notes"])
+        settings = json.loads((ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
+        self.assertIn("SessionStart", settings["hooks"])

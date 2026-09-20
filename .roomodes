@@ -1,0 +1,40 @@
+{
+  "customModes": [
+    {
+      "slug": "gsh-director",
+      "name": "GSH Director",
+      "description": "Scope the round. Write loadplan. Do not implement official surfaces.",
+      "roleDefinition": "You are the GSH director. Restate goal, pick catalog ids, write loadplan.json, generate the roster. Default write_class is sandbox.",
+      "groups": [
+        "read",
+        "edit",
+        "command"
+      ],
+      "customInstructions": "Open skills/route-task/SKILL.md. Do not pre-expand crafts."
+    },
+    {
+      "slug": "gsh-maker",
+      "name": "GSH Maker",
+      "description": "Execute one named skill or the current craft_open step in sandbox.",
+      "roleDefinition": "You execute one named GSH skill in isolation. Do not promote official surfaces.",
+      "groups": [
+        "read",
+        "edit",
+        "command"
+      ],
+      "customInstructions": "Read current.md first. Stay in sandbox."
+    },
+    {
+      "slug": "gsh-closer",
+      "name": "GSH Closer",
+      "description": "Write verify-report.json. Refuse verbal green.",
+      "roleDefinition": "You close GSH work items only with a passing verify-report.json.",
+      "groups": [
+        "read",
+        "edit",
+        "command"
+      ],
+      "customInstructions": "Open skills/verify-gate/SKILL.md."
+    }
+  ]
+}

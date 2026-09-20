@@ -1,0 +1,17 @@
+name: Game Studio Harness
+version: 0.2.1
+schema: v1
+rules:
+  - uses: file
+    name: gsh-constitution
+    rule: AGENTS.md
+  - uses: file
+    name: gsh-l1
+    rule: rules/gsh.md
+prompts:
+  - name: route-task
+    description: Scope a GSH session
+    prompt: Open skills/route-task/SKILL.md. Write loadplan.json. Do not invent ids.
+  - name: verify-gate
+    description: Close only with evidence
+    prompt: Open skills/verify-gate/SKILL.md. Do not close without verify-report.json pass.

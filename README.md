@@ -10,6 +10,7 @@
   <a href="README.en.md">English</a> ·
   <a href="#安装">安装</a> ·
   <a href="#心智模型">心智模型</a> ·
+  <a href="#设计哲学">设计哲学</a> ·
   <a href="#逐层深讲">逐层深讲</a> ·
   <a href="#platform-support">平台矩阵</a> ·
   <a href="docs/mcp-policy.md">MCP 政策</a>
@@ -17,15 +18,15 @@
 
 <p align="center">
 
-| 职种 | 技能 | MCP 政策 | 适配器 |
+| 职种 | 技能 | MCP 政策 | 原生适配器 |
 | :---: | :---: | :---: | :---: |
-| 35 crafts | 106 skills | **0** 条活服务器配送 / 36 用途桩 | Cursor 完整运行时 · 其余降级 |
+| 35 crafts | 106 skills | **0** 条活服务器配送 / 36 用途桩 | 19 套完整原生目录 · Cursor `hooks.json` · Claude `settings.json` |
 
 </p>
 
-> 窗口是稀缺的。正式面是不可逆的。会话会断。
+> 窗口是稀缺的。正式面是不可逆的。会话会断。口头「绿了」不能关项。
 >
-> GSH 不是提示词合集，也不是 DCC 插件。它是大模型在复杂游戏制作流里的**上下文操作系统**。
+> GSH 是大模型在复杂游戏制作流里的**四层上下文操作系统**：定档、切片、隔离制作、验证晋升。
 
 > [!WARNING]
 > **只从官方源安装。** 官方仓库：[github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness)。第三方打包、网盘镜像、未审查的 zip 不由本项目维护，可能被塞进恶意钩子或带密钥的 `mcp.json`。本仓 MIT，不捆绑 DCC 二进制，不提交工作室绝对路径。
@@ -34,10 +35,10 @@
 
 ## 安装
 
-需要 **Python 3.11+**。Windows 游戏生产环境是一等公民；Linux / macOS 可用于隔离试装与 CI。安装器**不装** Excel、Blender、Unity、FMOD，也**不写**密钥。
+需要 **Python 3.11+**。Windows 游戏生产环境是一等公民；Linux / macOS 可用于隔离试装与 CI。安装器只投影架构文件与技能，不附带任何制作软件安装包，也不写密钥。
 
 > [!IMPORTANT]
-> **每个工具只选一条安装路径。** 不要先跑 `setup --tools cursor` 再把手拷一份 `skills/` 进 `~/.cursor/skills`，再从旧的 `cursor/skills` 目录同步。旧的五套全量拷贝已经删除。真相源只有仓库根的 `skills/` `agents/` `rules/` `hooks/` `harness/`。
+> **内容只改仓库根。** `skills/` `agents/` `rules/` `hooks/` `harness/` 是唯一真相。`gsh setup` / `gsh sync` 把同一份内容写成每个工具自己的完整原生目录。不要在家目录里另开一棵手维护技能树。
 
 ### 推荐路径：Python CLI
 
@@ -78,17 +79,28 @@ python -m gsh setup \
 
 ### 按工具表
 
-| `--tools` | 行为 |
+| `--tools` | 装到该工具家目录的原生文件 |
 |---|---|
-| `cursor` | **完整运行时**：hooks + rules + skills + agents + harness + lazy MCP 包装 |
-| `claude` | `CLAUDE.md` + 技能/职种投影。无 GSH 钩子 |
-| `codex` | `AGENTS.md` + 技能投影（含 `~/.agents/skills`） |
-| `grok` / `deepseek` | `AGENTS.md` + 技能投影。无钩子 |
-| `windsurf` / `cline` / `opencode` / `gemini` | 指令文件 + 可选技能拷贝 |
-| `continue` | `AGENTS.md` + 需手工合并的 snippet |
-| `copilot` | **仅** `copilot-instructions.md` |
-| `legacy` | 上述五件套：cursor,claude,codex,grok,deepseek |
-| `all` | 含文档级适配器。**不是**功能对等 |
+| `cursor` | `hooks.json` + `rules/` + `skills/` + `agents/` + `harness/` + lazy MCP 包装 |
+| `claude` | `CLAUDE.md` + `settings.json`（调用同一组 Python 钩子）+ `skills/` + `agents/` + `HOOKS.md` |
+| `codex` | `AGENTS.md` + `rules/gsh.md` + `skills/` + `~/.agents/skills` + `HOOKS.md` |
+| `windsurf` | `AGENTS.md` + `.windsurfrules` + `.windsurf/rules` + `skills/` + `HOOKS.md` |
+| `cline` | `AGENTS.md` + `.clinerules/gsh.md` + `skills/` + `HOOKS.md` |
+| `roo` | `AGENTS.md` + `.roo/rules` + `.roomodes` + `skills/` + `HOOKS.md` |
+| `continue` | `AGENTS.md` + `config.yaml` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
+| `copilot` | `copilot-instructions.md` + `instructions/` + `prompts/` + `skills/` + `HOOKS.md` |
+| `opencode` | `AGENTS.md` + `opencode.json` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
+| `gemini` | `GEMINI.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
+| `aider` | `CONVENTIONS.md` + `.aider.conf.yml` + `skills/` + `HOOKS.md` |
+| `zed` | `AGENTS.md` + `.rules` + `settings.json` + `skills/` + `HOOKS.md` |
+| `amazonq` | `AGENTS.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
+| `trae` | `AGENTS.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
+| `junie` | `AGENTS.md` + `guidelines.md` + `skills/` + `HOOKS.md` |
+| `grok` / `deepseek` | `AGENTS.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
+| `kimi` | `AGENTS.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
+| `qwen` | `QWEN.md` + `AGENTS.md` + `rules/gsh.md` + `skills/` + `HOOKS.md` |
+| `legacy` | cursor, claude, codex, grok, deepseek |
+| `all`（默认） | 上表全部 19 个工具 |
 
 ### 隔离试装（推荐先做）
 
@@ -98,19 +110,19 @@ python -m gsh setup \
 python -m gsh setup \
   --isolate-root /tmp/gsh-probe \
   --workspace /tmp/gsh-probe/ws \
-  --tools legacy \
+  --tools all \
   --profile full \
   --yes
 
 python -m gsh verify \
   --isolate-root /tmp/gsh-probe \
   --workspace /tmp/gsh-probe/ws \
-  --tools legacy
+  --tools all
 
 python -m gsh doctor --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws
 ```
 
-`verify` 绿表示：菜单可解析、ID 唯一、职种不预展开、无密钥/绝对盘符、Cursor 投影与根 `skills/` 字节一致、仓库里不再有五套 `*/skills` 拷贝。
+`verify` 绿表示：菜单可解析、ID 唯一、职种不预展开、无密钥/绝对盘符、各工具家目录的原生树与根 `skills/` 字节一致、仓库里不再另存 `cursor/skills` 一类技能全树。
 
 ### 同步与卸载
 
@@ -152,20 +164,65 @@ python -m gsh uninstall --isolate-root /tmp/gsh-probe --yes
 
 大模型装不下一条完整制作流水线。把 106 条技能一次性灌进去，它会同时扮演战斗数值、客户端、QA，并在策划案未定稿时改引擎资产。
 
-我们不靠提示词里的「请专注」。GSH 用**第二层对第三层握手**：点名集合是显式文件，职种是路径不是清单，外接默认不拉起。
-
-四层不能合成三层，因为每一层解决的失败模式不同。见下表与[逐层深讲](#逐层深讲)。
+GSH 用**第二层对第三层握手**：点名集合是显式文件，职种是路径不是清单，外接默认不拉起。四层各自挡住一种会死人的失败模式，所以不能合成三层。见[设计哲学](#设计哲学)与[逐层深讲](#逐层深讲)。
 
 ---
 
-## 本项目不是什么
+## 设计哲学
 
-- **不是** ECC 换皮。ECC 面向通用软件工程；GSH 面向游戏制作四层（定档、切片、隔离、晋升）。
-- **不是** Unity / Unreal / Excel 插件市场。不配送 DCC。
-- **不是** 云服务。没有账号、没有必选远程模型。
-- **不是** 「36 个 MCP 开箱即用」。见 MCP 政策。
-- **不是** 五工具功能对等层。Cursor 有钩子；Copilot 只有 instruction。
-- **不是** 提示词角色扮演合集。职种是路径文件，技能是做法文件，闸是脚本。
+GSH 写给坐在制作会里的人：制作人、TD、主策、主程、主美。他们每天要把「这期竖切能不能打」说清楚，还要让模型在下一小时里只做这一件事。下面每一条都来自现场会反复发生的事故，不是抽象原则。
+
+### 窗口是稀缺的
+
+一次会话能稳定记住的正文很短。catalog 有 106 条技能、35 条职种、两份 canon、若干 ADR。若开场把菜单全文、职种路径、世界观圣经一起贴进去，模型会在第一步就串岗：一边改伤害公式，一边谈存档迁移，一边给正式表写「先这样」。
+
+所以开场只读四样东西：宪法、现行卡、点名正文、`retrieve_keys` 命中的记忆。其余技能在做到那一步再打开。`minimal` / `core` / `full` 决定家里装哪些文件，不决定这一轮窗口里塞什么。
+
+### 职种是路径，不是预展开清单
+
+游戏制作是多工种流水线。战斗数值设计师的路径可能是：锚点表 → 公式顺序 → 技能系数 → 验收。如果点名职种就把 `uses_skills` 全部读完，第一步会用第五步的口径填表，主键还没冻就谈晋升。
+
+`activated.json` 只写 `craft_open`（路径第一步）。后面的技能在做到时再 `craft` 打开。职种文件是路线图，技能文件是做法。模型扮演的是当前这一步的工人，不是全组。
+
+### 正式面不可逆
+
+策划表、引擎资产、已提交的 git 历史，一旦被整文件覆盖，回滚成本由真人承担。模型没有这个痛感。
+
+默认 `write_class` 是 `sandbox`。隔离根在 `.harness/surfaces.json`。晋升必须同时满足：人准、changeset 只回写记录集、`verify-report.json` 的 `verdict` 为 `pass`。没有第三条的「先改正式表再补报告」，是事故，不是效率。
+
+### 会话会断，工具会换
+
+制作人中午用 Cursor 定档，晚上可能换一台机器、换一个客户端把同一条竖切做完。聊天记录不是档案。
+
+现行卡是 `.harness/sessions/<id>/current.md`。状态是 `state.json`。流水是 `tasks.jsonl`（只追加）。名单是 `activated.json`。换工具之后，打开业务根，先读现行卡，不要靠「我记得上午说过」。探测会话以 `_` 开头，避免回归夹具盖住 `LATEST`。
+
+### 口头「绿了」不能关项
+
+「感觉能过」「钩子没报错」「我玩了一下还行」都不是验收。关项闸认的是文件：`verify-report.json` 里有 `bead_id`、`verify_kind`、`command`、整数 `exit_code`、非空 `evidence_paths`、`verdict: pass`。
+
+Cursor 的 `stop` 钩子会核这份报告。Claude Code 的 `settings.json` 把 `Stop` 指到同一条 `hooks/结束.py`。其余工具没有事件运行时，`HOOKS.md` 要求你自己打开报告；没有 `pass` 就不要说做完了。
+
+### 外接默认睡着
+
+每个 MCP 在 IDE 启动时握手、拉 `tools/list`、占一个宿主进程。把 36 个用途一次直连，开场会卡死，窗口还会被工具描述吃掉。
+
+`mcp-tiers.json` 的 `core` 是开场握手名单，不是「已经装好的服务器」名单。本仓配送 **0** 条活服务器、36 条用途桩。真正拉起走 `lazy_stdio` 与 `拉起外接.py`。excelMCP 出现在 core 列表里，只表示表格管线需要握手这个档位键；本机服务器仍要你自己装。
+
+### 密钥永不进模型
+
+模型上下文一旦读到 `.env`、`credentials.json`、私钥，就等于把密钥写进了可能被日志、会话同步、提示缓存带走的地方。
+
+Cursor `beforeReadFile` 与 Claude `PreToolUse` / `Read` 拦截常见密钥路径。`mcp.json.example` 只有占位符。安装器不覆盖已有 `mcp.json`。`verify` 扫用户主目录绝对路径、硬编码宿主根、`ghp_` / `sk-` 一类活密钥。
+
+### 破坏性命令要有摩擦
+
+`git reset --hard`、force-push、整目录删除没有「再确认一下」就会毁掉真人下午的工作。Cursor `beforeShellExecution` 与 Claude `PreToolUse` / `Bash` 要求确认。其余工具把同一条写进 `HOOKS.md`：没有人点头，不要跑。
+
+### 一份内容，多套完整原生安装
+
+制作组不会只用一个客户端。有人开 Cursor，有人开 Claude Code，有人在 CI 里跑 Codex，有人用 Copilot 补一行。内容必须只有一份：仓库根的技能、职种、规则、钩子、运行时。
+
+每个工具装上之后，家目录必须是**该工具自己认的完整布局**：入口文件、规则目录、技能树、职种树、钩子或最接近的等价物、MCP 示例、`gsh-capability.json`。仓库里不另存五棵技能全树；打开本仓时读根目录 `skills/`。改一处，`gsh sync` 把所有已安装原生树拉齐。
 
 ```mermaid
 flowchart LR
@@ -190,13 +247,14 @@ game-studio-harness/
 ├── harness/                # 运行时脚本、mcp-boot、mcp-tools 桩
 ├── gsh/                    # Python 3.11+ CLI
 ├── studio/.harness/        # L4 空数据脚手架
-├── .cursor/                # 薄适配（无 skills 全树）
-├── .claude/ .codex/        # 宪法投影
+├── .cursor/                # Cursor 原生约定（hooks/rules；无 skills 全树）
+├── .claude/ .codex/ .roo/  # 各工具原生入口与规则
+├── GEMINI.md CONVENTIONS.md QWEN.md
 ├── docs/                   # 架构 / 适配器 / 技能 / 职种 / cookbook
-└── tests/                  # catalog、唯一 ID、不预展开、无密钥、投影、隔离 CLI
+└── tests/                  # catalog、唯一 ID、不预展开、无密钥、原生树、隔离 CLI
 ```
 
-旧布局 `cursor/skills`、`claude/skills`、`grok/skills`、`deepseek/skills`、`codex/skills` **已删除**。不要把它们加回来。
+仓库根不维护第二份 `cursor/skills` 全树。安装后的完整技能树只出现在各工具家目录。
 
 ---
 
@@ -207,7 +265,7 @@ game-studio-harness/
 | 四层 | 宪法 / 定档 / 能力库 / 档案柜。已封版 |
 | Agent / 职种 | `agents/<id>.md`。路径，不预展开 |
 | Skill / 事件 | `skills/<id>/SKILL.md`。可复用做法，无当次数字 |
-| Hook | Cursor 事件上的硬闸。其它工具没有 |
+| Hook | Cursor `hooks.json` 与 Claude `settings.json` 调用的 Python 闸；其余工具见 `HOOKS.md` |
 | Rule | 始终生效的薄税 |
 | Filing | `.harness` 文件事实，不是知识图谱 |
 | Catalog | 安装后生成的 ID 菜单 |
@@ -239,12 +297,12 @@ L1 始终在
 - **路径**：仓库 `rules/全局.mdc` → 安装后 `~/.cursor/rules/全局.mdc`；打开本仓时还有 `.cursor/rules/全局.mdc` 这一份薄投影。
 - **缺席**：无「开场读序」、无「不预展开」。代理串岗、预读整条战斗数值路径、用最后一步口径填第一步的锚点表。
 
-#### `AGENTS.md` / `CLAUDE.md`
+#### `AGENTS.md` / `CLAUDE.md` / `GEMINI.md` / `CONVENTIONS.md` / `QWEN.md`
 
-- **处理什么**：给没有 Cursor 规则引擎的工具一份同样的宪法。
-- **解决什么**：Claude / Codex / Grok 打开业务根时至少知道读序与写隔离。
-- **路径**：仓库根 `AGENTS.md`、`CLAUDE.md`；`.claude/CLAUDE.md`、`.codex/AGENTS.md` 是投影。
-- **缺席**：指令型工具没有任何四层入口，退回成普通聊天。
+- **处理什么**：给每个工具一份同样的宪法，写成该工具会打开的入口文件名。
+- **解决什么**：换客户端之后读序、写隔离、关项证据仍然在。
+- **路径**：仓库根各入口文件；`setup --workspace` 再写到业务根。
+- **缺席**：打开业务根的工具看不到四层入口，只会当普通聊天。
 
 #### `hooks/hooks.json`
 
@@ -507,31 +565,43 @@ L1 始终在
 python -m gsh setup     # 引导或脚本化投影
 python -m gsh sync      # 根真相源 → 已安装适配器
 python -m gsh verify    # 架构 / ID / 不预展开 / 密钥 / 投影
-python -m gsh doctor    # 漂移与假对等诊断
+python -m gsh doctor    # 漂移、缺文件、各工具原生能力
 python -m gsh uninstall # 按 install-state 撤投影
 ```
 
 `~/.gsh/install-state.json`（或 isolate `gsh/install-state.json`）记录 profile、tools、文件列表。
 
-共享运行时在 `~/.gsh`：skills、agents、rules、hooks、harness、宪法。Cursor 家目录是完整运行时投影；其它家目录是指令投影。
+共享运行时在 `~/.gsh`：skills、agents、rules、hooks、harness、宪法。每个 `--tools` 选中的工具再得到一份该工具自己的完整原生目录。
 
 ---
 
 ## Platform Support
 
-**禁止五工具假对等。** Cursor 是唯一完整运行时。
+下表写的是**装上之后实际有什么文件、谁会执行钩子**。每个工具都拿到完整的技能/职种树与入口文件。
 
-| 能力 | Cursor | Claude Code | Codex | Grok | DeepSeek | Windsurf | Cline | Continue | Copilot | OpenCode | Gemini |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 宪法文件 | 规则 + AGENTS | CLAUDE.md | AGENTS.md | AGENTS.md | AGENTS.md | AGENTS.md | AGENTS.md | snippet | instruction | AGENTS.md | GEMINI.md |
-| 技能投影 | 是 | 是 | 是 | 是 | 是 | 可选 | 可选 | 否* | 否 | 可选 | 可选 |
-| hooks.json 运行时 | **是** | 否 | 否 | 否 | 否 | 否 | 否 | 否 | 否 | 否 | 否 |
-| 开场现行卡 | **自动** | 约定 | 约定 | 约定 | 约定 | 约定 | 约定 | 约定 | 约定 | 约定 | 约定 |
-| 密钥读拦截 | **是** | 否 | 否 | 否 | 否 | 否 | 否 | 否 | 否 | 否 | 否 |
-| 关项验证闸 | **是** | 约定 | 约定 | 约定 | 约定 | 约定 | 约定 | 约定 | 约定 | 约定 | 约定 |
-| lazy MCP 包装 | **可接线** | 产品自带 MCP | 产品自带 | 通常无 | 通常无 | 产品自带 | 产品自带 | 产品自带 | 无 | 产品自带 | 产品自带 |
+| 工具 | 原生入口 | 技能/职种树 | 钩子 | 其它原生文件 |
+|---|---|---|---|---|
+| Cursor | `rules/全局.mdc` | 有 | **执行** `hooks.json` | `harness/`、lazy MCP |
+| Claude Code | `CLAUDE.md` | 有 | **执行** `settings.json` → 同一组 `hooks/*.py` | `HOOKS.md`（事件名不同） |
+| Codex | `AGENTS.md` | 有（含 `~/.agents/skills`） | 约定 / `HOOKS.md` | `rules/gsh.md` |
+| Windsurf | `AGENTS.md` + `.windsurfrules` | 有 | 约定 / `HOOKS.md` | `.windsurf/rules` |
+| Cline | `AGENTS.md` | 有 | 约定 / `HOOKS.md` | `.clinerules/` |
+| Roo Code | `AGENTS.md` | 有 | 约定 / `HOOKS.md` | `.roo/rules`、`.roomodes` |
+| Continue.dev | `AGENTS.md` | 有 | 约定 / `HOOKS.md` | `config.yaml`、`rules/gsh.md` |
+| GitHub Copilot | `copilot-instructions.md` | 有 | 约定 / `HOOKS.md` | `instructions/`、`prompts/` |
+| OpenCode | `AGENTS.md` | 有 | 约定 / `HOOKS.md` | `opencode.json` |
+| Gemini CLI | `GEMINI.md` | 有 | 约定 / `HOOKS.md` | `rules/gsh.md` |
+| Aider | `CONVENTIONS.md` | 有 | 约定 / `HOOKS.md` | `.aider.conf.yml` |
+| Zed | `AGENTS.md` + `.rules` | 有 | 约定 / `HOOKS.md` | `settings.json` |
+| Amazon Q | `AGENTS.md` | 有 | 约定 / `HOOKS.md` | `rules/gsh.md` |
+| Trae | `AGENTS.md` | 有 | 约定 / `HOOKS.md` | `rules/gsh.md` |
+| JetBrains Junie | `guidelines.md` | 有 | 约定 / `HOOKS.md` | `AGENTS.md` |
+| Grok | `AGENTS.md` | 有 | 约定 / `HOOKS.md` | `rules/gsh.md` |
+| DeepSeek | `AGENTS.md` | 有 | 约定 / `HOOKS.md` | `rules/gsh.md` |
+| Kimi Code | `AGENTS.md` | 有 | 约定 / `HOOKS.md` | `rules/gsh.md` |
+| Qwen Code | `QWEN.md` | 有 | 约定 / `HOOKS.md` | `AGENTS.md`、`rules/gsh.md` |
 
-\*Continue 需要你把 snippet 合并进自己的 `config.yaml`，GSH 不会覆盖它。
+Continue 的 `config.yaml` 若家目录里已有用户文件，setup 会写入 GSH 投影副本；合并进你自己的配置时请对照 diff。
 
 每篇适配说明：[docs/adapters/](docs/adapters/)。跨工具总论：[docs/architecture/cross-harness.md](docs/architecture/cross-harness.md)。
 
@@ -572,7 +642,7 @@ python -m gsh uninstall # 按 install-state 撤投影
 | 投影和根 skills 不一致 | `python -m gsh sync`，不要手改 `~/.cursor/skills` |
 | 还存在 `cursor/skills` 全树 | 你在用旧 clone。拉 0.2 之后的布局 |
 | Cursor 钩子没跑 | 确认装了 `--tools cursor`，且 IDE 读的是那个 hooks.json |
-| Claude 没自动读现行卡 | 预期行为。先打开 `current.md` |
+| Claude 钩子没跑 | 确认 `~/.claude/settings.json` 存在，且 `hooks/*.py` 与工作目录对得上 |
 | MCP 36 条全红 | 预期。本仓不配送活服务器。只接你本机真正有的 |
 | excelMCP 在 core 但连不上 | 档位 ≠ 配送。自己装本机服务器 |
 | 职种一上来就谈晋升 | `activated.json` 被预展开了。跑 `tests/test_craft_no_preexpand.py` |
@@ -593,7 +663,8 @@ python -m unittest discover -s tests -v
 | `test_unique_ids.py` | id 非空、目录合法 |
 | `test_craft_no_preexpand.py` | 点名职种只打开第一步 |
 | `test_no_secrets.py` | 无用户盘符、无活密钥 |
-| `test_projection_thin.py` | 无五套拷贝；`.cursor/skills` 不存在 |
+| `test_projection_thin.py` | 仓库无技能全树拷贝；根目录有各工具原生约定文件 |
+| `test_native_homes.py` | `--tools all` 后每个家目录都是完整原生树 |
 | `test_cli_isolate.py` | isolate setup+verify；改根技能后 sync 对齐 |
 
 ---
@@ -614,7 +685,7 @@ python -m unittest discover -s tests -v
 
 ## 从 0.1 五树布局迁移
 
-0.1 在仓库里维护了五份几乎相同的 `cursor/skills`、`claude/skills`、`codex/skills`、`grok/skills`、`deepseek/skills`。改一个技能要改五次，且容易假装五工具运行时对等。
+0.1 在仓库里维护了多份几乎相同的 `cursor/skills`、`claude/skills`、`codex/skills`、`grok/skills`、`deepseek/skills`。改一个技能要改多次，投影容易漂移。
 
 0.2 破坏性变更：
 
@@ -649,7 +720,7 @@ python -m unittest discover -s tests -v
 |---|---|
 | `--workspace PATH` | 业务根，创建/补齐 `.harness` |
 | `--cursor-only` | 不建业务根 |
-| `--tools LIST` | 见安装表。默认 `legacy` |
+| `--tools LIST` | 见安装表。默认 `all` |
 | `--profile minimal\|core\|full` | 投影哪些技能/职种 |
 | `--isolate-root PATH` | 所有家目录改落到此树 |
 | `--write-mcp` | 仅当目标没有 `mcp.json` 时复制占位 |
@@ -672,7 +743,7 @@ python -m unittest discover -s tests -v
 - 至少一条职种带 `uses_skills`，且逻辑上不预展开
 - 共享运行时与 Cursor 投影的 `route-task` 与仓库根字节一致
 - 无本机用户主目录绝对路径、无硬编码宿主根、无 `ghp_` / `sk-` 一类活密钥
-- 业务根具备 state / surfaces / 两份 canon 示例 / AGENTS.md / CLAUDE.md
+- 业务根具备 state / surfaces / 两份 canon 示例，以及各工具原生入口（AGENTS / CLAUDE / GEMINI / CONVENTIONS / QWEN、`.clinerules`、`.roo`、`.junie` 等）
 
 ### `doctor`
 
@@ -835,12 +906,12 @@ python -m unittest discover -s tests -v
 2. **把 catalog 当系统提示。** 菜单是给导演选 id 的，不是给工人背诵的。
 3. **在 GSH 仓库里填真实表路径。** `surfaces.json` 示例必须保持占位符。
 4. **声称 36 MCP 已可用。** 用途桩 ≠ 进程。excelMCP 在 core 列表里 ≠ 配送了 COM 桥。
-5. **在 Claude 里期待 Cursor 钩子。** 关项闸不会跑。你必须自己看 `verify-report.json`。
+5. **有 `HOOKS.md` 的工具里不读现行卡、不核 verify-report。** 没有事件运行时，这两步要人做。
 6. **手改 `~/.claude/skills` 而不改仓库根。** 下次 `sync` 会被 SSOT 盖掉。先改 `skills/`。
-7. **五工具各维护一棵技能树。** 这正是 0.2 要删掉的布局。
+7. **在仓库里再拷一棵 `cursor/skills`。** 根目录 `skills/` 已经是真相。
 8. **未人准整文件覆盖正式 xlsx。** 只回写 changeset 记录格。
 9. **探测会话写入 LATEST。** 回归夹具必须以 `_` 开头。
-10. **用 Copilot 当完整运行时。** Copilot 只有 instruction。
+10. **把 Copilot 的 instruction 当成会自动拦密钥的钩子。** Copilot 家目录有完整技能树与 prompt，关项仍要人读 `verify-report.json`。
 
 ---
 
@@ -851,7 +922,7 @@ python -m unittest discover -s tests -v
 | `GSH_PACK_ROOT` | 仓库根覆盖 |
 | `GSH_ISOLATE_ROOT` | 隔离探测根 |
 | `GSH_HOME` | 共享运行时（默认 `~/.gsh`） |
-| `CURSOR_HOME` / `CLAUDE_HOME` / `CODEX_HOME` / `GROK_HOME` / `DSH_HOME` | 各工具家目录 |
+| `CURSOR_HOME` / `CLAUDE_HOME` / `CODEX_HOME` / `GROK_HOME` / `DSH_HOME` / `ROO_HOME` / `AIDER_HOME` / `ZED_HOME` / `AMAZONQ_HOME` / `TRAE_HOME` / `JUNIE_HOME` / `KIMI_HOME` / `QWEN_HOME` | 各工具家目录 |
 | `AGENTS_SKILLS` | Codex/DeepSeek 共用的 `~/.agents/skills` |
 | `HARNESS_ROOT` | 业务根（钩子也可从 `.harness` 上溯） |
 | `HARNESS_SESSION` | 会话短名；`LATEST` 优先 |
@@ -887,8 +958,8 @@ A. 可以。`--profile minimal` 或 `core`，`--tools claude`。不要再开一�
 **Q. 隔离根和业务根有什么区别？**  
 A. 隔离根模拟 `~/.gsh` 与各工具家目录。业务根是游戏内容与 `.harness`。`verify` 两者都查。
 
-**Q. 为什么 verify 要查「无五树」？**  
-A. 防止回归到 0.1。五树是本重构要消灭的失败模式。
+**Q. 为什么 verify 要查仓库里没有 `cursor/skills`？**  
+A. 技能正文只应出现在根目录 `skills/` 与安装后的家目录投影里。仓库里再拷一棵全树会让 `sync` 失去单一入口。
 
 **Q. 钩子能在 Windows 上跑吗？**  
 A. 可以。`hooks.json` 用 `python hooks/开场.py`。需要 Python 3.11+ 在 PATH。

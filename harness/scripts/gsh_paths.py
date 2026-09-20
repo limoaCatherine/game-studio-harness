@@ -22,6 +22,14 @@ class Homes:
     opencode: Path
     gemini: Path
     cline: Path
+    roo: Path
+    aider: Path
+    zed: Path
+    amazonq: Path
+    trae: Path
+    junie: Path
+    kimi: Path
+    qwen: Path
 
     @property
     def gsh_skills(self) -> Path:
@@ -72,6 +80,14 @@ def homes_from_env(isolate: Path | None = None) -> Homes:
             opencode=root / "opencode",
             gemini=root / "gemini",
             cline=root / "cline",
+            roo=root / "roo",
+            aider=root / "aider",
+            zed=root / "zed",
+            amazonq=root / "amazonq",
+            trae=root / "trae",
+            junie=root / "junie",
+            kimi=root / "kimi",
+            qwen=root / "qwen",
         )
     home = Path.home()
     return Homes(
@@ -88,6 +104,14 @@ def homes_from_env(isolate: Path | None = None) -> Homes:
         opencode=Path(os.environ.get("OPENCODE_HOME") or (home / ".opencode")),
         gemini=Path(os.environ.get("GEMINI_HOME") or (home / ".gemini")),
         cline=Path(os.environ.get("CLINE_HOME") or (home / ".cline")),
+        roo=Path(os.environ.get("ROO_HOME") or (home / ".roo")),
+        aider=Path(os.environ.get("AIDER_HOME") or (home / ".aider")),
+        zed=Path(os.environ.get("ZED_HOME") or (home / ".config" / "zed")),
+        amazonq=Path(os.environ.get("AMAZONQ_HOME") or (home / ".amazonq")),
+        trae=Path(os.environ.get("TRAE_HOME") or (home / ".trae")),
+        junie=Path(os.environ.get("JUNIE_HOME") or (home / ".junie")),
+        kimi=Path(os.environ.get("KIMI_HOME") or (home / ".kimi-code")),
+        qwen=Path(os.environ.get("QWEN_HOME") or (home / ".qwen")),
     )
 
 

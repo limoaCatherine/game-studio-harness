@@ -9,11 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
-from gsh.profiles import (
-    FULL_RUNTIME_TOOLS,
-    select_crafts,
-    select_skills,
-)
+from gsh.profiles import select_crafts, select_skills
 
 
 def copy_file(src: Path, dst: Path, dry: bool, copied: list[str]) -> None:
@@ -255,9 +251,9 @@ def land_workspace(pack: Path, root: Path, dry: bool, copied: list[str]) -> str:
     if not dry:
         root.mkdir(parents=True, exist_ok=True)
     merge_missing(pack / "studio" / ".harness", root / ".harness", dry, copied)
-    text = constitution_text(pack)
-    write_text(root / "AGENTS.md", text, dry, copied)
-    write_text(root / "CLAUDE.md", text, dry, copied)
+    from gsh.adapters import land_project_natives
+
+    land_project_natives(pack, root, dry, copied)
     return f"scaffolded missing files under {root / '.harness'}"
 
 

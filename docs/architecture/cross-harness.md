@@ -1,36 +1,42 @@
 # 跨工具运行时
 
-GSH 的真相源只有一份。各工具家目录是投影。**禁止假装五工具功能对等。**
+GSH 的内容只有一份：仓库根 `skills/` `agents/` `rules/` `hooks/` `harness/`。`python -m gsh setup` 把这份内容写成每个工具自己认的完整原生目录。改根目录一处，再 `python -m gsh sync`。
 
-## 能力矩阵
+## 装上之后有什么
 
-| 能力 | Cursor | Claude Code | Codex | Grok / DeepSeek | Windsurf / Cline / Continue / OpenCode / Gemini | GitHub Copilot |
-|---|---|---|---|---|---|---|
-| 读 `AGENTS.md` / 宪法 | 规则 + 投影 | `CLAUDE.md` | `AGENTS.md` | `AGENTS.md` | 指令文件 | `copilot-instructions.md` |
-| 项目级 / 用户级 skills | 完整投影 | 可拷技能目录 | 可拷到 `.agents/skills` | 可拷技能目录 | 视产品而定 | 无原生 skill 树 |
-| `hooks.json` 运行时 | **有** | 无 GSH 钩子 | 无 | 无 | 无 | 无 |
-| 开场注入现行卡 | **有** | 靠人/约定先读卡 | 靠约定 | 靠约定 | 靠约定 | 靠约定 |
-| 读文件挡密钥 | **有** | 无硬闸 | 无 | 无 | 无 | 无 |
-| 关项验证闸 | **有** | 约定 | 约定 | 约定 | 约定 | 约定 |
-| 懒 MCP (`lazy_stdio`) | **可接线** | 各产品自己的 MCP | 各产品自己的 MCP | 通常无 | 各产品自己的 MCP | 无 GSH 懒接 |
-| 子代理按职种切开 | Cursor Task 可用 | Claude 子代理 | 视版本 | 弱 | 弱 | 弱 |
+| 工具 | 家目录（isolate 下为同名文件夹） | 入口 | 钩子 |
+|---|---|---|---|
+| Cursor | `~/.cursor` | `rules/全局.mdc` | 执行 `hooks.json` |
+| Claude Code | `~/.claude` | `CLAUDE.md` | 执行 `settings.json` → `hooks/*.py` |
+| Codex | `~/.codex` + `~/.agents/skills` | `AGENTS.md` | `HOOKS.md` |
+| Windsurf | `~/.codeium/windsurf` | `AGENTS.md` + `.windsurfrules` | `HOOKS.md` |
+| Cline | `~/.cline` | `AGENTS.md` + `.clinerules/` | `HOOKS.md` |
+| Roo Code | `~/.roo` | `AGENTS.md` + `.roo/rules` + `.roomodes` | `HOOKS.md` |
+| Continue.dev | `~/.continue` | `AGENTS.md` + `config.yaml` | `HOOKS.md` |
+| GitHub Copilot | `~/.github` | `copilot-instructions.md` + prompts | `HOOKS.md` |
+| OpenCode | `~/.opencode` | `AGENTS.md` + `opencode.json` | `HOOKS.md` |
+| Gemini CLI | `~/.gemini` | `GEMINI.md` | `HOOKS.md` |
+| Aider | `~/.aider` | `CONVENTIONS.md` + `.aider.conf.yml` | `HOOKS.md` |
+| Zed | `~/.config/zed` | `AGENTS.md` + `.rules` | `HOOKS.md` |
+| Amazon Q | `~/.amazonq` | `AGENTS.md` + `rules/` | `HOOKS.md` |
+| Trae | `~/.trae` | `AGENTS.md` + `rules/` | `HOOKS.md` |
+| Junie | `~/.junie` | `guidelines.md` | `HOOKS.md` |
+| Grok | `~/.grok` | `AGENTS.md` | `HOOKS.md` |
+| DeepSeek | `~/.dsh` | `AGENTS.md` | `HOOKS.md` |
+| Kimi Code | `~/.kimi-code` | `AGENTS.md` | `HOOKS.md` |
+| Qwen Code | `~/.qwen` | `QWEN.md` | `HOOKS.md` |
 
-## 安装投影
-
-`python -m gsh setup` 把根目录 `skills/` `agents/` `rules/` `hooks/` `harness/` 写到共享 `~/.gsh`（或 isolate `gsh/`），再按工具投影：
-
-- Cursor：完整运行时（hooks + rules + skills + agents + harness）
-- Claude / Codex / Grok / DeepSeek：宪法文件 + 技能/职种拷贝
-- Copilot：只写 instruction
-- Continue：只写 snippet + `AGENTS.md`
-- 其余：指令文件 + 可选技能拷贝
-
-改根目录一处，再 `python -m gsh sync`。不要手改五棵树。
+每个家目录都包含按 profile 筛选的 `skills/` 与 `agents/`、`mcp.json.example`、`gsh-capability.json`。
 
 ## 打开本仓库
 
-把本仓当作 Cursor 项目打开时：
+把本仓当作项目打开时：
 
-- 规则：`.cursor/rules/全局.mdc`（从 `rules/` 同步的单文件）
+- 规则：`.cursor/rules/全局.mdc`、`.claude/rules/gsh.md`、`.roo/rules/gsh.md` 等约定文件
 - 技能：读仓库根 `skills/`，不要在 `.cursor/skills/` 再复制一份
-- 钩子：`.cursor/hooks.json` 调用仓库根 `hooks/*.py`（cwd = 仓库根）
+- Cursor 钩子：`.cursor/hooks.json` 调用仓库根 `hooks/*.py`（cwd = 仓库根）
+- Claude 钩子：`.claude/settings.json` 调用同一组脚本
+
+## 打开业务根
+
+`setup --workspace` 只补 `.harness` 与各工具会读的入口/规则文件，不把 106 条技能拷进工作室。技能从已安装家目录或本仓 SSOT 读取。

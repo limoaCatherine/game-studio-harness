@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""验收：菜单、唯一 ID、职种不预展开、无密钥、投影一致、适配器为薄投影。"""
+"""验收：菜单、唯一 ID、职种不预展开、无密钥、投影一致、仓库无技能全树拷贝。"""
 from __future__ import annotations
 
 import json
@@ -7,10 +7,12 @@ import re
 import sys
 from pathlib import Path
 
+from gsh.adapters import SPEC_BY_ID, home_for
 from gsh.catalog import build_catalog
 from gsh.commands.setup import _homes
 from gsh.paths_cli import resolve_pack
 from gsh.profiles import parse_tools
+from gsh.project import read_install_state
 
 NEED_SKILLS = ("route-task", "write-isolation", "doctor", "verify-gate", "mcp-autostart")
 NEED_HOOKS = ("开场.py", "结束.py", "工作区.py", "命令前.py", "读文件前.py")
@@ -126,6 +128,9 @@ def run(
 
     pack_root = resolve_pack(pack)
     h = _homes(isolate)
+    state = read_install_state(h)
+    if state and state.get("tools") and tools_raw in {"all", "legacy"}:
+        tools_raw = ",".join(state["tools"])
     try:
         tools = parse_tools(tools_raw)
     except ValueError as exc:
@@ -146,7 +151,7 @@ def run(
         if (pack_root / rel / "route-task" / "SKILL.md").is_file():
             fail(errors, f"pack still has duplicated tree {rel} — SSOT is root skills/")
     if (pack_root / ".cursor" / "skills" / "route-task" / "SKILL.md").is_file():
-        fail(errors, ".cursor/ must stay a thin adapter (no full skills copy)")
+        fail(errors, ".cursor/skills must not copy the SSOT skill tree")
 
     catalog = build_catalog(pack_root)
     skill_ids = [x["id"] for x in catalog["skills"]]
@@ -205,7 +210,6 @@ def run(
                 fail(errors, "L1 未写开场读序")
             if "不预展开" not in text:
                 fail(errors, "L1 未写不预展开")
-        check_skill_tree(h.cursor / "skills", errors, "cursor")
         for name in NEED_HOOKS:
             if not (h.cursor / "hooks" / name).is_file():
                 fail(errors, f"missing hook {name}")
@@ -224,28 +228,63 @@ def run(
             "cursor vs shared",
         )
 
-    if "claude" in tools:
-        if not (h.claude / "CLAUDE.md").is_file():
-            fail(errors, "missing Claude CLAUDE.md")
-        check_skill_tree(h.claude / "skills", errors, "claude")
+    for tool_id in tools:
+        spec = SPEC_BY_ID.get(tool_id)
+        if spec is None:
+            fail(errors, f"unknown tool {tool_id}")
+            continue
+        dest = home_for(h, spec)
+        if not (dest / "gsh-capability.json").is_file():
+            fail(errors, f"{tool_id} missing gsh-capability.json")
+        else:
+            cap = json.loads((dest / "gsh-capability.json").read_text(encoding="utf-8"))
+            if cap.get("tool") != spec.id:
+                fail(errors, f"{tool_id} capability tool mismatch")
+            if cap.get("hooks") != spec.hooks:
+                fail(errors, f"{tool_id} capability hooks mismatch")
+        skill_rel = spec.skill_dirs[0] if spec.skill_dirs else "skills"
+        check_skill_tree(dest / skill_rel, errors, f"{tool_id}/{skill_rel}")
         _assert_same_file(
             pack_root / "skills" / "route-task" / "SKILL.md",
-            h.claude / "skills" / "route-task" / "SKILL.md",
+            dest / skill_rel / "route-task" / "SKILL.md",
             errors,
-            "claude projection",
+            f"{tool_id} projection",
         )
-    if "codex" in tools:
-        if not (h.codex / "AGENTS.md").is_file():
-            fail(errors, "missing Codex AGENTS.md")
-        check_skill_tree(h.agents_skills, errors, "codex/.agents/skills")
-    if "grok" in tools:
-        if not (h.grok / "AGENTS.md").is_file():
-            fail(errors, "missing Grok AGENTS.md")
-        check_skill_tree(h.grok / "skills", errors, "grok")
-    if "deepseek" in tools:
-        if not (h.dsh / "AGENTS.md").is_file():
-            fail(errors, "missing DeepSeek AGENTS.md")
-        check_skill_tree(h.dsh / "skills", errors, "deepseek")
+        if spec.agent_dirs:
+            agent_dir = dest / spec.agent_dirs[0]
+            if not list(agent_dir.glob("*.md")):
+                fail(errors, f"{tool_id} missing craft files under {agent_dir}")
+        for entry in spec.entries:
+            if not (dest / entry).is_file():
+                fail(errors, f"{tool_id} missing native entry {entry}")
+        if spec.rule_rel and not (dest / spec.rule_rel).is_file():
+            fail(errors, f"{tool_id} missing native rule {spec.rule_rel}")
+        if spec.hooks == "cursor":
+            if not (dest / "hooks.json").is_file():
+                fail(errors, f"{tool_id} missing hooks.json")
+        elif spec.hooks == "claude":
+            if not (dest / "settings.json").is_file():
+                fail(errors, f"{tool_id} missing settings.json")
+            if not (dest / "hooks" / "开场.py").is_file():
+                fail(errors, f"{tool_id} missing hooks/开场.py")
+            if not (dest / "HOOKS.md").is_file():
+                fail(errors, f"{tool_id} missing HOOKS.md")
+        else:
+            if not (dest / "HOOKS.md").is_file():
+                fail(errors, f"{tool_id} missing HOOKS.md")
+        if spec.id == "continue" and not (dest / "config.yaml").is_file():
+            fail(errors, "continue missing config.yaml")
+        if spec.id == "aider" and not (dest / ".aider.conf.yml").is_file():
+            fail(errors, "aider missing .aider.conf.yml")
+        if spec.id == "opencode" and not (dest / "opencode.json").is_file():
+            fail(errors, "opencode missing opencode.json")
+        if spec.id == "roo" and not (dest / ".roomodes").is_file():
+            fail(errors, "roo missing .roomodes")
+        if spec.id == "copilot" and not (dest / "prompts" / "route-task.prompt.md").is_file():
+            fail(errors, "copilot missing prompts/route-task.prompt.md")
+        for extra in spec.extra_homes:
+            extra_root = getattr(h, extra)
+            check_skill_tree(extra_root, errors, f"{tool_id} extra {extra}")
 
     for rel in (
         "README.md",
@@ -281,6 +320,26 @@ def run(
             ".harness/memory/canon/四层封版.md",
             "AGENTS.md",
             "CLAUDE.md",
+            "GEMINI.md",
+            "CONVENTIONS.md",
+            "QWEN.md",
+            ".windsurfrules",
+            ".rules",
+            ".clinerules/gsh.md",
+            ".roo/rules/gsh.md",
+            ".roomodes",
+            ".continue/config.yaml",
+            ".aider.conf.yml",
+            ".amazonq/rules/gsh.md",
+            ".trae/rules/gsh.md",
+            ".junie/guidelines.md",
+            ".kimi-code/AGENTS.md",
+            ".qwen/QWEN.md",
+            ".opencode/opencode.json",
+            ".claude/settings.json",
+            ".github/copilot-instructions.md",
+            ".cursor/hooks.json",
+            ".cursor/rules/全局.mdc",
         ):
             if not (root / rel).is_file():
                 fail(errors, f"workspace missing {rel}")
