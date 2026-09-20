@@ -1124,7 +1124,7 @@ Full policy: [docs/mcp-policy.md](docs/mcp-policy.md).
 - Setup does not overwrite an existing `mcp.json`.
 - Cursor / Claude Code intercept common secret paths.
 - Destructive Git operations require confirmation.
-- `verify` and `tests/test_no_secrets.py` scan user-profile absolute paths, `Harness-Apps`, and `ghp_` / `sk-`.
+- `verify` and `tests/test_no_secrets.py` scan user-profile absolute paths, `Harness-Apps`, token prefixes, private-key armor, webhooks, and non-example emails.
 - Report vulnerabilities via GitHub private advisories: [SECURITY.md](SECURITY.md).
 
 ---

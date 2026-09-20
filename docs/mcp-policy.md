@@ -7,7 +7,7 @@ GSH 将外接分为三档。本仓配送用途桩与占位模板；可连接进�
 | 物件 | 说明 | 边界 |
 |---|---|---|
 | `harness/mcp-tools/*.json`（36） | 用途桩：id、purpose、工具名列表 | 不含可执行服务器 |
-| `harness/mcp.json.example` | 占位启动模板，环境变量均为 `${…}` | 不含密钥 |
+| `harness/mcp.json.example` | 占位启动模板（文内标 `EXAMPLE ONLY`），环境变量均为 `${…}` | 不含密钥 |
 | `harness/mcp-tiers.json` | 已接线键的开场握手名单，其余懒加载 | 不表示宿主已安装 |
 | `harness/mcp-boot/lazy_stdio.py` | 声明走缓存，首次 `tools/call` 再拉起子进程 | 不含子进程本身 |
 | `harness/mcp-boot/http_bridge.py` | 将本机 HTTP MCP 桥为 stdio | 不含远程托管服务 |
@@ -49,4 +49,4 @@ GSH 将外接分为三档。本仓配送用途桩与占位模板；可连接进�
 
 ## 密钥
 
-`mcp.json.example` 里的 Lark 参数使用 `${LARK_APP_ID}` / `${LARK_APP_SECRET}`。安装器若写入 `mcp.json`，仍然只是占位符。密钥留在本机密钥管理处。
+`mcp.json.example` 文内标 `EXAMPLE ONLY`。Lark 参数使用 `${LARK_APP_ID}` / `${LARK_APP_SECRET}`。安装器若写入 `mcp.json`，仍然只是占位符。密钥留在本机密钥管理处。复制 `.env.example` 到本机 `.env`，不要提交真实值。

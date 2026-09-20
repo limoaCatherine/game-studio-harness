@@ -49,7 +49,7 @@ Frontmatter must include `name` and `description`. Common hosts go in `needs_mcp
 
 ## MCP
 
-Add a purpose stub under `harness/mcp-tools/<id>.json` and a placeholder block in `harness/mcp.json.example`. New hosts default to lazy. Do not commit a live server, a secret, or a Windows user-profile absolute path.
+Add a purpose stub under `harness/mcp-tools/<id>.json` and a placeholder block in `harness/mcp.json.example` (keep the in-file `EXAMPLE ONLY` label). New hosts default to lazy. Do not commit a live server, a secret, a `.env`, or a user-profile absolute path. Copy `.env.example` locally if you need optional host keys.
 
 ## Architecture
 

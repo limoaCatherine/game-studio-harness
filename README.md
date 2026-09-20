@@ -1124,7 +1124,7 @@ python -m gsh close --kind smoke --evidence <路径>
 - 安装器不覆盖已有 `mcp.json`。
 - Cursor / Claude Code 拦截常见密钥路径。
 - 破坏性 Git 操作需要确认。
-- `verify` 与 `tests/test_no_secrets.py` 扫描用户主目录绝对路径、`Harness-Apps`、`ghp_` / `sk-`。
+- `verify` 与 `tests/test_no_secrets.py` 扫描用户主目录绝对路径、`Harness-Apps`、token 前缀、私钥头、webhook、非示例邮箱。
 - 漏洞请使用 GitHub 私密报告，见 [SECURITY.md](SECURITY.md)。
 
 ---

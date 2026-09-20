@@ -1,4 +1,5 @@
 {
+    "$comment": "EXAMPLE ONLY — placeholders (${LARK_APP_ID}, ${HARNESS_APPS}, …). Copy to a local mcp.json. Do not commit a live mcp.json or real credentials.",
     "mcpServers": {
         "blender-mcp": {
             "command": "${PYTHON}",

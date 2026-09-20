@@ -5,7 +5,20 @@ import json, re, sys
 from pathlib import Path
 
 DENY_NAME = re.compile(
-    r"(^\.env($|\.)|credentials\.json|secrets?\.json|id_rsa|id_ed25519|\.pem$|\.pfx$|appsettings\..*secrets)",
+    r"("
+    r"^\.env$"
+    r"|^\.env\.(?!example$)"
+    r"|^mcp\.json$"
+    r"|credentials\.json"
+    r"|secrets?\.json"
+    r"|id_rsa"
+    r"|id_ed25519"
+    r"|id_ecdsa"
+    r"|\.pem$"
+    r"|\.pfx$"
+    r"|\.p12$"
+    r"|appsettings\..*secrets"
+    r")",
     re.I,
 )
 DENY_PART = re.compile(r"[\\/]\.ssh[\\/]|[\\/]\.aws[\\/]|[\\/]\.gnupg[\\/]", re.I)

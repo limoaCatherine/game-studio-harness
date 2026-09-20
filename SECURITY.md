@@ -15,11 +15,30 @@ Use a [GitHub private vulnerability report](https://github.com/limoaCatherine/ga
 
 This repository, the `gsh` CLI, hook scripts, generated projections, and GitHub Release wheels. Host DCC processes and third-party MCP servers that you install locally are **out of scope** for GSH itself.
 
+## What not to commit
+
+Do not add any of the following to git, issues, pull requests, chat, or Release assets:
+
+- `.env`, live `mcp.json`, `credentials.json`, `secrets.json`, `.pypirc`, `.npmrc` with tokens
+- `*.pem`, `*.pfx`, `*.p12`, `*.key`, SSH private keys (`id_rsa`, `id_ed25519`, `id_ecdsa`)
+- API keys, access tokens, passwords, private keys, webhook URLs
+- User-profile absolute paths (`C:\Users\<you>\...`, `/Users/<you>/...`)
+- Personal emails, phone numbers, studio-only internal numbers
+- Unpublished game IP, live table dumps, internal-only URLs
+
+Copy the labeled examples instead:
+
+- `harness/mcp.json.example` and `.cursor/mcp.json.example` — `${PLACEHOLDER}` only
+- `.env.example` — empty optional keys
+
+`.gitignore` already ignores live `mcp.json`, `.env`, key material, and local `.harness` session/artifact dumps. The shipped `studio/.harness/` scaffold (state, surfaces, canon) stays tracked.
+
 ## Secrets
 
-- Secrets do not belong in git or in a Release asset. `harness/mcp.json.example` uses `${PLACEHOLDER}` only.
+- Secrets do not belong in git or in a Release asset.
 - Setup never overwrites an existing `mcp.json`.
-- Cursor `beforeReadFile` denies common secret paths. Other tools do not get that gate — do not assume they do.
+- Cursor `beforeReadFile` denies common secret paths (live `mcp.json`, `.env`, `*.pem`, credential filenames). Other tools do not get that gate — do not assume they do.
+- `gsh verify` and `tests/test_no_secrets.py` share `gsh/secret_scan.py` (user paths, token prefixes, private-key armor, webhooks, non-example emails).
 - If a secret is committed: rotate it, then rewrite history. A revert commit is not enough.
 
 ## Supply chain
