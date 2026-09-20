@@ -5,17 +5,21 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/limoaCatherine/game-studio-harness/ci.yml?branch=main)](https://github.com/limoaCatherine/game-studio-harness/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/badge/version-0.4.0-informational.svg)](CHANGELOG.md)
 
-Game Studio Harness (GSH) is a **four-layer context operating system** for game-production pipelines. It connects LLM agents to scoping, craft paths, isolated execution, and evidence-based promotion: a file contract bounds the current round, skills open one step at a time, writes default to the isolation surface, and official surfaces are updated only after human approval.
+Game Studio Harness (GSH) is a four-layer context operating system for the **full game-production pipeline**, not a prompt pack for a few verticals. It connects LLM agents across direction, scope freeze, systems and numeric work, levels and narrative, engineering, quality and release, art and audio, and live operations: a file contract bounds the current round, skills open one step at a time, writes default to the isolation surface, and official surfaces are updated only after human approval.
 
-Intended readers: producers, technical directors, lead designers, lead engineers, and the AI coding tools that share one studio root.
+The design thesis is **bounded autonomy, auditable diffs, and human gates** — not unattended ship. Public evaluations treat an “agent” as harness plus model. This pack keeps each step inside a named roster and a verify gate so the work stays on a short, checkable horizon.
+
+Intended readers: producers, technical directors, lead designers, lead engineers, QA and art leads, and the AI coding tools that share one studio root.
 
 ```text
 scope → slice → isolate → verify → promote
 ```
 
 [中文](README.md) ·
+[Three things to understand first](#three-things-to-understand-first) ·
 [What's inside](#whats-inside) ·
 [What work it handles](#what-work-it-handles) ·
+[Inventory](#inventory) ·
 [Department capability map](#department-capability-map) ·
 [Problems it addresses](#problems-it-addresses) ·
 [Design philosophy](#design-philosophy) ·
@@ -24,6 +28,80 @@ scope → slice → isolate → verify → promote
 [Platform support](#platform-support) ·
 [Docs](docs/README.md) ·
 [Install](#install)
+
+---
+
+## Three things to understand first
+
+Read these three notes before the department map. They state that GSH **covers the full pipeline**, **who owns which decisions**, and **why autonomy must stay bounded**. Every percentage below is from a published evaluation. **None of them is a studio-measured GSH success rate.**
+
+### 1. Full-pipeline coverage
+
+GSH is built for the whole production pipeline. The catalog currently holds **35 / 35** craft paths and **106 / 106** skills, grouped as production and direction, systems and numeric, narrative / level / UX, engineering, quality, and art / audio. Liveops, monetization, and handoff live in the same catalog. Naming one path opens only the current step. Unnamed crafts stay in the menu; they are not dropped.
+
+Craft index: [docs/crafts/index.md](docs/crafts/index.md). Skill index: [docs/skills/index.md](docs/skills/index.md). Audio ingest and Bank build are skills (`audio-fmod-checklist`, `fmod-bank-build`) on the tech-art / pipeline steps. There is no 36th craft.
+
+### 2. Human–AI boundaries
+
+The four layers stay aligned: the constitution sets write isolation and destructive gates; the director writes `loadplan.json`; the capability library executes one skill at a time; the filing cabinet keeps evidence. Promotion to an official surface is a production decision, not a default model privilege. The agent works only inside the activated set and must pass the verify gate on close.
+
+| Human-required | AI-capable under GSH | Co-owned |
+|---|---|---|
+| Experience pillars / fantasy-tone final call | Scoping: write the loadplan and generate the roster | Milestone-planning options |
+| Scope-cut approval | Execute the current `craft_open` step; default writes stay in sandbox | Playtest notes |
+| Promote isolation work to official surfaces (record cells only) | Skill checklists; GDD feature-slice drafts | Performance-budget drafts |
+| Live economy / IAP pricing final | Isolation-surface table diffs | QA exemption proposals |
+| Irreversible destroy; secrets | Bug reports, test cases, API-contract drafts | |
+| Legal / compliance | Implement + test loops with `verify-report` evidence | |
+| Shipping sign-off | Status / weekly digest drafts | |
+
+Humans do not delegate a gate. The agent does not edit official surfaces outside the activated set, and does not treat a draft as accepted without `gsh close`.
+
+### 3. Capability curve
+
+Public evaluations share one shape: as tasks get longer and human gates get fewer, **unbounded long-horizon autonomy follows a falling logistic**. The same model can jump several-fold once a plan, interaction, or harness is added (see the source list; one cited same-model harness gap is about 6×). GSH therefore keeps the agent on short steps (one skill), isolation diffs, and human gates, instead of stretching unattended horizon. Axis numbers below only restate cited intervals. The GSH curve is labeled **ILLUSTRATIVE**. It is not a studio percentage.
+
+**Figure A — METR fitted shape (cited intervals only)**
+
+Success falls as “time a human expert needs for that task” grows. The paper fits a logistic. The 50% time horizon has doubled about every seven months since 2019. The 80% horizon is about five times shorter. Messier, under-specified tasks score lower.
+
+```text
+success probability (METR public intervals, not a GSH measurement)
+~100% │●
+      │  ●
+ ~50% │     ●········ 50% time horizon (~7-month doubling)
+      │        ●
+ ~10% │           ●●
+      └────────────────────────────→ human expert time for the task
+        < ~4 min                   > ~4 h
+```
+
+**Figure B — autonomy vs reliability (ILLUSTRATIVE)**
+
+The shape follows the direction of the cited studies: unbounded long-horizon work falls; short steps plus human gates stay in the high-reliability band. **Not a pack benchmark score.**
+
+```text
+success reliability (ILLUSTRATIVE, not measured %)
+  high │ ■■■■■■■■■  GSH: short step + isolation diff + human gate
+       │ ■
+       │ ●
+       │  ●●
+       │    ●●●     unbounded long-horizon autonomy (METR-like fall)
+  low  │       ●●
+       └────────────────────────────→ autonomy / task span / fewer gates
+         one skill        multi-step, no gate     unattended long run
+```
+
+Sources (percentages belong to the papers, not to GSH production KPIs):
+
+1. Anthropic: evaluating an “agent” means harness + model; SWE-bench Verified moved from ~40% to >80% in about a year. <https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents>
+2. SWE-Bench Mobile: best about 12%; same model Cursor ~12% vs OpenCode ~2% (~6×). <https://arxiv.org/abs/2602.09540>
+3. Harness ablation: under a tight context window, **context management** dominates (mostly by preventing overflow failures). <https://arxiv.org/abs/2609.20804>
+4. METR: ~100% on tasks a human finishes in <~4 min; <~10% on >~4 h; 50% horizon doubling ~7 months. <https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/>
+5. LongCLI-Bench: autonomous pass rate <20%; plan injection ~58%; plan + interactive ~62%. <https://arxiv.org/abs/2602.14337>
+6. SWE-Marathon: pass@1 <30%; reward-hack attempts in 13.8% of rollouts. <https://www.swe-marathon.org/>
+7. Chen et al.: agents vs copilots, about +35 percentage points correctness and about half the user time. <https://arxiv.org/abs/2507.08149>
+8. CentaurEval: on collaboration-necessary items, LLM alone ~0.67%, human alone ~18.89%, collaboration ~31.11%. <https://arxiv.org/abs/2512.04111>
 
 ---
 
@@ -53,7 +131,73 @@ After setup, the shared runtime lives at `~/.gsh` (or `<isolate>/gsh`). Each sel
 
 ## What work it handles
 
-GSH handles production work that crosses crafts, sessions, and clients inside one game vertical slice. Every path below can be named by catalog id and executed step by step. The department capability map covers **35/35 crafts** and **106/106 skills** (each id appears at least once).
+GSH handles work across the full game-production pipeline that crosses crafts, sessions, and clients. The department map below covers every **35** craft paths in the catalog. Each path is addressable by id and executable step by step. All **106** skills open one at a time. This is not a numeric-slice subset.
+
+### Production and direction
+
+`producer`: milestone goals, build-acceptance drive, release-note voice.  
+`associate-producer`: delivery packs, cross-team coordination, blocker close-out.  
+`project-manager`: risk register, dependency map, status digest, correction options.  
+`creative-director`: experience pillars, slice critique, fantasy conflicts, scope-cut principles.  
+Pillar final call, scope-cut approval, and shipping sign-off stay human. The agent drafts options, checklists, and isolation-surface notes.
+
+### Scoping and freeze
+
+A request such as “this milestone only has to prove a 3-second melee TTK” becomes `loadplan.json`: named craft or skill ids, write class (default `sandbox`), and verify kind. `python -m gsh menu` looks up ids; `python -m gsh activate <session>` writes `activated.json` and the current card. Scope is stored in files so later sessions and other tools can read it.
+
+### Systems, combat, and numeric
+
+`systems-designer`: systems index, feature GDD slices, rule feasibility.  
+`combat-designer`: combat flow, skill kits, feel checklists.  
+`combat-numeric-designer` walks: anchors → attribute framework → formula / counter / skill coefficients → table write → corner cases → table diff. Each step is one skill. `python -m gsh next` moves `craft_open` from `combat-modeling` to `attribute-framework` so later coefficient tables stay out of this turn’s context.
+
+### Economy, progression, and monetization
+
+`economy-numeric-designer`: sources and sinks, prices, inflation stress, table promote.  
+`progression-numeric-designer`: growth curves, unlock cadence, attribute hooks.  
+`monetization-designer`: pay points, IAP / pack / pass catalog, KPI definitions.  
+Same execution model as combat numeric: one skill per step, tables on the isolation surface, evidence paths on close. Live economy and IAP pricing finals stay human.
+
+### Levels, narrative, and UX
+
+`level-designer`: goal chains, blockout, encounters, pacing.  
+`narrative-designer`: beat sheets, quest gates, dialogue.  
+`copywriter-designer`: system / tutorial copy, dialogue polish, naming and length.  
+`ux-designer`: information architecture and five-states.  
+After a craft is named, the round executes only the current step (blockout only, or beats only) and does not rewrite copy keys in parallel.
+
+### Client, server, and tools
+
+`client-engineer`, `client-combat-engineer`, `client-ui-engineer`: feature slices, combat-frame / hit presentation, UI logic and badges.  
+`server-engineer`, `server-combat-engineer`: API contracts, save migration, combat authority, anti-cheat hooks.  
+`tools-engineer`: pipeline-tool specs, export repair, CI tool entry points.  
+Official Git surfaces still pass through isolation and human approval. Engineering skills keep unfrozen design numbers out of code constants. Implement + test loops must ship a `verify-report`.
+
+### Quality and release
+
+`qa-lead`: test plan, acceptance criteria, risk-exemption governance. Exemption proposals are co-owned; exemption approval is human.  
+`qa-functional`: cases and defects.  
+`qa-automation`, `qa-compatibility`, `qa-performance`: automation scaffold, N/N-1 compatibility, measured performance budgets.  
+Close with `python -m gsh close --kind playtest` or `--kind build`; evidence is a case pack or a build log.
+
+### Art, animation, and tech art
+
+`character-concept-artist` / `environment-concept-artist`: character and environment concepts, production briefs.  
+`character-artist` / `environment-artist` / `ui-artist`: character, environment, and UI Kit asset lists and export rules.  
+`animator` / `rigger`: animation sets, event hooks, bind and skin.  
+`vfx-artist` / `tech-artist`: VFX budgets, import validation, LOD / shader and performance-budget hooks.  
+Audio ingest and Bank build use `audio-fmod-checklist` / `fmod-bank-build`. Style anchors and fantasy-tone finals stay human.
+
+### Live operations
+
+`liveops-designer`: event calendar, event spec, reward-mail checks. Collision and reissue rules live in the skill; schedule numbers live on isolation tables, not in the craft body.
+
+### Cross-craft handoff
+
+`handoff-pack`, `collab-protocol`, and `python -m gsh status`. The next shift opens the studio root, runs `python -m gsh resume`, and reads the current card and next skill without relying on chat history.
+
+Craft index: [docs/crafts/index.md](docs/crafts/index.md). Skill index: [docs/skills/index.md](docs/skills/index.md). 35 and 106 are the full current catalog, not an excerpt.
+
 
 ## Inventory
 
@@ -725,7 +869,7 @@ These are recurring production problems that a single prompt does not stabilize.
 
 ## Design philosophy
 
-This section is separate from the problem statements. It states **why the design exists and what a studio gains**.
+This section is separate from the problem statements. It states **why the design exists and what a studio gains**. The standing thesis remains bounded autonomy, auditable diffs, and human gates.
 
 **Context budget (context window).** The per-turn tax stays short: constitution, current card, named skill or craft bodies. Other skills open when that step starts. `minimal` / `core` / `full` decide disk projection, not this turn’s injection.
 
@@ -916,11 +1060,13 @@ Open the **studio root**, not only this repository. Replace placeholders in `.ha
 
 | Task | Entry |
 |---|---|
-| Scope a vertical slice | `python -m gsh menu --kind craft -q slice`, then `skills/route-task/SKILL.md` |
+| Scope a production round | `python -m gsh menu --kind craft -q milestone`, then `skills/route-task/SKILL.md` |
+| Production / direction | `producer` / `creative-director` |
 | Combat numeric / TTK | Name `combat-numeric-designer`, `gsh activate`, advance with `gsh next` |
-| Economy / progression | `economy-numeric-designer` / `progression-numeric-designer` |
+| Economy / progression / monetization | `economy-numeric-designer` / `progression-numeric-designer` / `monetization-designer` |
 | Level blockout | `level-designer` |
 | Client / server | `client-engineer` / `server-engineer` |
+| Art / tech art | `character-artist` / `tech-artist` |
 | QA acceptance | `qa-lead` or `qa-functional`, then `gsh close` |
 | Liveops calendar | `liveops-designer` |
 | Resume the current session | `python -m gsh resume` |

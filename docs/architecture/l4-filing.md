@@ -17,4 +17,4 @@ python -m gsh resume --workspace /path/to/studio
 python -m gsh close --kind smoke --evidence <产物>
 ```
 
-晋升正式面仍然要人准，且只回写记录集。
+晋升正式面仍然要人准，且只回写记录集。关项必须写出 `verify-report.json`；没有人准，隔离面草稿不能当成已发版。
