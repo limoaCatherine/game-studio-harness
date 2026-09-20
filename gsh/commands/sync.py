@@ -5,12 +5,11 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+from gsh.adapters import land_selected
 from gsh.commands.setup import _homes
 from gsh.paths_cli import resolve_pack
 from gsh.profiles import parse_profile, parse_tools
 from gsh.project import (
-    land_cursor,
-    land_other,
     land_shared,
     land_workspace,
     read_install_state,
@@ -48,9 +47,7 @@ def run(
 
     copied: list[str] = []
     land_shared(pack_root, h, profile, dry, copied)
-    if "cursor" in tools:
-        land_cursor(pack_root, h, profile, False, dry, copied)
-    land_other(pack_root, h, tools, profile, dry, copied)
+    land_selected(pack_root, h, tools, profile, False, dry, copied)
     print(refresh_catalog(pack_root, h, dry))
     if workspace is not None and not cursor_only:
         land_workspace(pack_root, workspace, dry, copied)

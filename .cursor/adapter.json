@@ -9,5 +9,5 @@
     "harness": "../harness"
   },
   "installs_to": ["~/.cursor", "${isolate}/cursor"],
-  "notes": "Only Cursor gets hooks + rules + lazy MCP as a real runtime."
+  "notes": "Cursor executes hooks.json, rules, skills, agents, harness, and lazy MCP wrappers as the GSH hook runtime."
 }

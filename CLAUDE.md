@@ -1,6 +1,6 @@
 # Game Studio Harness
 
-跨工具入口。技能/职种/规则/钩子/运行时的唯一真相在仓库根 `skills/` `agents/` `rules/` `hooks/` `harness/`。各工具目录只是投影。Cursor 才有钩子运行时；其它工具按本文件约定工作。
+跨工具入口。技能/职种/规则/钩子/运行时的唯一真相在仓库根 `skills/` `agents/` `rules/` `hooks/` `harness/`。各工具家目录由 `gsh sync` 写成该工具自己的完整原生树。Cursor 执行 `hooks.json`；Claude Code 用 `settings.json` 调用同一组 Python 钩子；其余工具用各自的入口文件、规则目录和 `HOOKS.md` 走同一条四层回路。
 
 定档 → 制作 → 结案。同一未关目标续同一会话。
 

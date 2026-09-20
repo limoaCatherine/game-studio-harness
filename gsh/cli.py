@@ -22,8 +22,8 @@ def build_parser() -> argparse.ArgumentParser:
         sp.add_argument("--workspace", help="业务根（将放 .harness）")
         sp.add_argument(
             "--tools",
-            default="legacy",
-            help="cursor,claude,codex,... 或 legacy（五件套）或 all（含文档级适配器）",
+            default="all",
+            help="cursor,claude,codex,... 或 all（全部原生适配器）或 legacy（cursor+claude+codex+grok+deepseek）",
         )
         sp.add_argument("--profile", default="full", choices=("minimal", "core", "full"))
         sp.add_argument("--isolate-root", help="探测根：所有家目录改落到此树下")
@@ -45,7 +45,7 @@ def build_parser() -> argparse.ArgumentParser:
     v = sub.add_parser("verify", help="架构完整性、唯一 ID、职种不预展开、无密钥、投影一致")
     add_common(v)
 
-    d = sub.add_parser("doctor", help="诊断漂移、缺文件、假对等、密钥痕迹")
+    d = sub.add_parser("doctor", help="诊断漂移、缺文件、密钥痕迹、各工具原生能力")
     add_common(d)
 
     u = sub.add_parser("uninstall", help="按 install-state 撤掉 GSH 投影（不删用户 mcp.json）")

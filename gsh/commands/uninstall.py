@@ -6,6 +6,7 @@ import shutil
 import sys
 from pathlib import Path
 
+from gsh.adapters import SPECS, home_for
 from gsh.commands.setup import _homes
 from gsh.project import read_install_state
 
@@ -22,31 +23,25 @@ def run(*, isolate: Path | None, dry: bool, yes: bool) -> int:
     if not yes and not dry:
         print("uninstall will remove GSH projections under isolate/homes listed in install-state.")
         print("mcp.json is preserved. workspace official files are not touched.")
-    roots = [
-        h.gsh,
-        h.cursor / "skills",
-        h.cursor / "agents",
-        h.cursor / "hooks",
-        h.cursor / "rules",
-        h.cursor / "harness",
-        h.cursor / "hooks.json",
-        h.cursor / "gsh-adapter.json",
-        h.cursor / "mcp.json.example",
-        h.claude,
-        h.codex,
-        h.grok,
-        h.dsh,
-        h.agents_skills,
-        h.windsurf,
-        h.cline,
-        h.continue_dir / "AGENTS.md",
-        h.continue_dir / "config.yaml.gsh-snippet",
-        h.continue_dir / "gsh-adapter.json",
-        h.copilot / "copilot-instructions.md",
-        h.copilot / "gsh-adapter.json",
-        h.opencode,
-        h.gemini,
-    ]
+    roots = [h.gsh, h.agents_skills]
+    for spec in SPECS:
+        dest = home_for(h, spec)
+        if spec.id == "cursor":
+            roots.extend(
+                [
+                    dest / "skills",
+                    dest / "agents",
+                    dest / "hooks",
+                    dest / "rules",
+                    dest / "harness",
+                    dest / "hooks.json",
+                    dest / "gsh-adapter.json",
+                    dest / "gsh-capability.json",
+                    dest / "mcp.json.example",
+                ]
+            )
+        else:
+            roots.append(dest)
     removed = 0
     for path in roots:
         if path.name in KEEP_NAMES:

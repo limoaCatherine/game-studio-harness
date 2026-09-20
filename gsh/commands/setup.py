@@ -5,11 +5,10 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+from gsh.adapters import land_selected
 from gsh.paths_cli import resolve_pack
-from gsh.profiles import ALL_TOOLS, parse_profile, parse_tools
+from gsh.profiles import parse_profile, parse_tools
 from gsh.project import (
-    land_cursor,
-    land_other,
     land_shared,
     land_workspace,
     refresh_catalog,
@@ -52,10 +51,10 @@ def run(
 
     if guided and not yes:
         print("Game Studio Harness 引导安装")
-        print("只选一条安装路径。Cursor = 完整运行时；其它工具 = 约定/指令投影。")
+        print("每个工具都会装出该工具自己的完整原生目录；内容仍只来自仓库根 SSOT。")
         tools_raw = _prompt(
-            "工具（legacy=五件套, all=含文档级适配器, 或逗号列表）",
-            tools_raw or "legacy",
+            "工具（all=全部原生适配器, legacy=cursor+claude+codex+grok+deepseek, 或逗号列表）",
+            tools_raw or "all",
         )
         profile = _prompt("档位 minimal|core|full", profile or "full")
         if not cursor_only and workspace is None:
@@ -87,10 +86,7 @@ def run(
     print(f"gsh={h.gsh}")
 
     land_shared(pack_root, h, profile, dry, copied)
-    mcp_msg = "skipped cursor mcp"
-    if "cursor" in tools:
-        mcp_msg = land_cursor(pack_root, h, profile, write_mcp, dry, copied)
-    land_other(pack_root, h, tools, profile, dry, copied)
+    mcp_msg = land_selected(pack_root, h, tools, profile, write_mcp, dry, copied)
     catalog_msg = refresh_catalog(pack_root, h, dry)
 
     ws_msg = "skipped workspace"

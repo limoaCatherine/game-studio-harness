@@ -1,5 +1,9 @@
 # Grok
 
-**运行时：约定。** 安装写 `~/.grok/AGENTS.md` 与技能/职种拷贝。Grok Bot 没有钩子。
+原生入口：`AGENTS.md`、`rules/gsh.md`。技能/职种按 profile 投影到 `~/.grok`。
 
-缺席崩溃：模型不会在开场自动读现行卡；必须在对话里点名 `route-task` 并打开 `.harness/sessions/*/current.md`。
+没有事件钩子。`HOOKS.md` 补开场与关项。
+
+```bash
+python -m gsh setup --tools grok --profile full --workspace /path/to/studio --yes
+```

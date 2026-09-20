@@ -4,7 +4,7 @@ param(
     [Parameter(Position = 0)]
     [string]$Command = "setup",
     [string]$Workspace = "",
-    [string]$Tools = "legacy",
+    [string]$Tools = "all",
     [ValidateSet("minimal", "core", "full")]
     [string]$Profile = "full",
     [string]$IsolateRoot = "",

@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-"""诊断：Python 版本、漂移、缺文件、假对等、密钥痕迹。"""
+"""诊断：Python 版本、漂移、缺文件、密钥痕迹、各工具原生能力。"""
 from __future__ import annotations
 
 import json
 import sys
 from pathlib import Path
 
+from gsh.adapters import SPECS, home_for
 from gsh.catalog import build_catalog
 from gsh.commands.setup import _homes
 from gsh.commands.verify import BANNED_PACK_TREES, NEED_HOOKS, NEED_SCRIPTS, NEED_SKILLS
 from gsh.paths_cli import resolve_pack
+from gsh.profiles import parse_tools
 from gsh.project import read_install_state
 
 
@@ -59,7 +61,19 @@ def run(*, workspace: Path | None, tools_raw: str, isolate: Path | None, pack: P
         if not (Path(workspace) / ".harness" / "surfaces.json").is_file():
             issues.append(f"workspace {workspace} missing .harness/surfaces.json")
 
-    print("platform: Cursor=full runtime; others=instruction/convention only")
+    if state and state.get("tools") and tools_raw in {"all", "legacy"}:
+        tools_raw = ",".join(state["tools"])
+    try:
+        tools = parse_tools(tools_raw)
+    except ValueError:
+        tools = []
+    print("native adapters:")
+    for spec in SPECS:
+        dest = home_for(h, spec)
+        cap = dest / "gsh-capability.json"
+        mark = "installed" if cap.is_file() else "absent"
+        selected = "selected" if spec.id in tools else "idle"
+        print(f"  {spec.id:10} {spec.runtime:14} hooks={spec.hooks:7} {mark}/{selected}")
     if issues:
         print("doctor found issues:")
         for item in issues:

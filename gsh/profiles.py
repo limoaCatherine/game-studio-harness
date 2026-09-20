@@ -73,34 +73,28 @@ CORE_CRAFTS = MINIMAL_CRAFTS + (
     "tools-engineer",
 )
 
-# Cursor 才装完整运行时；其它工具只投影约定与技能切片。
-FULL_RUNTIME_TOOLS = frozenset({"cursor"})
-INSTRUCTION_TOOLS = frozenset(
-    {
-        "claude",
-        "codex",
-        "grok",
-        "deepseek",
-        "windsurf",
-        "cline",
-        "continue",
-        "copilot",
-        "opencode",
-        "gemini",
-    }
-)
+# Cursor 执行 hooks.json；Claude Code 用 settings.json 调用同一组 Python 钩子。
+HOOK_RUNTIME_TOOLS = frozenset({"cursor", "claude"})
 ALL_TOOLS = (
     "cursor",
     "claude",
     "codex",
-    "grok",
-    "deepseek",
     "windsurf",
     "cline",
+    "roo",
     "continue",
     "copilot",
     "opencode",
     "gemini",
+    "aider",
+    "zed",
+    "amazonq",
+    "trae",
+    "junie",
+    "grok",
+    "deepseek",
+    "kimi",
+    "qwen",
 )
 
 ALIASES = {
@@ -114,6 +108,17 @@ ALIASES = {
     "github-copilot": "copilot",
     "gh-copilot": "copilot",
     "codeium": "windsurf",
+    "roo-code": "roo",
+    "roocode": "roo",
+    "continue-dev": "continue",
+    "amazon-q": "amazonq",
+    "amazon-q-developer": "amazonq",
+    "jetbrains": "junie",
+    "jetbrains-ai": "junie",
+    "kimi-code": "kimi",
+    "moonshot": "kimi",
+    "qwen-code": "qwen",
+    "gemini-cli": "gemini",
 }
 
 
