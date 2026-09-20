@@ -93,7 +93,7 @@
       "transport": "stdio",
       "launch_kind": "docker",
       "backend_entry": [
-        "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe",
+        "${DOCKER}",
         "run",
         "-i",
         "--rm",

@@ -89,7 +89,7 @@
                 "--framing",
                 "ndjson",
                 "--",
-                "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe",
+                "${DOCKER}",
                 "run",
                 "-i",
                 "--rm",

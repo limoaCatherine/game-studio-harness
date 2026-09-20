@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""把本包落到 ~/.cursor 与业务根。不安装任何软件，不写密钥。"""
+"""把本仓落到 ~/.cursor 与业务根。不安装任何软件，不写密钥。"""
 from __future__ import annotations
 
 import argparse
@@ -9,7 +9,8 @@ import sys
 from pathlib import Path
 
 PACK = Path(__file__).resolve().parent
-PAYLOAD = PACK / "payload"
+CURSOR_SRC = PACK / "cursor"
+WORKSPACE_SRC = PACK / "workspace-scaffold"
 
 
 def copy_tree(src: Path, dst: Path, dry: bool, copied: list[str]) -> None:
@@ -57,7 +58,7 @@ def merge_missing(src: Path, dst: Path, dry: bool, copied: list[str]) -> None:
 
 
 def write_tiers(cursor: Path, dry: bool) -> None:
-    src = PAYLOAD / "L3-mcp" / "mcp-tiers.json"
+    src = CURSOR_SRC / "harness" / "mcp-tiers.json"
     raw = json.loads(src.read_text(encoding="utf-8"))
     boot_dir = cursor / "harness" / "mcp-boot"
     raw["boot"] = {
@@ -71,7 +72,7 @@ def write_tiers(cursor: Path, dry: bool) -> None:
 
 
 def maybe_write_mcp(cursor: Path, write_mcp: bool, dry: bool) -> str:
-    example = PAYLOAD / "L3-mcp" / "mcp.json.example"
+    example = CURSOR_SRC / "mcp.json.example"
     dest_example = cursor / "mcp.json.example"
     if not dry:
         shutil.copy2(example, dest_example)
@@ -115,15 +116,15 @@ def refresh_catalog(cursor: Path, dry: bool) -> str:
 
 
 def main() -> int:
-    p = argparse.ArgumentParser()
+    p = argparse.ArgumentParser(description="一键把 Game Studio Harness 落到本机 Cursor 与业务根")
     p.add_argument("--workspace", help="业务根（将放 .harness）")
     p.add_argument("--cursor-home", default=str(Path.home() / ".cursor"))
     p.add_argument("--cursor-only", action="store_true")
     p.add_argument("--write-mcp", action="store_true", help="仅当目标没有 mcp.json 时从示例创建")
     p.add_argument("--dry-run", action="store_true")
     args = p.parse_args()
-    if not PAYLOAD.is_dir():
-        print("missing payload/; run from pack root after build", file=sys.stderr)
+    if not CURSOR_SRC.is_dir():
+        print("missing cursor/; clone the repo root and run from there", file=sys.stderr)
         return 2
     if not args.cursor_only and not args.workspace:
         print("need --workspace or --cursor-only", file=sys.stderr)
@@ -133,16 +134,17 @@ def main() -> int:
     copied: list[str] = []
     dry = args.dry_run
 
-    copy_tree(PAYLOAD / "L1-rules", cursor / "rules", dry, copied)
-    copy_tree(PAYLOAD / "L2-skills", cursor / "skills", dry, copied)
-    copy_tree(PAYLOAD / "L2-crafts", cursor / "agents", dry, copied)
-    copy_tree(PAYLOAD / "wiring" / "hooks", cursor / "hooks", dry, copied)
-    copy_tree(PAYLOAD / "wiring" / "hooks.json", cursor / "hooks.json", dry, copied)
-    copy_tree(PAYLOAD / "L4-harness" / "scripts", cursor / "harness" / "scripts", dry, copied)
-    copy_tree(PAYLOAD / "L4-harness" / "surfaces.default.json", cursor / "harness" / "surfaces.default.json", dry, copied)
-    copy_tree(PAYLOAD / "L3-mcp" / "mcp-tools", cursor / "harness" / "mcp-tools", dry, copied)
-    copy_tree(PAYLOAD / "L3-mcp" / "MCP调度.md", cursor / "harness" / "docs" / "MCP调度.md", dry, copied)
-    copy_tree(PAYLOAD / "L3-mcp" / "mcp-boot", cursor / "harness" / "mcp-boot", dry, copied)
+    copy_tree(CURSOR_SRC / "rules", cursor / "rules", dry, copied)
+    copy_tree(CURSOR_SRC / "skills", cursor / "skills", dry, copied)
+    copy_tree(CURSOR_SRC / "agents", cursor / "agents", dry, copied)
+    copy_tree(CURSOR_SRC / "hooks", cursor / "hooks", dry, copied)
+    copy_tree(CURSOR_SRC / "hooks.json", cursor / "hooks.json", dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "scripts", cursor / "harness" / "scripts", dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "surfaces.default.json", cursor / "harness" / "surfaces.default.json", dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "mcp-tools", cursor / "harness" / "mcp-tools", dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "docs", cursor / "harness" / "docs", dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "mcp-boot", cursor / "harness" / "mcp-boot", dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "host-paths.example.json", cursor / "harness" / "host-paths.example.json", dry, copied)
     write_tiers(cursor, dry)
     mcp_msg = maybe_write_mcp(cursor, args.write_mcp, dry)
     catalog_msg = refresh_catalog(cursor, dry)
@@ -152,7 +154,7 @@ def main() -> int:
         root = Path(args.workspace)
         if not dry:
             root.mkdir(parents=True, exist_ok=True)
-        merge_missing(PAYLOAD / "workspace-scaffold" / ".harness", root / ".harness", dry, copied)
+        merge_missing(WORKSPACE_SRC / ".harness", root / ".harness", dry, copied)
         ws_msg = f"scaffolded missing files under {root / '.harness'}"
 
     print(f"files={len(copied)}")

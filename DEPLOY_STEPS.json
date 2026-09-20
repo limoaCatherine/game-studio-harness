@@ -1,54 +1,15 @@
 {
-  "title": "Four-layer architecture deploy",
+  "title": "四层架构一键部署",
   "software_in_pack": false,
-  "includes": [
-    "rules",
-    "skills",
-    "mcp-logic",
-    "crafts",
-    "hooks",
-    "harness-scripts",
-    "workspace-scaffold"
-  ],
-  "excludes": [
-    "dcc",
-    "engines",
-    "mcp-backends",
-    "venvs",
-    "secrets",
-    "business-tables"
-  ],
+  "includes": ["rules", "skills", "mcp-logic", "crafts", "hooks", "harness-scripts", "workspace-scaffold", "docs"],
+  "excludes": ["dcc", "engines", "mcp-backends", "venvs", "secrets", "business-tables"],
+  "entry": "一键部署.bat",
   "steps": [
-    {
-      "id": "read",
-      "do": "Read README.md and READ_ME_AGENT.md",
-      "required": true
-    },
-    {
-      "id": "install",
-      "do": "python install.py --workspace <workspace>",
-      "required": true
-    },
-    {
-      "id": "verify",
-      "do": "python verify_install.py --workspace <workspace>",
-      "pass": "ok architecture install",
-      "required": true
-    },
-    {
-      "id": "surfaces",
-      "do": "Edit <workspace>/.harness/surfaces.json official/sandbox to this project",
-      "required": true
-    },
-    {
-      "id": "first-session",
-      "do": "Write loadplan.json then run 生成会话能力名单.py",
-      "required": true
-    },
-    {
-      "id": "mcp-optional",
-      "do": "Only if backends exist: fill mcp.json from example, run 应用外接档位.py",
-      "required": false
-    }
+    {"id": "read", "do": "读 README.md 与 自述.md", "required": true},
+    {"id": "install", "do": "一键部署.bat 或 python install.py --workspace <workspace>", "required": true},
+    {"id": "verify", "do": "python verify_install.py --workspace <workspace>", "pass": "ok architecture install", "required": true},
+    {"id": "surfaces", "do": "改 <workspace>/.harness/surfaces.json", "required": true},
+    {"id": "first-session", "do": "写 loadplan.json 后跑 生成会话能力名单.py", "required": true},
+    {"id": "tools", "do": "按需读 docs/工具/总览.md 再装宿主", "required": false}
   ]
 }

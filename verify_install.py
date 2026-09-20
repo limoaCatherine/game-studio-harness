@@ -97,7 +97,7 @@ def main() -> int:
             fail(errors, "catalog 没有任何带 uses_skills 的职种")
 
     pack = Path(args.pack_root)
-    scan_roots = [pack / "payload", pack / "install.py", pack / "verify_install.py", pack / "README.md"]
+    scan_roots = [pack / "cursor", pack / "docs", pack / "install.py", pack / "verify_install.py", pack / "README.md", pack / "自述.md"]
     for root in scan_roots:
         paths = [root] if root.is_file() else list(root.rglob("*")) if root.is_dir() else []
         for path in paths:
@@ -114,7 +114,7 @@ def main() -> int:
             if SECRET_A.search(text) or SECRET_LIKE.search(text):
                 fail(errors, f"{path.as_posix()} still looks like a live secret")
 
-    example = pack / "payload" / "L3-mcp" / "mcp.json.example"
+    example = pack / "cursor" / "mcp.json.example"
     if example.is_file():
         text = example.read_text(encoding="utf-8")
         if "-a" in text and "${LARK_APP_ID}" not in text:
