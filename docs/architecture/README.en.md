@@ -1,8 +1,8 @@
 # Architecture
 
-GSH uses a four-layer file contract for the **full game-production pipeline**. The agent executes inside a named roster, writes to the isolation surface, and stops at human gates for pillars, scope, promotion, and ship. The thesis is bounded autonomy, auditable diffs, and human gates — not unattended ship.
+GSH uses a four-layer file contract for the **full game-production pipeline**. The design logic is capability-boundary isolation, skill distillation, task orchestration, and context-budget injection. The agent executes inside a named roster and writes to the isolation surface. Human gates cover pillars, scope, promotion, and ship; see Engineering practice in the root README.
 
-Read “Design philosophy”, then “Three things to understand first” in the root [README.en.md](../../README.en.md) (full-pipeline coverage / human–AI boundaries / capability curve) before drilling into this folder. 中文：[README.md](README.md).
+Read “Design philosophy”, then “Principles, scope, and runtime model” in the root [README.en.md](../../README.en.md) before drilling into this folder. 中文：[README.md](README.md).
 
 What each layer does, and which command you run:
 

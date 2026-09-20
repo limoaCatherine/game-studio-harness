@@ -18,7 +18,8 @@ Version is single-sourced from [`gsh/__init__.py`](gsh/__init__.py).
 
 ### Changed
 
-- README / README.en section order: purpose → design philosophy → three framing notes → inventory → full department map → skill origin → problems → … (install stays after platform).
+- README / README.en section order: purpose → design philosophy (four pillars + strengths/limits) → principles / scope / runtime model → inventory → full department map → skill origin → engineering practice → … → prerequisites → install last.
+- Design philosophy is capability-boundary isolation, skill distillation, task orchestration, and context-budget injection. Human gates and sandbox promotion moved to Engineering practice. “Three things to understand first” replaced by Principles, scope, and runtime model. Cited METR / LongCLI intervals kept; no studio-measured GSH %.
 - `.gitignore` now covers `*.pem` / credential filenames, live `host-paths.json`, cloud cred dirs, and local `.harness` sessions/artifacts; MCP example JSON files carry an in-file `EXAMPLE ONLY` label.
 - `gaea` / `materialpilot` MCP examples use `${NODE}` instead of a Program Files node binary. Install docs use `<studio-root>` / `<pack-root>` instead of a drive-letter workspace path.
 - Design department names all 11 crafts (systems, combat, combat numeric, economy, progression, monetization, liveops, level, narrative, copy, UX). Growth curves stay on `progression-numeric-designer`. Examples rotate across crafts.

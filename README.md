@@ -5,9 +5,11 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/limoaCatherine/game-studio-harness/ci.yml?branch=main)](https://github.com/limoaCatherine/game-studio-harness/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/badge/version-0.4.0-informational.svg)](CHANGELOG.md)
 
-Game Studio Harness（GSH）是面向**完整游戏制作流水线**的四层上下文操作系统。它把大模型代理接入制作与方向、策划（系统、战斗、关卡、剧情、数值、交互、文案、活动、商业化）、工程、品质、美术音频与活服运营：用文件合同约束本轮范围，按步骤打开技能，默认写入隔离面，验收通过后再由制作方批准回写正式面。
+Game Studio Harness（GSH）是面向**完整游戏制作流水线**的四层上下文操作系统。它把大模型代理接入制作与方向、策划、工程、品质、美术音频与活服运营。本轮范围写在文件合同里。技能按步打开。默认写入隔离面。正式面回写须制作方批准。
 
-设计主张是**有界自主、可审计 diff、人闸收口**。公开评测把「代理」定义为 Harness 加模型；本仓用点名名单与验收闸，把每一步限制在可核验的短地平线内。
+设计逻辑是**能力边界隔离、技能蒸馏、任务编排、上下文预算注入**。人闸与沙箱晋级是实现这些逻辑的机制，见 [工程实践](#工程实践)。
+
+策划职种共 **11** 条，两组并列：系统策划、战斗策划、战斗数值、经济数值、养成数值、商业化、活动；以及关卡策划、剧情策划、文案策划、交互策划。
 
 适用对象：制作人、技术总监、主策划、主程序、品质与美术负责人，以及在同一业务根上协作的 AI 编程工具。
 
@@ -17,57 +19,88 @@ Game Studio Harness（GSH）是面向**完整游戏制作流水线**的四层上
 
 [English](README.en.md) ·
 [设计哲学](#设计哲学) ·
-[你需要先了解的三件事](#你需要先了解的三件事) ·
+[原则、范围与运行模型](#原则范围与运行模型) ·
 [仓库内容](#仓库内容) ·
 [库存盘点](#库存盘点) ·
 [部门能力地图](#部门能力地图) ·
 [技能从何而来](#技能从何而来) ·
+[工程实践](#工程实践) ·
 [要解决的问题](#要解决的问题) ·
 [关键概念](#关键概念) ·
 [指南](#指南) ·
 [平台支持](#平台支持) ·
 [文档](docs/README.md) ·
+[前置条件](#前置条件) ·
 [安装](#安装)
 
 ---
 
 ## 设计哲学
 
-原则说明**为什么这样设计、制作方得到什么**。总口径是有界自主、可审计 diff、人闸收口。
+四条设计逻辑决定文件怎么切、上下文怎么进、回合怎么走。人闸、隔离面、沙箱晋级是机制，写在 [工程实践](#工程实践)。
 
-**人闸。** 支柱、砍范围、正式面晋升、活服定价与发版签字会改变玩家体验与商业结果。公开评测显示：任务跨度变长、人闸变少时，无闸长程自主的成功可靠度沿 logistic 下降（依据见「能力曲线」）。GSH 把这些决策留在制作方；代理在短步上产出选项、清单与隔离面 diff，供人审阅后收口。
+### 能力边界隔离
 
-**隔离面。** 策划表、引擎资产与已提交历史的回滚成本由制作方承担。默认 `write_class=sandbox`，模型只在 `.harness/surfaces.json` 声明的隔离根上执行。晋升是制作流程：须人准，且只回写记录集，便于对照 diff。
+职种、技能、写入面各自声明能力边界。职种文件给出步骤序列与岗位职责。技能文件给出单步程序与输入输出。正式面与隔离面由 `.harness/surfaces.json` 声明。
 
-**职种路径。** 现场工作有顺序：先冻规则再填系数，先写关卡目标再灰盒，先定节拍再对白，先契约再实现。职种文件是步骤序列（`uses_skills`），技能文件是单步程序。`activated.json` 的 `craft_path` 记录步号与当前技能；`gsh next` 推进一步并回写现行卡，避免第一步按最后一步的口径填写。
+本轮工作停在已点名范围内。跨边界移交走 `handoff-pack`、现行卡与 `loadplan.json`。下游职种读交接文件；同一回合不覆盖对方正式面。
 
-**技能蒸馏。** 技能来自真实制作流程：检查表、表配方、灰盒与节拍验收、契约与提测口径被压成可复用的 `SKILL.md`。职种只排顺序；做法正文在技能里。点名一条技能打开的是可执行程序。展开见 [技能从何而来](#技能从何而来)。
+### 技能蒸馏
 
-**上下文预算。** 每轮固定税保持简短：宪法、现行卡、已指定技能或职种正文。其余技能在执行到该步时再打开。`minimal` / `core` / `full` 决定磁盘投影范围，不决定本轮注入量。
+现场流程压成可复用的 `SKILL.md`：检查表、表写入配方、灰盒与节拍验收、契约与提测口径。职种只排顺序。做法正文在技能里。点名一条技能，打开的是带输入、输出与不合格回退的程序。来源与覆盖见 [技能从何而来](#技能从何而来)。
 
-**会话连续性。** 业务根 `.harness` 是跨工具档案柜。探测会话以 `_` 开头，不覆盖 `LATEST`。
+### 任务编排
 
-**验收证据。** 关项命令是 `gsh close`。Cursor `stop` 与 Claude Code `Stop` 核验同一份报告。其他工具通过 CLI 与 `HOOKS.md` 执行同一流程。
+制作回合按固定回路推进：检索 id（`menu`）→ 写合同并激活（`activate`）→ 执行当前步（`next`）→ 验收关项（`close`）。状态写在业务根 `.harness`。更换客户端后读同一份现行卡。编排对象是文件与命令。聊天记录不作为进度源。
 
-**MCP 懒加载。** `core` 是握手名单。`lazy_stdio` 在首次 `tools/call` 时再拉起子进程。
+### 上下文预算注入
 
-**密钥隔离与危险操作。** 密钥不得进入仓库，也不得进入模型上下文。`mcp.json.example` 仅含占位符；安装器不覆盖已有 `mcp.json`。不可逆的 Git 与批量删除需要人工确认后执行。
+上下文窗口按预算分配。开场注入宪法、现行卡、已激活技能或职种正文。`catalog.json` 供 `gsh menu` 检索。`retrieve_keys` 命中后才打开 canon / adr。职种路径只打开 `craft_open`；其余步骤做到该步再注入。磁盘档位 `minimal` / `core` / `full` 决定投影范围，不决定本轮注入量。
+
+### 优势与局限
+
+**收益。** 晋升路径可对照 diff：隔离面写入，人准后只回写记录集。短步可按 `verify-report` 核验。跨工具共用档案柜。技能可版本化、可复用。点名集合限制本轮改写面。
+
+**代价。** 架构依赖人闸，因此没有无人值守发版。短步增加会话次数与交接成本。技能质量取决于蒸馏是否跟上现场；过期检查表会把错误做法固化。适配器对等程度因宿主而异：Cursor 与 Claude Code 接入事件钩子；其余工具走 CLI 与 `HOOKS.md`，开场注入与关项闸的完整度不同。本仓不配送可连接 MCP 进程，表格等外接须本机自备。
+
+下列公开评测百分比属于原文，**不是本工作室实测成功率**。依据见 [威胁与限制](#威胁与限制)。
 
 ---
 
-## 你需要先了解的三件事
+## 原则、范围与运行模型
 
-先读这三节，再看职种地图。它们说明 GSH **覆盖整条流水线**、**人机各管什么**、以及**为什么必须把自主边界收紧**。下列百分比全部来自已发表评测，**不是本工作室的实测成功率**。
+读完设计逻辑再看职种地图。本节给出原则、覆盖边界、运行回路，以及公开评测对长程自主的约束。
 
-### 1. 全流程覆盖
+### 核心原则
 
-GSH 的目标是整条游戏制作流水线。菜单里现有 **35 / 35** 条职种路径与 **106 / 106** 条技能。策划占 **11** 条，两组并列：系统策划、战斗策划、战斗数值、经济数值、养成数值、商业化、活动；以及关卡策划、剧情策划、文案策划、交互策划。其余为制作与项目管理 4、工程 6、美术与技美 9、QA 5。点名一条路径只打开当前步；未点名的职种仍在 catalog 里，需要时再激活。
+四层合同分层生效。宪法规定读序、写隔离默认、关项命令、密钥与破坏闸。导演把诉求写成 `loadplan.json` 并点名 id。能力库按步打开技能。档案柜保存进度与证据。
 
-完整职种表：[docs/crafts/index.md](docs/crafts/index.md)。完整技能表：[docs/skills/index.md](docs/skills/index.md)。音频事件与 Bank 构建是技能（`audio-fmod-checklist`、`fmod-bank-build`），挂在技美 / 管线步骤上，不另造第 36 条职种。
+点名集合决定开场注入。过程中缺技能可当场打开，不必先改名单重生。
 
-### 2. 人机边界
+职种不预展开 `uses_skills`。`gsh next` 前进一步并回写现行卡。
 
-对齐四层：宪法规定写隔离与破坏闸；导演把诉求写成 `loadplan.json`；能力库按步执行技能；档案柜收下证据。晋升正式面是制作流程，不是模型默认权限。AI 始终在已激活名单内工作，关项必须过验收闸。
+写级别默认 `sandbox`。晋升须人准，且只回写记录集。
+
+密钥不进仓库，也不进模型上下文。不可逆破坏须本轮明确授权。
+
+### 范围与非目标
+
+**范围。** 完整游戏制作流水线。现行 catalog：**35 / 35** 职种、**106 / 106** 技能。
+
+策划 **11** 条，两组并列：
+
+- 系统策划、战斗策划、战斗数值、经济数值、养成数值、商业化、活动
+- 关卡策划、剧情策划、文案策划、交互策划
+
+其余：制作与项目管理 4、工程 6、美术与技美 9、QA 5。点名一条路径只打开当前步。未点名职种留在菜单，需要时再激活。
+
+完整职种表：[docs/crafts/index.md](docs/crafts/index.md)。完整技能表：[docs/skills/index.md](docs/skills/index.md)。音频事件与 Bank 构建是技能（`audio-fmod-checklist`、`fmod-bank-build`），挂在技美 / 管线步骤上。
+
+**非目标。** 不承担无人值守发版。不配送游戏引擎、DCC 或可连接 MCP 服务器。不把 `.harness` 做成知识图谱。不把 `catalog.json` 写入系统提示。第三方打包不在维护范围。
+
+### 运行模型
+
+人机分工写在运行模型里。晋升正式面是制作流程。AI 在已激活集合内工作。关项须过验收闸。
 
 | 必须由人 | GSH 约束下 AI 可做 | 共担 |
 |---|---|---|
@@ -79,18 +112,16 @@ GSH 的目标是整条游戏制作流水线。菜单里现有 **35 / 35** 条职
 | 法务 / 合规 | 实现 + 测试回路，并收集 `verify-report` 证据 | |
 | 发版签字 | 状态摘要 / 周报草稿 | |
 
-人闸不得交给模型代签。AI 不得在未激活集合外改正式面，也不得跳过 `gsh close` 把草稿当成已验收。
+回路：`menu` → `activate` → `next` → `close`。岗位职责不同时按职种开子代理；主会话点名与收口。
 
-### 3. 能力曲线
+### 威胁与限制
 
-公开评测呈现同一形态：任务变长、人闸变少时，**无闸长程自主的成功可靠度沿 logistic 下降**；加上计划、交互或 Harness 后，同一模型的成绩可以高出数倍（见下表依据，例如同一模型在不同 Harness 上约 6×）。GSH 据此把代理限制在短步（一步一技能）、隔离 diff 与人闸，而不是拉长无人值守地平线。下图左轴数字只复述被引文献的区间；GSH 曲线标为 **ILLUSTRATIVE（示意）**，不是工作室百分比。
+公开评测给出同一形态：任务变长、人闸变少时，无闸长程自主的成功可靠度沿 logistic 下降。同一模型换 Harness 后成绩可差数倍（下表有约 6× 的同模型对照）。GSH 据此选择短步与人闸。左轴数字只复述被引文献的区间。
 
-**图 A — METR 拟合形态（复述其公开区间）**
-
-成功概率随「人类专家完成该任务所需时间」下降。原文用 logistic 拟合；50% 时间地平线自 2019 年起约每七个月加倍。80% 地平线大约短五倍。杂乱、欠规格任务上成绩更低。
+成功概率随「人类专家完成该任务所需时间」下降。METR 用 logistic 拟合；50% 时间地平线自 2019 年起约每七个月加倍。80% 地平线大约短五倍。杂乱、欠规格任务上成绩更低。
 
 ```text
-成功概率（METR 公开区间，不是 GSH 实测）
+成功概率（METR 公开区间；非 GSH 实测）
 ~100% │●
       │  ●
  ~50% │     ●········ 50% 时间地平线（约每 7 个月加倍）
@@ -98,22 +129,6 @@ GSH 的目标是整条游戏制作流水线。菜单里现有 **35 / 35** 条职
  ~10% │           ●●
       └────────────────────────────→ 人类专家完成该任务所需时间
         < ~4 分钟                 > ~4 小时
-```
-
-**图 B — 自主时长 vs 可靠度（ILLUSTRATIVE / 示意）**
-
-形状取自上述评测的共同方向：无闸长程下跌；短步 + 人闸把工作留在高可靠区。**不是本仓基准分数。**
-
-```text
-成功可靠度（ILLUSTRATIVE，非实测百分比）
-  高 │ ■■■■■■■■■  GSH：短步 + 隔离 diff + 人闸
-     │ ■
-     │ ●
-     │  ●●
-     │    ●●●     无闸长程自主（示意 METR 下降形态）
-  低 │       ●●
-     └────────────────────────────→ 自主时长 / 任务跨度 / 人闸变少
-       单技能          多步无闸         长程无人值守
 ```
 
 依据（百分比均属原文，勿当作 GSH 产线 KPI）：
@@ -868,6 +883,26 @@ QA 把「能过」收成可观察的开测/收测条件与证据包。负责人�
 
 ---
 
+## 工程实践
+
+人闸与沙箱晋级落实设计逻辑，本身不是设计哲学。
+
+### 人工闸门
+
+下列决策改变玩家体验或商业结果，由制作方签字：体验支柱与 fantasy 调性、砍范围、正式面晋升、活服经济与 IAP 定价、不可逆破坏、密钥保管、法务合规、发版。模型代签无效。
+
+代理在短步上产出选项、清单与隔离面 diff。关项命令是 `gsh close`。Cursor `stop` 与 Claude Code `Stop` 核验同一份 `verify-report.json`。其他工具走 CLI 与 `HOOKS.md`。探测会话以 `_` 开头，不覆盖 `LATEST`。
+
+### 沙箱晋级
+
+默认 `write_class=sandbox`。模型只在 `.harness/surfaces.json` 声明的隔离根上执行。策划表、引擎资产与已提交历史的回滚成本由制作方承担。
+
+晋升是制作流程：须人准，且只回写记录集，便于对照 diff。禁止整文件覆盖正式面。`gsh close` 通过后才具备晋升条件；通过验收不等于已写入正式面。
+
+密钥不得进入仓库，也不得进入模型上下文。`mcp.json.example` 仅含占位符。安装器不覆盖已有 `mcp.json`。不可逆的 Git 与批量删除须人工确认。MCP `core` 是握手名单；`lazy_stdio` 在首次 `tools/call` 时再拉起子进程。
+
+---
+
 ## 要解决的问题
 
 以下是制作现场反复出现、且无法靠单次提示词稳定处理的问题。GSH 用四层文件合同与 CLI 处理它们。
@@ -990,72 +1025,6 @@ CLI 可在上述工具对应的业务根上执行。事件钩子运行时目前�
 
 ---
 
-## 安装
-
-需要 **Python 3.11+**。Windows 为游戏生产环境的一等目标平台；Linux / macOS 用于隔离试装与 CI。安装器只投影架构文件与技能，不附带任何制作软件安装包，不写入密钥。
-
-只从官方仓库或该仓库的 GitHub Release 安装：[github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness)。第三方打包不在本项目维护范围内。PyPI 尚未发布。
-
-内容只在仓库根修改：`skills/` `agents/` `rules/` `hooks/` `harness/`。wheel 将这些目录打进包内，因此 `pip install .` / `pipx install .` 之后不必保持 clone。`gsh setup` / `gsh sync` 将同一份内容写成各工具的完整原生目录。
-
-```bash
-git clone https://github.com/limoaCatherine/game-studio-harness.git
-cd game-studio-harness
-python -m pip install .
-gsh setup --guided
-```
-
-Windows：`py -3.11 -m pip install .`，然后 `gsh setup --workspace <studio-root> --yes`。
-
-非交互：
-
-```bash
-gsh setup \
-  --workspace /path/to/studio-root \
-  --tools cursor,claude \
-  --profile core \
-  --yes
-```
-
-| 入口 | 命令 |
-|---|---|
-| PATH 上的 CLI | `gsh setup` |
-| 模块 | `python -m gsh setup` |
-| Unix | `./install.sh` |
-| Windows | `.\install.ps1` 或 `.\一键部署.ps1` |
-
-| `--profile` | 投影内容 | 适用 |
-|---|---|---|
-| `minimal` | 导演 / 隔离 / 关项 12 技能 + 4 职种 | 先完成一次四层回路 |
-| `core` | 日产导演、表格、切片、验收 | 多数制作会话 |
-| `full`（默认） | 106 技能 + 35 职种 | 完整菜单落盘 |
-
-`--tools all`（默认）为 19 个客户端各写一套完整原生树。`legacy` = cursor,claude,codex,grok,deepseek。
-
-隔离试装（不写入真实家目录）：
-
-```bash
-python -m gsh setup \
-  --isolate-root /tmp/gsh-probe \
-  --workspace /tmp/gsh-probe/ws \
-  --tools all \
-  --profile full \
-  --yes
-
-python -m gsh verify \
-  --isolate-root /tmp/gsh-probe \
-  --workspace /tmp/gsh-probe/ws
-```
-
-```bash
-gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
-gsh uninstall --isolate-root /tmp/gsh-probe --yes
-```
-
-pipx、Release wheel、`GSH_PACK_ROOT` 与未来 PyPI：[docs/install.md](docs/install.md)。发版与资产：[docs/release.md](docs/release.md)。
-
----
-
 ## 开始使用
 
 打开**业务根**，不要只打开本仓库。将 `.harness/surfaces.json` 中的占位符改为本机路径；不要把真实盘符提交回 GSH 仓库。
@@ -1166,6 +1135,78 @@ python -m unittest discover -s tests -v
 6. PR 须在隔离根上 `verify` 通过，且 `unittest` 通过。
 
 0.1 布局中的 `cursor/skills` 等重复树已删除。在仓库根修改后执行 `sync`。
+
+---
+
+## 前置条件
+
+环境与工具链，与设计逻辑分开陈述。
+
+- **Python 3.11+**。Windows 是游戏生产环境的一等目标平台。Linux / macOS 用于隔离试装与 CI。
+- 打开**业务根**，不要只打开本仓库。将 `.harness/surfaces.json` 中的占位符改为本机路径。不要把真实盘符提交回 GSH 仓库。
+- 安装器只投影架构文件与技能。不附带游戏引擎、DCC 或其它制作软件安装包。不写入密钥。
+- 只从官方仓库或该仓库的 GitHub Release 安装：[github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness)。第三方打包不在维护范围。PyPI 尚未发布。
+- 内容只在仓库根修改：`skills/` `agents/` `rules/` `hooks/` `harness/`。wheel 将这些目录打进包内，`pip install .` / `pipx install .` 之后不必保持 clone。
+
+---
+
+## 安装
+
+```bash
+git clone https://github.com/limoaCatherine/game-studio-harness.git
+cd game-studio-harness
+python -m pip install .
+gsh setup --guided
+```
+
+Windows：`py -3.11 -m pip install .`，然后 `gsh setup --workspace <studio-root> --yes`。
+
+非交互：
+
+```bash
+gsh setup \
+  --workspace /path/to/studio-root \
+  --tools cursor,claude \
+  --profile core \
+  --yes
+```
+
+| 入口 | 命令 |
+|---|---|
+| PATH 上的 CLI | `gsh setup` |
+| 模块 | `python -m gsh setup` |
+| Unix | `./install.sh` |
+| Windows | `.\install.ps1` 或 `.\一键部署.ps1` |
+
+| `--profile` | 投影内容 | 适用 |
+|---|---|---|
+| `minimal` | 导演 / 隔离 / 关项 12 技能 + 4 职种 | 先完成一次四层回路 |
+| `core` | 日产导演、表格、切片、验收 | 多数制作会话 |
+| `full`（默认） | 106 技能 + 35 职种 | 完整菜单落盘 |
+
+`--tools all`（默认）为 19 个客户端各写一套完整原生树。`legacy` = cursor,claude,codex,grok,deepseek。
+
+隔离试装（不写入真实家目录）：
+
+```bash
+python -m gsh setup \
+  --isolate-root /tmp/gsh-probe \
+  --workspace /tmp/gsh-probe/ws \
+  --tools all \
+  --profile full \
+  --yes
+
+python -m gsh verify \
+  --isolate-root /tmp/gsh-probe \
+  --workspace /tmp/gsh-probe/ws
+```
+
+```bash
+gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
+gsh uninstall --isolate-root /tmp/gsh-probe --yes
+```
+
+pipx、Release wheel、`GSH_PACK_ROOT` 与未来 PyPI：[docs/install.md](docs/install.md)。发版与资产：[docs/release.md](docs/release.md)。
 
 ---
 
