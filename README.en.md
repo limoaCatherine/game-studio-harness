@@ -5,9 +5,11 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/limoaCatherine/game-studio-harness/ci.yml?branch=main)](https://github.com/limoaCatherine/game-studio-harness/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/badge/version-0.4.0-informational.svg)](CHANGELOG.md)
 
-Game Studio Harness (GSH) is a four-layer context operating system for the **full game-production pipeline**. It connects LLM agents across production and direction, design (systems, combat, levels, narrative, numeric, UX, copy, liveops, monetization), engineering, quality, art and audio, and live operations: a file contract bounds the current round, skills open one step at a time, writes default to the isolation surface, and official surfaces are updated only after human approval.
+Game Studio Harness (GSH) is a four-layer context operating system for the **full game-production pipeline**. It connects LLM agents across production and direction, design, engineering, quality, art and audio, and live operations. The current round is bounded by a file contract. Skills open one step at a time. Writes default to the isolation surface. Official surfaces update only after human approval.
 
-The design thesis is **bounded autonomy, auditable diffs, and human gates**. Public evaluations treat an “agent” as harness plus model. This pack keeps each step inside a named roster and a verify gate so the work stays on a short, checkable horizon.
+The design logic is **capability-boundary isolation, skill distillation, task orchestration, and context-budget injection**. Human gates and sandbox promotion are mechanisms; see [Engineering practice](#engineering-practice).
+
+Design has **11** crafts in two peer groups: systems, combat, combat numeric, economy numeric, progression numeric, monetization, liveops; and level, narrative, copy, UX.
 
 Intended readers: producers, technical directors, lead designers, lead engineers, QA and art leads, and the AI coding tools that share one studio root.
 
@@ -17,57 +19,88 @@ scope → slice → isolate → verify → promote
 
 [中文](README.md) ·
 [Design philosophy](#design-philosophy) ·
-[Three things to understand first](#three-things-to-understand-first) ·
+[Principles, scope, and runtime model](#principles-scope-and-runtime-model) ·
 [What's inside](#whats-inside) ·
 [Inventory](#inventory) ·
 [Department capability map](#department-capability-map) ·
 [Where skills come from](#where-skills-come-from) ·
+[Engineering practice](#engineering-practice) ·
 [Problems it addresses](#problems-it-addresses) ·
 [Key concepts](#key-concepts) ·
 [Guides](#guides) ·
 [Platform support](#platform-support) ·
 [Docs](docs/README.md) ·
+[Prerequisites](#prerequisites) ·
 [Install](#install)
 
 ---
 
 ## Design philosophy
 
-This section states **why the design exists and what a studio gains**. The standing thesis is bounded autonomy, auditable diffs, and human gates.
+Four design decisions govern how files are cut, what enters context, and how a round advances. Human gates, isolation surfaces, and sandbox promotion are mechanisms; they live in [Engineering practice](#engineering-practice).
 
-**Human gates.** Pillars, scope cuts, official-surface promotion, live pricing, and ship sign-off change player experience and commercial outcomes. Public evaluations show that as task span grows and gates get fewer, unbounded long-horizon autonomy follows a falling logistic (sources in “Capability curve”). GSH leaves those decisions with the studio. The agent produces options, checklists, and isolation-surface diffs for human review.
+### Capability-boundary isolation
 
-**Isolation surface.** Design tables, engine assets, and committed history are expensive to roll back. The default `write_class` is `sandbox`. The model writes only to isolation roots declared in `.harness/surfaces.json`. Promotion is a production process: it needs a human, and it writes record cells only, so the diff stays reviewable.
+Crafts, skills, and write surfaces declare explicit capability boundaries. A craft file states the step sequence and job duty. A skill file states the single-step procedure and its inputs and outputs. Official and isolation surfaces are declared in `.harness/surfaces.json`.
 
-**Craft paths.** Production work has an order: freeze rules before coefficients, write level goals before blockout, lock beats before dialogue, freeze contracts before implementation. A craft file is a step sequence (`uses_skills`). A skill file is the procedure for one step. `activated.json` `craft_path` stores the index and current skill. `gsh next` advances one step and rewrites the current card, so step one does not fill tables in step-five language.
+Work in a round stays inside the named set. Cross-boundary handoff uses `handoff-pack`, the current card, and `loadplan.json`. Downstream crafts read the handoff files. They do not overwrite another craft’s official surface in the same round.
 
-**Skill distillation.** Skills come from real studio workflows: checklists, table-write recipes, blockout and beat acceptance, contracts, and intake criteria, condensed into reusable `SKILL.md` procedures. The craft ranks the order; the procedure lives in the skill. Naming a skill opens an executable playbook. Expanded in [Where skills come from](#where-skills-come-from).
+### Skill distillation
 
-**Context budget.** The per-turn tax stays short: constitution, current card, named skill or craft bodies. Other skills open when that step starts. `minimal` / `core` / `full` decide disk projection, not this turn’s injection.
+Live studio workflows are condensed into reusable `SKILL.md` files: checklists, table-write recipes, blockout and beat acceptance, contracts, and intake criteria. The craft ranks the order. The procedure lives in the skill. Naming a skill opens a program with inputs, outputs, and fail-closed rollback. Origin and coverage: [Where skills come from](#where-skills-come-from).
 
-**Session continuity.** Studio-root `.harness` is the cross-tool filing cabinet. Probe sessions start with `_` and do not overwrite `LATEST`.
+### Task orchestration
 
-**Acceptance evidence.** The close command is `gsh close`. Cursor `stop` and Claude Code `Stop` check the same report. Other tools follow the same flow via the CLI and `HOOKS.md`.
+A production round follows a fixed loop: look up an id (`menu`) → write the contract and activate (`activate`) → execute the current step (`next`) → verify and close (`close`). State lives under studio-root `.harness`. After a client switch, read the same current card. Orchestration targets files and commands. Chat history is not the progress source.
 
-**Lazy MCP.** `core` is a handshake list. `lazy_stdio` starts the child on the first `tools/call`.
+### Context-budget injection
 
-**Secrets and destructive operations.** Secrets must not enter git or the model context. `mcp.json.example` is placeholders only. Setup never overwrites an existing `mcp.json`. Irreversible Git and recursive deletes require human confirmation.
+The context window is allocated on a budget. Boot injects the constitution, the current card, and activated skill or craft bodies. `catalog.json` is a lookup for `gsh menu`. Canon / adr open only after `retrieve_keys` hits. A craft path opens `craft_open` only; later steps enter context when that step starts. Disk profiles `minimal` / `core` / `full` decide projection, not this turn’s injection.
+
+### Strengths and limits
+
+**Gains.** The promote path is auditable: write on the isolation surface, then merge record cells after human approval. Short steps can be checked against a `verify-report`. Tools share one filing cabinet. Skills are versionable and reusable. The named set limits what this round may rewrite.
+
+**Costs.** The architecture depends on human gates, so there is no unattended ship. Short steps raise session count and handoff cost. Skill quality tracks whether distillation stays current; a stale checklist hardens a wrong procedure. Adapter parity differs by host: Cursor and Claude Code run event hooks; other tools use the CLI and `HOOKS.md`, so boot injection and close-gate completeness vary. This pack ships no connectable MCP process; table hosts and similar connectors are installed locally.
+
+Percentages in the public evaluations belong to those papers. **None is a studio-measured GSH success rate.** Sources: [Threats and limits](#threats-and-limits).
 
 ---
 
-## Three things to understand first
+## Principles, scope, and runtime model
 
-Read these three notes before the department map. They state that GSH **covers the full pipeline**, **who owns which decisions**, and **why autonomy must stay bounded**. Every percentage below is from a published evaluation. **None of them is a studio-measured GSH success rate.**
+Read the design logic, then the department map. This section states principles, coverage bounds, the runtime loop, and what published evaluations imply for long-horizon autonomy.
 
-### 1. Full-pipeline coverage
+### Core principles
 
-GSH is built for the whole production pipeline. The catalog currently holds **35 / 35** craft paths and **106 / 106** skills. Design has **11** crafts in two peer groups: systems, combat, combat numeric, economy numeric, progression numeric, monetization, liveops; and level, narrative, copy, UX. The rest are production and project management (4), engineering (6), art and tech art (9), and QA (5). Naming one path opens only the current step. Unnamed crafts stay in the menu.
+The four-layer contract applies in layers. The constitution sets read order, default write isolation, the close command, and secret / destructive gates. The director writes `loadplan.json` and names ids. The capability library opens skills one step at a time. The filing cabinet keeps progress and evidence.
 
-Craft index: [docs/crafts/index.md](docs/crafts/index.md). Skill index: [docs/skills/index.md](docs/skills/index.md). Audio ingest and Bank build are skills (`audio-fmod-checklist`, `fmod-bank-build`) on the tech-art / pipeline steps. There is no 36th craft.
+The named set decides boot injection. A missing skill can be opened mid-round without regenerating the roster.
 
-### 2. Human–AI boundaries
+A craft does not pre-expand `uses_skills`. `gsh next` advances one step and rewrites the current card.
 
-The four layers stay aligned: the constitution sets write isolation and destructive gates; the director writes `loadplan.json`; the capability library executes one skill at a time; the filing cabinet keeps evidence. Promotion to an official surface is a production decision, not a default model privilege. The agent works only inside the activated set and must pass the verify gate on close.
+Write class defaults to `sandbox`. Promotion needs a human and writes record cells only.
+
+Secrets stay out of git and out of model context. Irreversible destroy needs explicit authorization this round.
+
+### Scope and non-goals
+
+**Scope.** The full game-production pipeline. Current catalog: **35 / 35** crafts, **106 / 106** skills.
+
+Design has **11** crafts in two peer groups:
+
+- systems, combat, combat numeric, economy numeric, progression numeric, monetization, liveops
+- level, narrative, copy, UX
+
+The rest: production and project management 4, engineering 6, art and tech art 9, QA 5. Naming one path opens only the current step. Unnamed crafts stay in the menu until activated.
+
+Craft index: [docs/crafts/index.md](docs/crafts/index.md). Skill index: [docs/skills/index.md](docs/skills/index.md). Audio ingest and Bank build are skills (`audio-fmod-checklist`, `fmod-bank-build`) on the tech-art / pipeline steps.
+
+**Non-goals.** Unattended ship. Shipping a game engine, DCC, or a connectable MCP server. Treating `.harness` as a knowledge graph. Writing `catalog.json` into a system prompt. Third-party packages are outside maintenance.
+
+### Runtime model
+
+Human–AI split is part of the runtime model. Promotion to an official surface is a production process. The agent works inside the activated set. Close must pass the verify gate.
 
 | Human-required | AI-capable under GSH | Co-owned |
 |---|---|---|
@@ -79,18 +112,16 @@ The four layers stay aligned: the constitution sets write isolation and destruct
 | Legal / compliance | Implement + test loops with `verify-report` evidence | |
 | Shipping sign-off | Status / weekly digest drafts | |
 
-Humans do not delegate a gate. The agent does not edit official surfaces outside the activated set, and does not treat a draft as accepted without `gsh close`.
+Loop: `menu` → `activate` → `next` → `close`. Distinct job duties get separate craft subagents. The parent session names ids and closes.
 
-### 3. Capability curve
+### Threats and limits
 
-Public evaluations share one shape: as tasks get longer and human gates get fewer, **unbounded long-horizon autonomy follows a falling logistic**. The same model can jump several-fold once a plan, interaction, or harness is added (see the source list; one cited same-model harness gap is about 6×). GSH therefore keeps the agent on short steps (one skill), isolation diffs, and human gates, instead of stretching unattended horizon. Axis numbers below only restate cited intervals. The GSH curve is labeled **ILLUSTRATIVE**. It is not a studio percentage.
+Published evaluations share one shape: as tasks get longer and human gates get fewer, unbounded long-horizon autonomy follows a falling logistic. The same model can differ several-fold across harnesses (about 6× in one cited pair). GSH therefore uses short steps and human gates. Axis numbers below only restate cited intervals.
 
-**Figure A — METR fitted shape (cited intervals only)**
-
-Success falls as “time a human expert needs for that task” grows. The paper fits a logistic. The 50% time horizon has doubled about every seven months since 2019. The 80% horizon is about five times shorter. Messier, under-specified tasks score lower.
+Success falls as “time a human expert needs for that task” grows. METR fits a logistic. The 50% time horizon has doubled about every seven months since 2019. The 80% horizon is about five times shorter. Messier, under-specified tasks score lower.
 
 ```text
-success probability (METR public intervals, not a GSH measurement)
+success probability (METR public intervals; not a GSH measurement)
 ~100% │●
       │  ●
  ~50% │     ●········ 50% time horizon (~7-month doubling)
@@ -98,22 +129,6 @@ success probability (METR public intervals, not a GSH measurement)
  ~10% │           ●●
       └────────────────────────────→ human expert time for the task
         < ~4 min                   > ~4 h
-```
-
-**Figure B — autonomy vs reliability (ILLUSTRATIVE)**
-
-The shape follows the direction of the cited studies: unbounded long-horizon work falls; short steps plus human gates stay in the high-reliability band. **Not a pack benchmark score.**
-
-```text
-success reliability (ILLUSTRATIVE, not measured %)
-  high │ ■■■■■■■■■  GSH: short step + isolation diff + human gate
-       │ ■
-       │ ●
-       │  ●●
-       │    ●●●     unbounded long-horizon autonomy (METR-like fall)
-  low  │       ●●
-       └────────────────────────────→ autonomy / task span / fewer gates
-         one skill        multi-step, no gate     unattended long run
 ```
 
 Sources (percentages belong to the papers, not to GSH production KPIs):
@@ -868,6 +883,26 @@ The catalog’s **106** skills are the current distillation. New workflows becom
 
 ---
 
+## Engineering practice
+
+Human gates and sandbox promotion implement the design logic. They are not the design logic.
+
+### Human gates
+
+These decisions change player experience or commercial outcomes and require a studio signature: experience pillars and fantasy tone, scope cuts, official-surface promotion, live economy and IAP pricing, irreversible destroy, secrets, legal / compliance, and ship. A model signature does not count.
+
+The agent produces options, checklists, and isolation-surface diffs on short steps. The close command is `gsh close`. Cursor `stop` and Claude Code `Stop` check the same `verify-report.json`. Other tools use the CLI and `HOOKS.md`. Probe sessions start with `_` and do not overwrite `LATEST`.
+
+### Sandbox promotion
+
+Default `write_class` is `sandbox`. The model writes only to isolation roots declared in `.harness/surfaces.json`. Design tables, engine assets, and committed history are expensive to roll back.
+
+Promotion is a production process: it needs a human, and it writes record cells only, so the diff stays reviewable. Whole-file overwrite of an official surface is forbidden. A passing `gsh close` is a precondition for promotion. Acceptance is not the same as an official write.
+
+Secrets must not enter git or the model context. `mcp.json.example` is placeholders only. Setup never overwrites an existing `mcp.json`. Irreversible Git and recursive deletes require human confirmation. MCP `core` is a handshake list. `lazy_stdio` starts the child on the first `tools/call`.
+
+---
+
 ## Problems it addresses
 
 These are recurring production problems that a single prompt does not stabilize. GSH handles them with a four-layer file contract and a CLI.
@@ -990,72 +1025,6 @@ Per-tool notes: [docs/adapters/](docs/adapters/).
 
 ---
 
-## Install
-
-**Python 3.11+**. Windows is a first-class game-production target; Linux/macOS are for isolate probes and CI. The installer projects architecture files and skills. It does not ship production-software installers and does not write secrets.
-
-Install only from the official repository or its GitHub Releases: [github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness). Third-party packages are outside this project’s maintenance. PyPI is not published yet.
-
-Edit content only at repo root: `skills/`, `agents/`, `rules/`, `hooks/`, `harness/`. The wheel ships those trees, so `pip install .` / `pipx install .` does not require a live clone. `gsh setup` / `gsh sync` write that same content into each tool’s complete native tree.
-
-```bash
-git clone https://github.com/limoaCatherine/game-studio-harness.git
-cd game-studio-harness
-python -m pip install .
-gsh setup --guided
-```
-
-Windows: `py -3.11 -m pip install .`, then `gsh setup --workspace <studio-root> --yes`.
-
-Non-interactive:
-
-```bash
-gsh setup \
-  --workspace /path/to/studio-root \
-  --tools cursor,claude \
-  --profile core \
-  --yes
-```
-
-| Entry | Command |
-|---|---|
-| CLI on PATH | `gsh setup` |
-| Module | `python -m gsh setup` |
-| Unix | `./install.sh` |
-| Windows | `.\install.ps1` or `.\一键部署.ps1` |
-
-| `--profile` | Projection | Use when |
-|---|---|---|
-| `minimal` | 12 director/isolation/close skills + 4 crafts | Complete one four-layer loop |
-| `core` | Daily director, tables, slice, acceptance | Most production sessions |
-| `full` (default) | 106 skills + 35 crafts | Full catalog on disk |
-
-`--tools all` (default) lands 19 complete native trees. `legacy` = cursor,claude,codex,grok,deepseek.
-
-Isolate probe (does not write real homedirs):
-
-```bash
-python -m gsh setup \
-  --isolate-root /tmp/gsh-probe \
-  --workspace /tmp/gsh-probe/ws \
-  --tools all \
-  --profile full \
-  --yes
-
-python -m gsh verify \
-  --isolate-root /tmp/gsh-probe \
-  --workspace /tmp/gsh-probe/ws
-```
-
-```bash
-gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
-gsh uninstall --isolate-root /tmp/gsh-probe --yes
-```
-
-pipx, Release wheels, `GSH_PACK_ROOT`, and future PyPI: [docs/install.md](docs/install.md). Cutting a release: [docs/release.md](docs/release.md).
-
----
-
 ## Start using
 
 Open the **studio root**, not only this repository. Replace placeholders in `.harness/surfaces.json` with machine-local paths. Do not commit real drive letters back to the GSH repository.
@@ -1166,6 +1135,78 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) · [SUPPORT.md](SUPPORT.md).
 6. Pull requests require a passing isolate `verify` and a passing `unittest` run.
 
 The 0.1 duplicate trees such as `cursor/skills` are removed. Edit at repo root, then `sync`.
+
+---
+
+## Prerequisites
+
+Environment and toolchain, stated separately from the design logic.
+
+- **Python 3.11+**. Windows is a first-class game-production target. Linux / macOS are for isolate probes and CI.
+- Open the **studio root**, not only this repository. Replace placeholders in `.harness/surfaces.json` with machine-local paths. Do not commit real drive letters back to the GSH repository.
+- The installer projects architecture files and skills. It does not ship a game engine, DCC, or other production-software installer. It does not write secrets.
+- Install only from the official repository or its GitHub Releases: [github.com/limoaCatherine/game-studio-harness](https://github.com/limoaCatherine/game-studio-harness). Third-party packages are outside maintenance. PyPI is not published yet.
+- Edit content only at repo root: `skills/`, `agents/`, `rules/`, `hooks/`, `harness/`. The wheel ships those trees, so `pip install .` / `pipx install .` does not require a live clone.
+
+---
+
+## Install
+
+```bash
+git clone https://github.com/limoaCatherine/game-studio-harness.git
+cd game-studio-harness
+python -m pip install .
+gsh setup --guided
+```
+
+Windows: `py -3.11 -m pip install .`, then `gsh setup --workspace <studio-root> --yes`.
+
+Non-interactive:
+
+```bash
+gsh setup \
+  --workspace /path/to/studio-root \
+  --tools cursor,claude \
+  --profile core \
+  --yes
+```
+
+| Entry | Command |
+|---|---|
+| CLI on PATH | `gsh setup` |
+| Module | `python -m gsh setup` |
+| Unix | `./install.sh` |
+| Windows | `.\install.ps1` or `.\一键部署.ps1` |
+
+| `--profile` | Projection | Use when |
+|---|---|---|
+| `minimal` | 12 director/isolation/close skills + 4 crafts | Complete one four-layer loop |
+| `core` | Daily director, tables, slice, acceptance | Most production sessions |
+| `full` (default) | 106 skills + 35 crafts | Full catalog on disk |
+
+`--tools all` (default) lands 19 complete native trees. `legacy` = cursor,claude,codex,grok,deepseek.
+
+Isolate probe (does not write real homedirs):
+
+```bash
+python -m gsh setup \
+  --isolate-root /tmp/gsh-probe \
+  --workspace /tmp/gsh-probe/ws \
+  --tools all \
+  --profile full \
+  --yes
+
+python -m gsh verify \
+  --isolate-root /tmp/gsh-probe \
+  --workspace /tmp/gsh-probe/ws
+```
+
+```bash
+gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
+gsh uninstall --isolate-root /tmp/gsh-probe --yes
+```
+
+pipx, Release wheels, `GSH_PACK_ROOT`, and future PyPI: [docs/install.md](docs/install.md). Cutting a release: [docs/release.md](docs/release.md).
 
 ---
 
