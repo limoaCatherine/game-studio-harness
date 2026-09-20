@@ -2,6 +2,8 @@
 
 README 保留目的、先了解的三件事（全流程 / 人机边界 / 能力曲线）、能力地图、问题、哲学与安装入口。细节在本目录。
 
+双语主文档含完整部门能力地图（35 职种 / 106 技能）：[README.md](../README.md) · [README.en.md](../README.en.md)。覆盖由 `install/verify_readme_catalog.py` 核对。
+
 | 文档 | 内容 |
 |---|---|
 | [architecture/](architecture/README.md) | 四层：宪法、导演、能力库、档案柜；跨工具运行时。[en](architecture/README.en.md) |

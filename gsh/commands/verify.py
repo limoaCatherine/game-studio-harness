@@ -170,6 +170,16 @@ def run(
     if not any(c.get("uses_skills") for c in catalog["crafts"]):
         fail(errors, "no craft declares uses_skills")
 
+    readme_catalog = pack_root / "install" / "verify_readme_catalog.py"
+    if readme_catalog.is_file():
+        install_dir = str(pack_root / "install")
+        if install_dir not in sys.path:
+            sys.path.insert(0, install_dir)
+        import verify_readme_catalog
+
+        if verify_readme_catalog.main() != 0:
+            fail(errors, "README catalog coverage failed (install/verify_readme_catalog.py)")
+
     # --- installed shared runtime ---
     if not (h.gsh / "AGENTS.md").is_file():
         fail(errors, f"missing shared constitution {h.gsh / 'AGENTS.md'}")

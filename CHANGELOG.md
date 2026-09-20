@@ -9,17 +9,18 @@ Version is single-sourced from [`gsh/__init__.py`](gsh/__init__.py).
 
 ## [Unreleased]
 
+### Added
+
+- Bilingual README department capability map covering all 35 crafts and 106 skills; `install/verify_readme_catalog.py` checks coverage.
+
 ### Changed
 
 - README / README.en: purpose restated as the full game-production pipeline; added “three things to understand first” (coverage, human–AI boundaries, cited capability curve) before the department map. The map now names all 35 crafts. Architecture index has an English twin.
+- GitHub Actions: `actions/checkout@v5` and `actions/setup-python@v6` (Node 24 runtime).
 
 ### Fixed
 
 - CLI reconfigures stdout/stderr to UTF-8 so `gsh menu` / status / next survive Windows cp1252 consoles (CI `tests (windows-latest, py3.11)`).
-
-### Changed
-
-- GitHub Actions: `actions/checkout@v5` and `actions/setup-python@v6` (Node 24 runtime).
 
 ## [0.4.0] - 2026-09-20
 
