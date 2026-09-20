@@ -1,21 +1,42 @@
-# 贡献
+# Contributing
 
-## 技能
+## Single source of truth
 
-落在 `skills/<id>/SKILL.md`。frontmatter 写 `name`、`description`，常用外接写 `needs_mcp`。当次数字、当次路径不进技能正文。
+Edit capability files **once**, at the repository root:
 
-## 职种
+| Kind | Path |
+|---|---|
+| Skill | `skills/<id>/SKILL.md` |
+| Craft | `agents/<id>.md` |
+| Rule | `rules/*.mdc` |
+| Hook | `hooks/` |
+| Runtime | `harness/` |
+| CLI | `gsh/` |
 
-落在 `agents/<id>.md`。`uses_skills` 是序列，不是开场必读清单。
+Do **not** add `cursor/skills`, `claude/skills`, or `.cursor/skills`. After you change the root, run:
 
-## 外接
+```bash
+python -m gsh sync --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --yes
+python -m gsh verify --isolate-root /tmp/gsh-probe --workspace /tmp/gsh-probe/ws --tools legacy
+python -m unittest discover -s tests -v
+```
 
-键写进 `mcp.json` 示例，刷新菜单补用途桩。新外接默认懒接。
+## Skills
 
-## 目录
+Frontmatter must include `name` and `description`. Common hosts go in `needs_mcp` as catalog ids, not as invented names. Session numbers and machine paths stay out of the body.
 
-五套工具目录各自齐套。改一套，其余四套同步。
+## Crafts
 
-## 提交
+`uses_skills` is a sequence. The roster generator must open only the first skill. Do not paste session TTK numbers into a craft file.
 
-`feat:` / `fix:` / `docs:` / `chore:`。改架构先写决策。
+## MCP
+
+Add a purpose stub under `harness/mcp-tools/<id>.json` and a placeholder block in `harness/mcp.json.example`. New hosts default to lazy. Do not commit a live server, a secret, or `C:\Users\...`.
+
+## Architecture
+
+The four layers are frozen. Changing them requires a steer, a new loadplan, and an ADR under the studio filing cabinet — not a drive-by new top-level folder.
+
+## Commit style
+
+`feat:` / `fix:` / `docs:` / `chore:`.

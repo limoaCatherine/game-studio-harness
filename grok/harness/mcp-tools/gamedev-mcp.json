@@ -1,5 +1,0 @@
-{
-  "id": "gamedev-mcp",
-  "purpose": "引擎编辑器内检视/改场景/脚本（需对应编辑器插件已连 SignalR :28080）",
-  "tools": []
-}

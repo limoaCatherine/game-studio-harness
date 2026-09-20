@@ -1,0 +1,18 @@
+[project]
+name = "game-studio-harness"
+version = "0.2.0"
+description = "Four-layer context OS for game-production agents."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Game Studio Harness contributors" }]
+
+[project.scripts]
+gsh = "gsh.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["gsh*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

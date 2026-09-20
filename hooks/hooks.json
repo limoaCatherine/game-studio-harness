@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "python hooks/开场.py",
+        "timeout": 25
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "python hooks/命令前.py",
+        "timeout": 15
+      }
+    ],
+    "beforeReadFile": [
+      {
+        "command": "python hooks/读文件前.py",
+        "timeout": 10,
+        "failClosed": true
+      }
+    ],
+    "stop": [
+      {
+        "command": "python hooks/结束.py",
+        "timeout": 10,
+        "loop_limit": 2
+      }
+    ]
+  }
+}
