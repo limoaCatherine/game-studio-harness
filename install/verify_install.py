@@ -156,6 +156,8 @@ def main() -> int:
         pack / "install" / "install.py",
         pack / "install" / "verify_install.py",
         pack / "README.md",
+        pack / "README.en.md",
+        pack / "docs" / "README.md",
         pack / "SECURITY.md",
         pack / "CONTRIBUTING.md",
         pack / "CODE_OF_CONDUCT.md",
@@ -195,6 +197,17 @@ def main() -> int:
         ):
             if not (root / rel).is_file():
                 fail(errors, f"workspace missing {rel}")
+
+    readme_catalog = pack / "install" / "verify_readme_catalog.py"
+    if readme_catalog.is_file():
+        install_dir = str(pack / "install")
+        if install_dir not in sys.path:
+            sys.path.insert(0, install_dir)
+        import verify_readme_catalog
+
+        rc = verify_readme_catalog.main()
+        if rc != 0:
+            fail(errors, "README catalog coverage failed (install/verify_readme_catalog.py)")
 
     if errors:
         for e in errors:

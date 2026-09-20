@@ -16,6 +16,10 @@
 
 五套工具目录各自齐套。改一套，其余四套同步。
 
+## 文档
+
+公共说明是双语的：[README.md](README.md) 与 [README.en.md](README.en.md)。索引见 [docs/README.md](docs/README.md)。新增职种或技能后，两份 README 的部门能力地图都要补上对应 id，保持 35/35、106/106 全覆盖。
+
 ## 提交
 
 `feat:` / `fix:` / `docs:` / `chore:`。改架构先写决策。
