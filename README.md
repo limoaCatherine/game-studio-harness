@@ -671,7 +671,7 @@ python -m unittest discover -s tests -v
 - catalog 可解析，技能/职种 id 唯一
 - 至少一条职种带 `uses_skills`，且逻辑上不预展开
 - 共享运行时与 Cursor 投影的 `route-task` 与仓库根字节一致
-- 无 `C:\Users\alice`、无 `Harness-Apps`、无 `ghp_` / `sk-`
+- 无本机用户主目录绝对路径、无硬编码宿主根、无 `ghp_` / `sk-` 一类活密钥
 - 业务根具备 state / surfaces / 两份 canon 示例 / AGENTS.md / CLAUDE.md
 
 ### `doctor`
