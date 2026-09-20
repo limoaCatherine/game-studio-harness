@@ -90,6 +90,18 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
+def configure_stdio() -> None:
+    """UTF-8 stdout/stderr so Chinese menu/status text survives Windows cp1252 consoles."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(encoding="utf-8", errors="replace")
+        except (OSError, ValueError, AttributeError):
+            continue
+
+
 def _legacy_isolate(args: argparse.Namespace) -> Path | None:
     if getattr(args, "isolate_root", None):
         return Path(args.isolate_root)
@@ -100,6 +112,7 @@ def _legacy_isolate(args: argparse.Namespace) -> Path | None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    configure_stdio()
     argv = list(sys.argv[1:] if argv is None else argv)
     # 允许 `python -m gsh --workspace X` 无子命令，视为 setup
     if argv and not argv[0].startswith("-") and argv[0] not in {
