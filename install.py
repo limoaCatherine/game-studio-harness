@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""把本仓落到 ~/.cursor 与业务根。不安装任何软件，不写密钥。"""
+"""把本仓落到共享运行时 ~/.gsh，并适配 Cursor / Claude Code / Codex / Grok / DeepSeek Harness。
+不安装任何 DCC，不写密钥，不覆盖已有 mcp.json。
+"""
 from __future__ import annotations
 
 import argparse
@@ -11,6 +13,12 @@ from pathlib import Path
 PACK = Path(__file__).resolve().parent
 CURSOR_SRC = PACK / "cursor"
 WORKSPACE_SRC = PACK / "workspace-scaffold"
+CONSTITUTION = PACK / "adapters" / "_shared" / "CONSTITUTION.md"
+ALL_TOOLS = ("cursor", "claude", "codex", "grok", "deepseek")
+
+if str(CURSOR_SRC / "harness" / "scripts") not in sys.path:
+    sys.path.insert(0, str(CURSOR_SRC / "harness" / "scripts"))
+from gsh_paths import Homes, homes_from_env  # noqa: E402
 
 
 def copy_tree(src: Path, dst: Path, dry: bool, copied: list[str]) -> None:
@@ -57,15 +65,26 @@ def merge_missing(src: Path, dst: Path, dry: bool, copied: list[str]) -> None:
         copied.append(f"new {path.as_posix()} -> {target.as_posix()}")
 
 
-def write_tiers(cursor: Path, dry: bool) -> None:
+def write_text(path: Path, text: str, dry: bool, copied: list[str]) -> None:
+    if not dry:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+    copied.append(f"write {path.as_posix()}")
+
+
+def constitution_text() -> str:
+    return CONSTITUTION.read_text(encoding="utf-8")
+
+
+def write_tiers(harness_dst: Path, dry: bool) -> None:
     src = CURSOR_SRC / "harness" / "mcp-tiers.json"
     raw = json.loads(src.read_text(encoding="utf-8"))
-    boot_dir = cursor / "harness" / "mcp-boot"
+    boot_dir = harness_dst / "mcp-boot"
     raw["boot"] = {
         "cache": str(boot_dir / "cache"),
         "lazy_stdio": str(boot_dir / "lazy_stdio.py"),
     }
-    dest = cursor / "harness" / "mcp-tiers.json"
+    dest = harness_dst / "mcp-tiers.json"
     if not dry:
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(json.dumps(raw, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -75,6 +94,7 @@ def maybe_write_mcp(cursor: Path, write_mcp: bool, dry: bool) -> str:
     example = CURSOR_SRC / "mcp.json.example"
     dest_example = cursor / "mcp.json.example"
     if not dry:
+        cursor.mkdir(parents=True, exist_ok=True)
         shutil.copy2(example, dest_example)
     live = cursor / "mcp.json"
     if live.is_file():
@@ -86,8 +106,8 @@ def maybe_write_mcp(cursor: Path, write_mcp: bool, dry: bool) -> str:
     return "wrote mcp.json from example (no secrets, placeholders only)"
 
 
-def refresh_catalog(cursor: Path, dry: bool) -> str:
-    script = cursor / "harness" / "scripts" / "刷新菜单.py"
+def refresh_catalog(h: Homes, dry: bool) -> str:
+    script = h.gsh_harness / "scripts" / "刷新菜单.py"
     if dry:
         return "dry-run skip 刷新菜单"
     if not script.is_file():
@@ -99,27 +119,117 @@ def refresh_catalog(cursor: Path, dry: bool) -> str:
         return "cannot load 刷新菜单.py"
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    mod.CURSOR = cursor
-    mod.HARNESS = cursor / "harness"
-    mod.SKILLS = cursor / "skills"
-    mod.AGENTS = cursor / "agents"
-    mod.MCP_JSON = cursor / "mcp.json"
-    mod.TOOLS = cursor / "harness" / "mcp-tools"
-    mod.OUT = cursor / "harness" / "catalog.json"
+    mod.CURSOR = h.cursor
+    mod.SKILLS = h.gsh_skills
+    mod.AGENTS = h.gsh_agents
+    mod.HARNESS = h.gsh_harness
+    mod.TOOLS = h.gsh_harness / "mcp-tools"
+    mod.OUT = h.gsh_harness / "catalog.json"
+    mcp_live = h.cursor / "mcp.json"
+    mcp_example = h.gsh / "mcp.json.example"
+    mod.MCP_JSON = mcp_live if mcp_live.is_file() else mcp_example
     rc = int(mod.main())
     if rc != 0:
         return f"刷新菜单 failed rc={rc}"
-    out = cursor / "harness" / "catalog.json"
-    if not out.is_file():
+    catalog = h.gsh_harness / "catalog.json"
+    if not catalog.is_file():
         return "刷新菜单 未写 catalog.json"
-    return f"wrote {out}"
+    cursor_out = h.cursor / "harness" / "catalog.json"
+    if h.cursor.joinpath("harness").is_dir():
+        cursor_out.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(catalog, cursor_out)
+    return f"wrote {catalog}"
+
+
+def parse_tools(raw: str) -> list[str]:
+    if raw.strip().lower() in {"all", "*"}:
+        return list(ALL_TOOLS)
+    out = []
+    for part in raw.replace(";", ",").split(","):
+        name = part.strip().lower()
+        aliases = {
+            "claudecode": "claude",
+            "claude-code": "claude",
+            "openai": "codex",
+            "grokbot": "grok",
+            "grok-build": "grok",
+            "deepseekharness": "deepseek",
+            "dsh": "deepseek",
+        }
+        name = aliases.get(name, name)
+        if name not in ALL_TOOLS:
+            raise SystemExit(f"unknown tool {part!r}; choose from {', '.join(ALL_TOOLS)}")
+        if name not in out:
+            out.append(name)
+    if not out:
+        raise SystemExit("need at least one --tools value")
+    return out
+
+
+def land_shared(h: Homes, dry: bool, copied: list[str]) -> None:
+    copy_tree(CURSOR_SRC / "skills", h.gsh_skills, dry, copied)
+    copy_tree(CURSOR_SRC / "agents", h.gsh_agents, dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "scripts", h.gsh_harness / "scripts", dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "surfaces.default.json", h.gsh_harness / "surfaces.default.json", dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "mcp-tools", h.gsh_harness / "mcp-tools", dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "docs", h.gsh_harness / "docs", dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "mcp-boot", h.gsh_harness / "mcp-boot", dry, copied)
+    copy_tree(CURSOR_SRC / "harness" / "host-paths.example.json", h.gsh_harness / "host-paths.example.json", dry, copied)
+    copy_tree(CURSOR_SRC / "mcp.json.example", h.gsh / "mcp.json.example", dry, copied)
+    write_tiers(h.gsh_harness, dry)
+    write_text(h.gsh / "AGENTS.md", constitution_text(), dry, copied)
+
+
+def land_cursor(h: Homes, write_mcp: bool, dry: bool, copied: list[str]) -> str:
+    copy_tree(CURSOR_SRC / "rules", h.cursor / "rules", dry, copied)
+    copy_tree(CURSOR_SRC / "skills", h.cursor / "skills", dry, copied)
+    copy_tree(CURSOR_SRC / "agents", h.cursor / "agents", dry, copied)
+    copy_tree(CURSOR_SRC / "hooks", h.cursor / "hooks", dry, copied)
+    copy_tree(CURSOR_SRC / "hooks.json", h.cursor / "hooks.json", dry, copied)
+    copy_tree(h.gsh_harness, h.cursor / "harness", dry, copied)
+    return maybe_write_mcp(h.cursor, write_mcp, dry)
+
+
+def land_instruction(path: Path, dry: bool, copied: list[str]) -> None:
+    write_text(path, constitution_text(), dry, copied)
+
+
+def land_other(h: Homes, tools: list[str], dry: bool, copied: list[str]) -> None:
+    if "claude" in tools:
+        copy_tree(h.gsh_skills, h.claude / "skills", dry, copied)
+        copy_tree(h.gsh_agents, h.claude / "agents", dry, copied)
+        land_instruction(h.claude / "CLAUDE.md", dry, copied)
+    if "codex" in tools:
+        copy_tree(h.gsh_skills, h.agents_skills, dry, copied)
+        copy_tree(h.gsh_agents, h.codex / "agents", dry, copied)
+        land_instruction(h.codex / "AGENTS.md", dry, copied)
+    if "grok" in tools:
+        copy_tree(h.gsh_skills, h.grok / "skills", dry, copied)
+        copy_tree(h.gsh_agents, h.grok / "agents", dry, copied)
+        land_instruction(h.grok / "AGENTS.md", dry, copied)
+    if "deepseek" in tools:
+        copy_tree(h.gsh_skills, h.dsh / "skills", dry, copied)
+        copy_tree(h.gsh_skills, h.agents_skills, dry, copied)
+        land_instruction(h.dsh / "AGENTS.md", dry, copied)
+
+
+def land_workspace(root: Path, dry: bool, copied: list[str]) -> str:
+    if not dry:
+        root.mkdir(parents=True, exist_ok=True)
+    merge_missing(WORKSPACE_SRC / ".harness", root / ".harness", dry, copied)
+    text = constitution_text()
+    write_text(root / "AGENTS.md", text, dry, copied)
+    write_text(root / "CLAUDE.md", text, dry, copied)
+    return f"scaffolded missing files under {root / '.harness'}"
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="一键把 Game Studio Harness 落到本机 Cursor 与业务根")
+    p = argparse.ArgumentParser(description="一键把 Game Studio Harness 落到多套 AI 编程工具")
     p.add_argument("--workspace", help="业务根（将放 .harness）")
-    p.add_argument("--cursor-home", default=str(Path.home() / ".cursor"))
-    p.add_argument("--cursor-only", action="store_true")
+    p.add_argument("--tools", default="all", help="cursor,claude,codex,grok,deepseek 或 all")
+    p.add_argument("--cursor-home", help="兼容旧开关；请改用 --isolate-root")
+    p.add_argument("--isolate-root", help="探测根：所有家目录改落到此树下，不写真实 ~/.cursor 等")
+    p.add_argument("--cursor-only", action="store_true", help="不建业务根")
     p.add_argument("--write-mcp", action="store_true", help="仅当目标没有 mcp.json 时从示例创建")
     p.add_argument("--dry-run", action="store_true")
     args = p.parse_args()
@@ -130,34 +240,29 @@ def main() -> int:
         print("need --workspace or --cursor-only", file=sys.stderr)
         return 2
 
-    cursor = Path(args.cursor_home)
+    isolate = Path(args.isolate_root) if args.isolate_root else None
+    if isolate is None and args.cursor_home:
+        isolate = Path(args.cursor_home).parent / "_isolate_from_cursor_home"
+        print("warning: --cursor-home is legacy; prefer --isolate-root", file=sys.stderr)
+    h = homes_from_env(isolate)
+    tools = parse_tools(args.tools)
     copied: list[str] = []
     dry = args.dry_run
 
-    copy_tree(CURSOR_SRC / "rules", cursor / "rules", dry, copied)
-    copy_tree(CURSOR_SRC / "skills", cursor / "skills", dry, copied)
-    copy_tree(CURSOR_SRC / "agents", cursor / "agents", dry, copied)
-    copy_tree(CURSOR_SRC / "hooks", cursor / "hooks", dry, copied)
-    copy_tree(CURSOR_SRC / "hooks.json", cursor / "hooks.json", dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "scripts", cursor / "harness" / "scripts", dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "surfaces.default.json", cursor / "harness" / "surfaces.default.json", dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "mcp-tools", cursor / "harness" / "mcp-tools", dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "docs", cursor / "harness" / "docs", dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "mcp-boot", cursor / "harness" / "mcp-boot", dry, copied)
-    copy_tree(CURSOR_SRC / "harness" / "host-paths.example.json", cursor / "harness" / "host-paths.example.json", dry, copied)
-    write_tiers(cursor, dry)
-    mcp_msg = maybe_write_mcp(cursor, args.write_mcp, dry)
-    catalog_msg = refresh_catalog(cursor, dry)
+    land_shared(h, dry, copied)
+    mcp_msg = "skipped cursor mcp"
+    if "cursor" in tools:
+        mcp_msg = land_cursor(h, args.write_mcp, dry, copied)
+    land_other(h, tools, dry, copied)
+    catalog_msg = refresh_catalog(h, dry)
 
     ws_msg = "skipped workspace"
     if args.workspace:
-        root = Path(args.workspace)
-        if not dry:
-            root.mkdir(parents=True, exist_ok=True)
-        merge_missing(WORKSPACE_SRC / ".harness", root / ".harness", dry, copied)
-        ws_msg = f"scaffolded missing files under {root / '.harness'}"
+        ws_msg = land_workspace(Path(args.workspace), dry, copied)
 
     print(f"files={len(copied)}")
+    print(f"tools={','.join(tools)}")
+    print(f"gsh={h.gsh}")
     print(mcp_msg)
     print(catalog_msg)
     print(ws_msg)

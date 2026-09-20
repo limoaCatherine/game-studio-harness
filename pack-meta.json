@@ -3,5 +3,6 @@
   "kind": "architecture-logic",
   "software_in_pack": false,
   "public": true,
-  "layout": "cursor-native"
+  "layout": "multi-harness",
+  "tools": ["cursor", "claude", "codex", "grok", "deepseek"]
 }

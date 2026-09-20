@@ -1,7 +1,8 @@
-# 一键把 Game Studio Harness 部署到本机 Cursor 与业务根。不装 DCC，不写密钥。
+# 一键把 Game Studio Harness 部署到本机多套 AI 编程工具与业务根。不装 DCC，不写密钥。
 [CmdletBinding()]
 param(
     [string]$Workspace = "",
+    [string]$Tools = "all",
     [switch]$CursorOnly,
     [switch]$WriteMcp,
     [switch]$DryRun
@@ -63,6 +64,8 @@ if ($CursorOnly) {
     $install += @("--workspace", $Workspace)
     $verify += @("--workspace", $Workspace)
 }
+$install += @("--tools", $Tools)
+$verify += @("--tools", $Tools)
 if ($WriteMcp) { $install += "--write-mcp" }
 if ($DryRun) { $install += "--dry-run" }
 
@@ -79,10 +82,10 @@ if (-not $DryRun) {
 Write-Host ""
 Write-Host "部署完成。" -ForegroundColor Green
 if (-not $CursorOnly) {
-    Write-Host "下一步：用 Cursor 打开 $Workspace"
+    Write-Host "下一步：用 Cursor / Claude Code / Codex / Grok / DeepSeek Harness 打开 $Workspace"
     Write-Host "1. 改 $Workspace\.harness\surfaces.json 的 official / sandbox"
     Write-Host "2. 写 .harness\sessions\<短名>\loadplan.json"
-    Write-Host "3. python $env:USERPROFILE\.cursor\harness\scripts\生成会话能力名单.py <短名>"
+    Write-Host "3. python $env:USERPROFILE\.gsh\harness\scripts\生成会话能力名单.py <短名>"
 }
 Write-Host "外接软件不是本包的一部分。需要哪些、怎么用：docs\工具\总览.md"
 exit 0

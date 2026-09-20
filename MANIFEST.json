@@ -1,11 +1,13 @@
 {
   "name": "game-studio-harness",
-  "layout": "cursor-native",
+  "layout": "multi-harness",
   "software_in_pack": false,
   "public": true,
   "entry": ["一键部署.bat", "一键部署.ps1", "install.py"],
+  "tools": ["cursor", "claude", "codex", "grok", "deepseek"],
   "roots": {
-    "cursor": "cursor/",
+    "canonical": "cursor/",
+    "adapters": "adapters/",
     "workspace": "workspace-scaffold/",
     "docs": "docs/"
   }

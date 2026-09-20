@@ -6,8 +6,12 @@ import json
 import sys
 from pathlib import Path
 
-CURSOR_HARNESS = Path.home() / ".cursor" / "harness"
-CATALOG = CURSOR_HARNESS / "catalog.json"
+try:
+    from gsh_paths import find_catalog
+
+    CATALOG = find_catalog()
+except Exception:
+    CATALOG = Path.home() / ".cursor" / "harness" / "catalog.json"
 
 
 def load_json(path: Path):

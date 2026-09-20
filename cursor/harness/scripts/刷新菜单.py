@@ -14,6 +14,24 @@ MCP_JSON = CURSOR / "mcp.json"
 TOOLS = HARNESS / "mcp-tools"
 OUT = HARNESS / "catalog.json"
 
+try:
+    from gsh_paths import homes_from_env
+
+    _h = homes_from_env()
+    if (_h.gsh_skills / "route-task" / "SKILL.md").is_file():
+        SKILLS = _h.gsh_skills
+        AGENTS = _h.gsh_agents
+        HARNESS = _h.gsh_harness
+        TOOLS = HARNESS / "mcp-tools"
+        OUT = HARNESS / "catalog.json"
+        CURSOR = _h.cursor
+        if (_h.cursor / "mcp.json").is_file():
+            MCP_JSON = _h.cursor / "mcp.json"
+        elif (_h.gsh / "mcp.json.example").is_file():
+            MCP_JSON = _h.gsh / "mcp.json.example"
+except Exception:
+    pass
+
 FM = re.compile(r"^---\s*\n(.*?)\n---", re.S)
 
 

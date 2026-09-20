@@ -6,20 +6,17 @@
 
 ## 目录对照
 
-仓内按 Cursor 用户目录分档，不再使用 `payload/L1` 这种搬运编号。
+技能正文只在 `cursor/`。安装器先落到 `~/.gsh`，再按 `--tools` 镜像到各 AI 编程工具。
 
 | 仓内 | 目标 |
 |---|---|
-| `cursor/rules/全局.mdc` | `~/.cursor/rules/全局.mdc` |
-| `cursor/skills/<id>/` | `~/.cursor/skills/<id>/` |
-| `cursor/agents/<id>.md` | `~/.cursor/agents/<id>.md` |
-| `cursor/hooks/` + `hooks.json` | `~/.cursor/hooks/` |
-| `cursor/harness/scripts/` | `~/.cursor/harness/scripts/` |
-| `cursor/harness/mcp-tools/` | `~/.cursor/harness/mcp-tools/` |
-| `cursor/harness/mcp-tiers.json` | `~/.cursor/harness/mcp-tiers.json`（boot 改成本机） |
-| `cursor/harness/mcp-boot/` | `~/.cursor/harness/mcp-boot/` |
-| `cursor/mcp.json.example` | `~/.cursor/mcp.json.example` |
+| `cursor/skills/` `agents/` `harness/` | `~/.gsh/` 再拷到已选工具 |
+| `cursor/rules/全局.mdc` | `~/.cursor/rules/`（仅 `--tools` 含 cursor） |
+| `adapters/_shared/CONSTITUTION.md` | `~/.claude/CLAUDE.md`、`~/.codex/AGENTS.md`、`~/.grok/AGENTS.md`、`~/.dsh/AGENTS.md`、业务根 `AGENTS.md`/`CLAUDE.md` |
+| `cursor/hooks/` | `~/.cursor/hooks/` |
 | `workspace-scaffold/.harness/` | `<业务根>/.harness/`（已有文件不覆盖） |
+
+完整落点见 `docs/适配.md`。
 
 ## 一步部署
 
@@ -30,16 +27,16 @@
 或：
 
 ```text
-python install.py --workspace <业务根绝对路径>
-python verify_install.py --workspace <业务根绝对路径>
+python install.py --workspace <业务根绝对路径> --tools all
+python verify_install.py --workspace <业务根绝对路径> --tools all
 ```
 
-禁止用 `--write-mcp` 覆盖对方已有的现网 `mcp.json`。
+禁止用 `--write-mcp` 覆盖对方已有的现网 `mcp.json`。验收用 `--isolate-root`，不要写探测机的真实用户目录。
 
 ## 装完立刻做
 
 1. 改 `<业务根>/.harness/surfaces.json`。
-2. 写 `loadplan.json`，跑 `生成会话能力名单.py`。
+2. 写 `loadplan.json`，跑 `~/.gsh/harness/scripts/生成会话能力名单.py`。
 3. 确认 `activated.json` 的 `ok=true`，职种未预展开。
 4. 外接软件另见 `docs/工具/总览.md`。无宿主时忽略健康红灯。
 

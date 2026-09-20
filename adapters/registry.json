@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "canonical": "cursor/",
+  "runtime": "~/.gsh",
+  "note": "技能/职种只在 cursor/ 存一份。各工具目录是适配落点，不是第二套产品。",
+  "tools": {
+    "cursor": {
+      "label": "Cursor",
+      "home": "~/.cursor",
+      "skills": "~/.cursor/skills",
+      "agents": "~/.cursor/agents",
+      "rules": "~/.cursor/rules",
+      "hooks": true,
+      "instruction": "~/.cursor/rules/全局.mdc",
+      "harness": "~/.cursor/harness",
+      "docs": "https://cursor.com/docs"
+    },
+    "claude": {
+      "label": "Claude Code",
+      "home": "~/.claude",
+      "skills": "~/.claude/skills",
+      "agents": "~/.claude/agents",
+      "instruction": "~/.claude/CLAUDE.md",
+      "project_instruction": "CLAUDE.md",
+      "docs": "https://code.claude.com/docs"
+    },
+    "codex": {
+      "label": "OpenAI Codex",
+      "home": "~/.codex",
+      "skills": "~/.agents/skills",
+      "agents": "~/.codex/agents",
+      "instruction": "~/.codex/AGENTS.md",
+      "project_instruction": "AGENTS.md",
+      "docs": "https://developers.openai.com/codex/guides/agents-md"
+    },
+    "grok": {
+      "label": "Grok Build / grokbot",
+      "home": "~/.grok",
+      "skills": "~/.grok/skills",
+      "agents": "~/.grok/agents",
+      "instruction": "~/.grok/AGENTS.md",
+      "project_instruction": "AGENTS.md",
+      "compat": ["Cursor skills/rules", "Claude CLAUDE.md"],
+      "docs": "https://docs.x.ai/build/overview"
+    },
+    "deepseek": {
+      "label": "DeepSeek Harness",
+      "home": "~/.dsh",
+      "skills": "~/.dsh/skills",
+      "skills_extra": "~/.agents/skills",
+      "instruction": "~/.dsh/AGENTS.md",
+      "project_instruction": "AGENTS.md",
+      "docs": "https://github.com/deepseek-ai/deepseek-harness"
+    }
+  }
+}
