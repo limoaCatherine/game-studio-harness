@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -13,6 +12,7 @@ from gsh.commands.setup import _homes
 from gsh.paths_cli import resolve_pack
 from gsh.profiles import parse_tools
 from gsh.project import read_install_state
+from gsh.secret_scan import findings, should_scan_file
 
 NEED_SKILLS = ("route-task", "write-isolation", "doctor", "verify-gate", "mcp-autostart")
 NEED_HOOKS = ("开场.py", "结束.py", "工作区.py", "命令前.py", "读文件前.py")
@@ -27,10 +27,6 @@ NEED_SCRIPTS = (
     "gsh_paths.py",
     "职种路径.py",
 )
-USER_PATH = re.compile(r"[A-Za-z]:\\Users\\(?!\$\{)[A-Za-z0-9._-]+")
-DRIVE_HOST = re.compile(r"[A-Za-z]:\\Harness-Apps|[A-Za-z]:/Harness-Apps")
-SECRET_A = re.compile(r'"-a",\s*"[A-Za-z0-9]{16,}"')
-SECRET_LIKE = re.compile(r"\b(ghp_|github_pat_|sk-)[A-Za-z0-9_\-]{16,}")
 BANNED_PACK_TREES = (
     "cursor/skills",
     "claude/skills",
@@ -55,22 +51,19 @@ def _scan_secrets(path: Path, errors: list[str]) -> None:
         return
     files = [path] if path.is_file() else [p for p in path.rglob("*") if p.is_file()]
     for item in files:
-        if item.suffix.lower() not in {".md", ".json", ".py", ".mdc", ".example", ".yml", ".yaml", ".toml", ".txt"}:
-            continue
-        if item.name in {"catalog.json", "mcp.json"}:
-            continue
         if "pack_data" in item.parts:
+            continue
+        if path.is_file():
+            if item.name in {"catalog.json", "mcp.json"}:
+                continue
+        elif not should_scan_file(item):
             continue
         try:
             text = item.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError):
             continue
-        if USER_PATH.search(text):
-            fail(errors, f"{item.as_posix()} still has a machine user path")
-        if DRIVE_HOST.search(text):
-            fail(errors, f"{item.as_posix()} still has a hard-coded host root")
-        if SECRET_A.search(text) or SECRET_LIKE.search(text):
-            fail(errors, f"{item.as_posix()} still looks like a live secret")
+        for kind in findings(text):
+            fail(errors, f"{item.as_posix()} still looks private ({kind})")
 
 
 def _assert_same_file(a: Path, b: Path, errors: list[str], label: str) -> None:
@@ -314,6 +307,7 @@ def run(
         "docs/architecture",
         "docs/adapters",
         "docs/cookbook",
+        ".env.example",
     ):
         _scan_secrets(pack_root / rel, errors)
     _scan_secrets(pack_root / "harness" / "mcp.json.example", errors)
@@ -321,6 +315,8 @@ def run(
     example = pack_root / "harness" / "mcp.json.example"
     if example.is_file():
         text = example.read_text(encoding="utf-8")
+        if "EXAMPLE ONLY" not in text:
+            fail(errors, "mcp.json.example is missing the EXAMPLE ONLY label")
         if "-a" in text and "${LARK_APP_ID}" not in text:
             fail(errors, "mcp.json.example 的 -a 未换成占位符")
 

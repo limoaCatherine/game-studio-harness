@@ -22,7 +22,7 @@ Windows：
 
 ```bat
 py -3.11 -m pip install .
-gsh setup --workspace D:\studio-root --yes
+gsh setup --workspace <studio-root> --yes
 ```
 
 可编辑安装（改 SSOT 的贡献者）：
@@ -34,7 +34,7 @@ python -m pip install -e ".[dev]"
 覆盖 pack 根（例如一份未安装的检出）：
 
 ```bash
-set GSH_PACK_ROOT=D:\src\game-studio-harness
+set GSH_PACK_ROOT=<pack-root>
 gsh setup --yes
 ```
 

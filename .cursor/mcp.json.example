@@ -1,4 +1,5 @@
 {
+    "$comment": "EXAMPLE ONLY — placeholders (${LARK_APP_ID}, ${HARNESS_APPS}, …). Copy to a local mcp.json. Do not commit a live mcp.json or real credentials.",
     "mcpServers": {
         "blender-mcp": {
             "command": "${PYTHON}",
@@ -640,7 +641,7 @@
                 "--framing",
                 "ndjson",
                 "--",
-                "C:\\\\Program Files\\\\nodejs\\\\node.exe",
+                "${NODE}",
                 "${HARNESS_APPS}\\\\mcp\\\\gaea-mcp\\\\node_modules\\\\tsx\\\\dist\\\\cli.mjs",
                 "${HARNESS_APPS}\\\\mcp\\\\gaea-mcp\\\\src\\\\server.ts"
             ],
@@ -662,7 +663,7 @@
                 "--framing",
                 "ndjson",
                 "--",
-                "C:\\\\Program Files\\\\nodejs\\\\node.exe",
+                "${NODE}",
                 "${HARNESS_APPS}\\\\mcp\\\\materialpilot\\\\apps\\\\mcp-server\\\\dist\\\\main.js"
             ],
             "env": {

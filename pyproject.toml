@@ -79,6 +79,7 @@ include = [
     "/docs",
     "/AGENTS.md",
     "/LICENSE",
+    "/SECURITY.md",
     "/README.md",
     "/README.en.md",
     "/CHANGELOG.md",
