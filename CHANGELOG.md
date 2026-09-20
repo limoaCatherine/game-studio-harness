@@ -9,6 +9,10 @@ Version is single-sourced from [`gsh/__init__.py`](gsh/__init__.py).
 
 ## [Unreleased]
 
+### Added
+
+- Bilingual README department capability map covering all 35 crafts and 106 skills; `install/verify_readme_catalog.py` checks coverage.
+
 ### Fixed
 
 - CLI reconfigures stdout/stderr to UTF-8 so `gsh menu` / status / next survive Windows cp1252 consoles (CI `tests (windows-latest, py3.11)`).

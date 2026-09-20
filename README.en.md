@@ -16,6 +16,7 @@ scope → slice → isolate → verify → promote
 [中文](README.md) ·
 [What's inside](#whats-inside) ·
 [What work it handles](#what-work-it-handles) ·
+[Department capability map](#department-capability-map) ·
 [Problems it addresses](#problems-it-addresses) ·
 [Design philosophy](#design-philosophy) ·
 [Key concepts](#key-concepts) ·
@@ -52,48 +53,653 @@ After setup, the shared runtime lives at `~/.gsh` (or `<isolate>/gsh`). Each sel
 
 ## What work it handles
 
-GSH handles production work that crosses crafts, sessions, and clients on a single vertical slice. Each path below is addressable by catalog id and executable step by step.
+GSH handles production work that crosses crafts, sessions, and clients inside one game vertical slice. Every path below can be named by catalog id and executed step by step. The department capability map covers **35/35 crafts** and **106/106 skills** (each id appears at least once).
 
-### Scoping and freeze
+## Inventory
 
-A request such as “this milestone only has to prove a 3-second melee TTK” becomes `loadplan.json`: named craft or skill ids, write class (default `sandbox`), and verify kind. `python -m gsh menu` looks up ids; `python -m gsh activate <session>` writes `activated.json` and the current card. Scope is stored in files so later sessions and other tools can read it.
+The authoritative source is `catalog.json` (`gsh menu` scans root `agents/` and `skills/` frontmatter). The lists below match the single source of truth: `agents/` (35) and `skills/` (106).
 
-### Combat numeric
+### 35 crafts
 
-`combat-numeric-designer` walks: anchors → attribute framework → formula / counter / skill coefficients → table write → corner cases → table diff. Each step is one skill. `python -m gsh next` moves `craft_open` from `combat-modeling` to `attribute-framework` so later coefficient tables stay out of this turn’s context.
+| Department | Craft ids |
+| :--- | :--- |
+| Production and project management | `producer` · `associate-producer` · `project-manager` · `creative-director` |
+| Systems and numeric design | `systems-designer` · `combat-designer` · `combat-numeric-designer` · `economy-numeric-designer` · `progression-numeric-designer` · `monetization-designer` · `liveops-designer` |
+| Level, narrative, copy, and UX | `level-designer` · `narrative-designer` · `copywriter-designer` · `ux-designer` |
+| Client and server engineering | `client-engineer` · `client-combat-engineer` · `client-ui-engineer` · `server-engineer` · `server-combat-engineer` · `tools-engineer` |
+| Art and technical art | `character-concept-artist` · `character-artist` · `environment-concept-artist` · `environment-artist` · `ui-artist` · `vfx-artist` · `animator` · `rigger` · `tech-artist` |
+| Quality assurance | `qa-lead` · `qa-functional` · `qa-automation` · `qa-compatibility` · `qa-performance` |
 
-### Economy and progression
+### 106 skills
 
-`economy-numeric-designer`: sources and sinks, prices, inflation stress, table promote.  
-`progression-numeric-designer`: growth curves, unlock cadence, attribute hooks.  
-Same execution model as combat numeric: one skill per step, tables on the isolation surface, evidence paths on close.
+Craft `uses_skills` lists cover 85 event skills. The remaining 21 are not attached to any craft path and live in [Cross-cutting capabilities](#7-cross-cutting-capabilities--runtime-and-filing-cabinet): `assemble-craft-flow`, `attr-family-sync`, `audio-fmod-checklist`, `build-acceptance`, `build-gate-checklist`, `collab-protocol`, `data-readiness-check`, `deliverable-sheets`, `diagram-pack`, `doctor`, `excel-format`, `excel-read`, `fmod-bank-build`, `mcp-autostart`, `memory-retrieve`, `naming-consistency-check`, `personal-server-table-sync`, `promote-adr`, `terrain-gaea-pass`, `verify-gate`, `write-isolation`.
 
-### Levels, narrative, and UX
+Every id appears in the department tables below. The capability map covers **35/35 crafts and 106/106 skills**.
 
-`level-designer`: goal chains, blockout, encounters, pacing.  
-`narrative-designer`: beat sheets, quest gates, dialogue.  
-`ux-designer`: information architecture and five-states.  
-After a craft is named, the round executes only the current step (blockout only, or beats only) and does not rewrite copy keys in parallel.
+### 36 MCP connectors
 
-### Client and server
+`accurig` · `audacity` · `blender-mcp` · `cascadeur` · `chrome-devtools` · `cloudcompare` · `docker-mcp` · `everything-search` · `excalidraw` · `excelMCP` · `ffmpeg` · `fmod-cli` · `fmod-studio` · `gaea` · `gamedev-mcp` · `gimp` · `imagemagick` · `inkscape` · `instant-meshes` · `krita-mcp` · `lark-mcp` · `ldtk` · `magicavoxel` · `materialize` · `materialpilot` · `meshlab` · `meshroom` · `miro` · `pureref` · `renderdoc` · `rokoko` · `roslyn-mcp` · `tiled` · `treeit` · `xmind` · `xnormal`
 
-`client-engineer`, `server-engineer`, and the combat/UI variants split contract, feature slice, and save migration into steps. Official Git surfaces still pass through isolation and human approval. Engineering skills keep unfrozen design numbers out of code constants.
+The core tier connects `excelMCP` at startup. The rest are lazy and spawn a child process on first call. See [MCP policy](#mcp-policy). This repository ships 0 live servers and 36 purpose stubs.
 
-### Quality and release
+---
 
-`qa-lead`: test plan and acceptance criteria.  
-`qa-functional`: cases and defects.  
-Automation, compatibility, and performance have separate paths. Close with `python -m gsh close --kind playtest` or `--kind build`; evidence is a case pack or a build log.
+## Department capability map
 
-### Live operations
+The map is organized by studio department. Each module includes: (1) where the department sits in the production pipeline; (2) every craft path — step intent and which skills it opens; (3) related skills with purpose, timing, and inputs/outputs; (4) how a typical vertical slice walks these files with `menu` / `activate` / `next` / `close`.
 
-`liveops-designer`: event calendar, event spec, reward-mail checks. Collision and reissue rules live in the skill; schedule numbers live on isolation tables, not in the craft body.
+Session commands map to scripts as follows:
 
-### Cross-craft handoff
+| Command | Script / skill | Writes |
+| :--- | :--- | :--- |
+| `menu` | `gsh menu` / `python -m gsh menu` | `catalog.json` |
+| `activate` | `gsh activate <session>` (`route-task` → roster generator) | `loadplan.json`, `activated.json`, `current.md` |
+| `next` | `gsh next` (open the skill in `craft_open`; if many events, `assemble-craft-flow`) | Next skill body, `flow.json` |
+| `close` | `gsh close` / skill `verify-gate` (plus `artifacts-append` / `sync-state` / `handoff-pack` when needed) | `verify-report.json`, artifact index, state write-back |
 
-`handoff-pack`, `collab-protocol`, and `python -m gsh status`. The next shift opens the studio root, runs `python -m gsh resume`, and reads the current card and next skill without relying on chat history.
+---
 
-Craft index: [docs/crafts/index.md](docs/crafts/index.md). Skill index: [docs/skills/index.md](docs/skills/index.md).
+### 1. Production and project management
+
+Production turns direction, capacity, dependencies, and acceptance into a trackable contract. The producer sets goals and release language. The associate producer splits packs and chases completeness. Project management keeps the risk register and dependency graph. The creative director freezes pillars and adjudicates experience conflicts. Without this layer, downstream crafts edit official surfaces inside an unapproved scope.
+
+#### Craft paths
+
+**`producer`** — Milestone goals, build-acceptance drive, release-note language, cross-craft production push.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Scope and success criteria | Restate goal, constraints, observable success; name lead crafts and tier | `route-task` |
+| 2. Milestone plan | Entry/exit, deliverables, critical path, buffers, scope-cut triggers | `milestone-plan` |
+| 3. Build-acceptance drive | Evidence slots, exemption path, reverse-schedule chase; do not micro-own packs | (acceptance list; may collaborate `build-acceptance`) |
+| 4. Escalation and scope correction | Blocks get owner and deadline; scope swell goes to CD for `scope-cut-decision` | — |
+| 5. Release notes and retro | Player-facing vs internal, consistent with evidence, then sync state | `release-notes-stub` → `sync-state` / `handoff-pack` |
+
+Usually hung: `route-task` · `milestone-plan` · `release-notes-stub` · `sync-state` · `handoff-pack` · `file-pack-layout`.
+
+**`associate-producer`** — Split delivery packs, cross-team coordination, block close-loop, pre-acceptance completeness chase.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Split the milestone | Stable ids, owners, dates, acceptance points | `milestone-plan` |
+| 2. Align dependencies | Critical path and buffers with PM; cycles escalate | `dependency-map` |
+| 3. Daily / weekly follow-up | Factual progress and red counts; meetings decide next actions only | `status-digest` |
+| 4. Close blocks | Observable close conditions; direction issues escalate to producer/CD | — |
+| 5. Completeness chase and write-back | Chase evidence, not slogans; do not rewrite milestone goals | `sync-state`; layout via `file-pack-layout` |
+
+**`project-manager`** — Risk register, dependency graph, periodic status digest, correction options.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Build / update risk register | Probability × impact, observable signals, mitigation, review date | `risk-register-update` |
+| 2. Dependency graph | Craft/deliverable edges, cycle detection, critical path | `dependency-map` |
+| 3. Status digest | Three counters: reds, decisions needed, critical-path health | `status-digest` |
+| 4. Correction options | Two to four options (buffer / cut / add people); edit the plan only after approval | `sync-state` |
+| 5. Archive | Close risks with outcomes; keep paths, increment versions | — |
+
+**`creative-director`** — Experience pillars, slice critique, fantasy conflict rulings, scope-cut principles.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Collect conflicts and floors | Play / art / live-ops claims with evidence; classify exclusive / resource / tone | — |
+| 2. Define pillars | Three to five testable pillars with like / unlike counterexamples | `pillar-define` |
+| 3. Experience critique | Keep / cut / change notes that point at concrete objects | `experience-critique` |
+| 4. Scope cut | Keep / cut / defer table with tradeoffs, rollback, affected crafts | `scope-cut-decision` |
+| 5. Promote Canon | Approved pillars and rulings enter the decision library | `promote-canon` |
+
+#### Related skills
+
+| Skill | What it does | When | Input → output |
+| :--- | :--- | :--- | :--- |
+| `route-task` | Name skill/craft/mcp ids from the catalog; write the load-plan and current card | New session, steer, interrupt, parallel, naming | Request → `loadplan.json` + `activate` |
+| `milestone-plan` | Schedule milestones from capacity, dependencies, and calendar | After scoping, when splitting packs | Entry/exit + capacity → milestone page and cut triggers |
+| `release-notes-stub` | Rewrite git log / table diff / cut decisions into player notes | Before ship, patch notes | Change sources → classified notes |
+| `sync-state` | Align work items, session cards, plans, and artifact index | Daily follow-up, before close, handoff | Scattered state → single source + `state.json` |
+| `handoff-pack` | Pack goal, decisions, artifact paths, open items, suggested next craft | Craft or session change | Current card + artifacts → handoff pack |
+| `file-pack-layout` | Plan workspace / asset folders; isolate third-party and drafts | Lost files, repo layout | Current tree → move list and map |
+| `dependency-map` | Map edges, detect cycles, emit parallel groups and cut fan-out | Cross-team waits, unclear critical path | Packs / systems → versioned graph |
+| `status-digest` | Summarize factual progress, blocks, and decisions needed | Weekly report, stand-up, red counts | Pack table → citable digest |
+| `risk-register-update` | Identify / re-score risks with signals, mitigation, review date | Stale register, new external dependency | Register sheet → ranked rows |
+| `pillar-define` | Freeze 3–5 testable experience pillars and counterexamples | Kickoff, direction conflict, empty pillars | Claims + refs → citable pillar doc |
+| `experience-critique` | Executable notes against pillars on a slice | Slice playtest, fantasy conflict | Build + pillars → keep/cut/change table |
+| `scope-cut-decision` | Keep / cut / defer under pillar constraints | Overdue milestone, scope swell | Capacity + pillars → decision table |
+| `promote-canon` | Write approved stable facts into the decision library | After pillars or rules freeze | Approval record → `canon/` entry |
+
+#### Typical vertical slice
+
+Opening a “playable combat graybox” milestone: `menu` refreshes `catalog.json`. The producer `activate`s `producer` + `creative-director` (separate subagents), `route-task` writes T2/`sandbox`. `next` runs `pillar-define`, then `milestone-plan` splits packs for the associate producer. A PM subagent runs `risk-register-update` and `dependency-map`. Completeness day uses `status-digest` + `sync-state`. `close` checks the milestone page, pillar doc, and completeness sheet, then writes `verify-report.json`. Release week reactivates `release-notes-stub`.
+
+---
+
+### 2. Systems and numeric design
+
+This department turns play into a designable systems index, implementable GDD slices, resolvable combat objects, and promotable numeric tables. Systems design locks rules and interfaces. Combat design locks flow and kits. Three numeric crafts own combat formulas, economy loops, and progression curves. Monetization and liveops attach pay points and event calendars to the same entities and switches. Table edits always follow read → sandbox write → format → diff → human-approved promotion.
+
+#### Craft paths
+
+**`systems-designer`** — Systems index, feature GDD slice, rule feasibility, Canon proposal.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Update systems index | Explicit/implicit systems, layers, next-design pointer, cycle handling | `systems-index-map` |
+| 2. Cut a feature GDD | Eight-section skeleton, state machine as single source | `feature-gdd-slice` |
+| 3. Rule feasibility | Engine / netcode / toolchain; feasible or degrade | `rule-feasibility-check` |
+| 4. Align downstream | Event names, error codes, save keys, UI entries | — |
+| 5. Canon and revision | Approved rules enter the library; conflicts stay side by side first | `promote-canon` |
+
+**`combat-designer`** — Combat flow, skill kits, feel acceptance checklist.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Combat flow | Step ids, time model, resource axis, win/lose | `combat-flow-design` |
+| 2. Skill kit | Role, slot duty, resources and cooldown; freeze `slots_version` | `skill-kit-design` |
+| 3. Feel checklist | Hit / cancel / hit-react / camera / shake; freeze version | `combat-feel-checklist` |
+| 4. GDD and production align | Event-frame expectations to numeric / anim / VFX / code | `feature-gdd-slice` (with `anim-event-hook`, `vfx-skill-hook`) |
+| 5. Playtest notes | Tick the list on device; change flow, not the numeric master table | — |
+
+**`combat-numeric-designer`** — Attributes, formulas, counters, skill numbers; tables use the write recipe.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Model goals and freeze anchors | TTK / role bandwidth, corner cases, kit forbidden columns | `combat-modeling` |
+| 2. Attribute framework | Primary keys, derived DAG, snapshots, clamps | `attribute-framework` (`attr-family-sync` when adding a family) |
+| 3. Formula, counter, skill table | Evaluation order, matrix, coefficient bands | `damage-formula-pass` → `counter-matrix-pass` → `skill-numeric-pass` |
+| 4. Corner cases | Zero defense, crit cap, overheal, and peers | — |
+| 5. Table diff and handoff | Sandbox write, risk grade, read-back sample | `excel-com-write` → `tunable-table-diff` |
+
+Run `data-readiness-check` before heavy simulation.
+
+**`economy-numeric-designer`** — Source/sink loop, prices, inflation, table promotion.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Loop analysis | Play → earn → spend → play again; mark breaks and stalls | `economy-loop-analysis` |
+| 2. Source/sink map | Entities, net flow, cap fields | `sink-source-map` |
+| 3. Price curve | Anchors, bands, never-worth / unique-solution scans | `price-curve-pass` (sandbox via `excel-com-write`) |
+| 4. Inflation stress | Multi-scenario purchasing power; circuit breakers | `inflation-stress` |
+| 5. Table diff promotion | Structured diff, forbidden columns, read-back | `tunable-table-diff` / `excel-com-write` |
+
+**`progression-numeric-designer`** — Growth curves, unlock pacing, economy interface, attribute hooks.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Curve goals | Time / power / chapter anchors; cumulative and delta checks | `progression-curve` |
+| 2. Unlock pacing | System / level / progression conditions and fail-hint keys | — |
+| 3. ROI and economy interface | Line costs/outputs aligned to entities | `sink-source-map` |
+| 4. Attribute hookup | Growth output keys match the combat table | `attribute-framework` |
+| 5. Table sample | Write recipe, risk grade, N-day power sample | `excel-com-write` / `tunable-table-diff` |
+
+**`monetization-designer`** — Pay points, IAP / bundle / battle-pass catalog, monetization KPI definitions.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. KPI and floors | Freeze definitions, observation window, pillar-safe bans | `monetization-kpi-pass` |
+| 2. Pay points | See → understand → pay → fulfill; P2W risk escalates | — |
+| 3. IAP catalog | SKU, price band, contents, purchase limits, store ids | `iap-catalog-check` |
+| 4. Event-spec collaboration | Offset liveops calendar; pre-check reward mail | collaborate `liveops-calendar` / `reward-mail-check` |
+| 5. Acceptance and revision | KPI checks for misleading buy and hard fulfillment | — |
+
+**`liveops-designer`** — Live calendar, event spec, reward-mail safety.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Calendar | Day / week / season rhythm, collision resolution, maintenance windows | `liveops-calendar` |
+| 2. Event spec | Goals, play, rewards, switches, telemetry, fail-reissue | `event-spec` |
+| 3. Reward-mail audit | Templates, attachment checks, reissue, expiry, dedupe | `reward-mail-check` |
+| 4. Implementation align | Server grant authority and idempotency; client red-dot / expiry | — |
+| 5. Pre-ship close | Config diff, rollback owner, telemetry complete | — |
+
+#### Related skills
+
+| Skill | What it does | When | Input → output |
+| :--- | :--- | :--- | :--- |
+| `systems-index-map` | Enumerate explicit/implicit systems, layer deps, emit a designable index | “Who designs first?”, missing implicit systems | Concept list → `systems_index` (with `next_design`) |
+| `feature-gdd-slice` | Co-write an eight-section feature GDD with conflict scan and acceptance evidence | Rules, hollow sections, retrofit | Scope card → implementable slice |
+| `rule-feasibility-check` | Split rules into capability points vs engine / netcode / toolchain | “Can we ship this?”, authority gray zones | GDD rules → feasible / conditional / no + degrade |
+| `combat-flow-design` | Ingestible combat-flow skeleton and formula grammar | Standardized step names, code handoff | Pillars + pacing intent → flow brief + stable ids |
+| `skill-kit-design` | Role, slots, resource and cooldown structure | New job / kit, overlapping slot duty | Fantasy role → coefficient-ready kit |
+| `combat-feel-checklist` | Frame preview, input buffer, hitstop, camera shake | Feel acceptance, impact debate | Checklist version → clip evidence and ticks |
+| `anim-event-hook` | Event dictionary; Notify on keyframes; align logic and VFX | Hit frames, attack windows, AnimNotify | Clip + event names → dictionary version and frame table |
+| `vfx-skill-hook` | Hook skill VFX on Timeline / Notify / Socket; interrupt cleanup | Skill VFX frame align | Event names + sockets → VFX map |
+| `combat-modeling` | Object lifetime, state machine, event payload; freeze settle order | Combat entity model, authority align | Anchors → model table and pipeline order |
+| `attribute-framework` | Primary keys, derived attrs, snapshots, clamps | Attribute table, primary/secondary attrs | Key set → framework for formulas and growth |
+| `damage-formula-pass` | Damage/heal channels, evaluation order, clamps | Damage formula, settle expression | Channels + order → parseable expression + check slots |
+| `counter-matrix-pass` | Counter axes, fill matrix, cycle check, modifier mapping | Elemental / type counters | Axis defs → matrix and formula insert points |
+| `skill-numeric-pass` | Fill kit coefficients; band compare and anomaly scan | Skill coefficients, CD / resource | Kit skeleton → sampled coefficient table |
+| `economy-loop-analysis` | Split the source/sink loop into nodes and directed edges | Broken loop, new currency | Play loop → which table fields to change |
+| `sink-source-map` | Enumerate currency/material sources and sinks; net flow | Economy map | Entity list → net flow and caps |
+| `price-curve-pass` | Anchors, bands, never-worth / unique-solution scan | Shop pricing | Entity map → tunable price fields |
+| `inflation-stress` | Multi-scenario stock / purchasing power; circuit breakers | Before a large event, buying-power complaints | Scenario params → restatable conclusion + breaker keys |
+| `progression-curve` | Growth anchors and curve shape; cumulative/delta check slots | Growth curve, grind complaints | Anchors → curve version and cost table |
+| `tunable-table-diff` | Diff sandbox vs official numeric tables; grade risk; promote or roll back | Table promotion | Sandbox + official books → rollbackable diff |
+| `excel-com-write` | Confirm range → sandbox values/formulas/rows → format → merge recorded cells only → promote → read back | Product-table edits | Official path → `沙箱/*.xlsx` + changeset |
+| `monetization-kpi-pass` | Freeze KPI definitions, observation window, and bans | Unfrozen ARPU / conversion language | Producer definitions → observable acceptance metrics |
+| `iap-catalog-check` | Check IAP / bundle / pass SKUs against store ids | Catalog ship, purchase-limit refresh | Catalog table → SKU map and value explanation |
+| `liveops-calendar` | Day / week / season rhythm and collision resolution | Season, slotting | Milestone + capacity → calendar and backups |
+| `event-spec` | Event goals, play, rewards, switches, telemetry, fail-reissue | Timed event brief | Play intent → implementable spec |
+| `reward-mail-check` | Mail templates, attachments, reissue, expiry, duplicate grants | Reward mail | Reward list → audit pass or hold |
+
+#### Typical vertical slice
+
+“New job kit is resolvable”: after `menu`, `activate` names `combat-designer` and `combat-numeric-designer` (two subagents), T2/`sandbox`, `retrieve_keys` pointing at formula Canon. Combat design `next`: `combat-flow-design` → `skill-kit-design` → `combat-feel-checklist`. Numeric `next`: `combat-modeling` → `attribute-framework` → `damage-formula-pass` → `skill-numeric-pass`, writes via `excel-com-write`. After sign-off, `tunable-table-diff`. `close` checks kit `slots_version`, formula `order_version`, sandbox diff, and playtest clip. Economy or progression table work uses a separate session naming `economy-numeric-designer` or `progression-numeric-designer`.
+
+---
+
+### 3. Level, narrative, copy, and UX
+
+This department writes what the player experiences in space and story as testable goals, gated beats, bindable quest state machines, and five-state UX flows. Level design owns goal chains and encounters. Narrative owns beats and lore. Copy unifies terms and length. UX translates system state machines into walkable information architecture. Graybox scale is shared with environment art. Copy keys are reserved for UI and error codes.
+
+#### Craft paths
+
+**`level-designer`** — Level goal chain, graybox circulation, encounter script, pacing peaks and valleys.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Level goals | Main / optional / fail, teaching points, duration budget; hook narrative beats | `level-goals-spec` |
+| 2. Graybox circulation | Scale, gates, sightlines; no hero mesh until pass | collaborate `blockout-pass` |
+| 3. Encounter script | Waves, triggers, reset, tutorial order; on-screen budget | `encounter-script` |
+| 4. Pacing pass | Peak/valley vs combat / puzzle / story density | `pacing-pass` |
+| 5. Replace and revise | Swappable blocks to environment art; event names to engineering | — |
+
+**`narrative-designer`** — Beat sheet, quest spec, dialogue spec, lore consistency.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Beat sheet | Chapter/beat: goal, turn, emotion, play hook, gates | `narrative-beat-sheet` |
+| 2. Quest spec | State machine, objective keys, rewards, fail rollback, loc keys | `quest-spec` |
+| 3. Lore consistency | Scan bible conflicts, name drift, timeline | `lore-consistency-check` |
+| 4. Dialogue spec | Node intent, length, branch variables; polish may go to copy | `dialogue-pass` |
+| 5. Land and revise | Align triggers with level/systems; skip still delivers key facts | — |
+
+**`copywriter-designer`** — System/tutorial copy, dialogue polish, naming consistency, length fit.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Tone anchor | World tone, banned words, voice samples, length caps | — |
+| 2. Naming consistency | One name, one meaning; rename options and blast radius | hang `naming-consistency-check` when present |
+| 3. System copy | Tutorial / error / empty / confirm; length and bans | `copy-pass` |
+| 4. Dialogue polish | Node intent, skip policy, subtitle length | `dialogue-pass` |
+| 5. Fit and revise | Device truncation, ban scan, key-table handoff | — |
+
+**`ux-designer`** — Information architecture, UX flow spec, usability review.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Information architecture | Task list, nav depth, align to system state machine | — |
+| 2. Flow spec | Enter / act / feedback / leave; five states and exception node ids | `ux-flow-spec` |
+| 3. Usability review | Lost, mis-tap, weak feedback, hit targets, double-tap | `ux-review-pass` |
+| 4. Component mapping | Map to UI Kit; file new-control requests | collaborate `ui-kit-spec` |
+| 5. Revise and deliver | Close blockers; flow version and debt list | implementation via `ui-logic-pass` |
+
+#### Related skills
+
+| Skill | What it does | When | Input → output |
+| :--- | :--- | :--- | :--- |
+| `level-goals-spec` | Main / optional / fail goals, teaching points, duration budget | Level brief, unmeasurable win/lose | Pillars + beats → goal chain and detector wording |
+| `encounter-script` | Waves, triggers, reset, tutorial order; on-screen and readable fail | Encounter script, combat reset | Goal chain + kit expectations → wave table |
+| `pacing-pass` | Peak/valley vs density; measured duration; rest inserts | Back-to-back pressure, overlong session | Graybox path → pacing chart and safe zones |
+| `blockout-pass` | Graybox scale, circulation, gates, sightlines | Whitebox, graybox, scale check | Goal chain → walkable graybox partitions |
+| `narrative-beat-sheet` | Story beats as a gateable beat table | Narrative structure, acts and beats | Pillar tone → beat table + quest/dialogue hooks |
+| `quest-spec` | Quest state machine, objective keys, rewards, fail and rollback | Quest brief, accept/complete conditions | Beats + economy sign-off → implementable quest spec |
+| `lore-consistency-check` | Scan bible conflicts and timeline contradictions | Canon conflict, setting clash | Name tables → conflict cards or escalations |
+| `dialogue-pass` | Polish dialogue by node intent; length, voice, skip | Dialogue polish, subtitle length | Node spec → shippable lines |
+| `copy-pass` | Unify UI / item / system short copy: terms, length, tone | System prompts, empty states, error copy | Tone anchor + caps → per-scene copy files |
+| `ux-flow-spec` | Key user flows with five states and exception node ids | UX flow, information architecture | Task list + state machine → stable-id flow |
+| `ux-review-pass` | Walk the flow for lost, mis-tap, weak feedback | Usability review, hit targets | Flow + device → blocker / polish grades |
+
+#### Typical vertical slice
+
+“Chapter one can teach the combat gate”: `activate` names `level-designer` and `narrative-designer`. `next`: `narrative-beat-sheet` emits the gate beat → `level-goals-spec` writes measurable goals → `blockout-pass` proves scale → `encounter-script` + `pacing-pass`. Narrative continues with `quest-spec` on the detectors and `lore-consistency-check` on names. A copy subagent runs `copy-pass` / `dialogue-pass`. A UX subagent runs `ux-flow-spec` → `ux-review-pass`. `close` checks the goal chain, beat hooks, walkable graybox record, and five-state flow.
+
+---
+
+### 4. Client and server engineering
+
+Engineering turns frozen interfaces into a buildable vertical slice. Client opens the happy path and fail states. Combat client aligns frames and prediction/rollback. UI client owns navigation stack and red dots. Server freezes contracts, saves, and anti-cheat hooks. Combat server owns settle authority. Tools engineering turns export and validation into a CI-able CLI. Authoritative numbers are not finalized in a client Notify callback.
+
+#### Craft paths
+
+**`client-engineer`** — Non-combat feature slice, bugfix, general UI-logic collaboration.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Align contract | API / state machine / error codes; missing fields become tickets | — |
+| 2. Vertical slice | Happy path builds and clicks; fail states reproduce | `feature-vertical-slice` |
+| 3. Bind UI logic | Simple screen state; complex stacks go to UI engineer | `ui-logic-pass` |
+| 4. Bugfix | Repro → evidence → hypotheses → minimal change → regression point | `client-bugfix` |
+| 5. CI smoke | Critical path in CI; isolate flakes first | `ci-smoke` |
+| 6. Logs and delivery | Layered keywords; change surface / risk / rollback | layout via `file-pack-layout` |
+
+**`client-combat-engineer`** — Frame sync / hit presentation, skill hookup, prediction/rollback.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Spec and authority boundary | What must wait for server, prediction window, event-name dictionary | vs `server-combat-authority-check`; align `anim-event-hook` |
+| 2. Skill presentation | Cast → feedback → recover; one fail state each | `feature-vertical-slice` |
+| 3. Frame debug and rollback | Four-track timeline; presentation only | `client-combat-frame-debug` |
+| 4. Hitboxes and multi-hit | Debug HUD quantifies early/late N ticks | collaborate `anim-event-hook` |
+| 5. Bugfix, smoke, deliver | Minimal repro + seed; smoke in CI | `client-bugfix` · `ci-smoke` |
+
+**`client-ui-engineer`** — Screen logic, navigation stack, red dots.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Read flow and five states | UX flow, modal layers, back expectation | — |
+| 2. Navigation stack | Push / pop / replace; no dead stacks or click-through | `ui-logic-pass` |
+| 3. Bind data and red dots | Empty / error / loading always bound; aggregate and clear timing | — |
+| 4. Screen slice and smoke | Three resolutions; one weak-network case | `feature-vertical-slice` / `client-bugfix` / `ci-smoke` |
+| 5. Check and handoff | Binding-field table; visual debt to UI art | — |
+
+**`server-engineer`** — Contract → implementation checks → save migration → anti-cheat hooks → smoke.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Freeze contract | Fields, error codes, idempotency, version; test skeleton before implementation swell | `server-api-contract` |
+| 2. Implement and validate | Authority at the server entry; grant/debit paired; no double spend | — |
+| 3. Save schema and migration | Version, migrate, isolate bad saves; run on a copy first | `save-schema-pass` |
+| 4. Anti-cheat hooks | Validate / rate / evidence on non-combat write entries | `anti-cheat-hook-check` |
+| 5. Smoke and deliver | Contract / integration smoke | `ci-smoke` |
+
+**`server-combat-engineer`** — Combat authority, settle validation, anti-cheat collaboration.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Authority boundary sign-off | Damage, win/lose, drops, CD must be server-final | `server-combat-authority-check` |
+| 2. Settle and recompute | Recompute in formula order; reproducible seeds | — |
+| 3. Contract, logs, replay | Reject illegal packets; classify replay drift | `server-api-contract` |
+| 4. Anti-cheat collaboration | Critical write-path checks and false-positive review | `anti-cheat-hook-check` |
+| 5. Smoke, stress, deliver | Settle unit tests + CI | `ci-smoke` |
+
+**`tools-engineer`** — Pipeline tool spec, export repair, CI tool entry.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Tool spec | Duty, IO, exit codes, dry-run, rollback, permissions | `pipeline-tool-spec` |
+| 2. Core path | Local happy path; errors point at a fix action | — |
+| 3. Export-repair fixtures | Good/bad golden samples, idempotency, readable failure | `export-pipeline-fix` |
+| 4. CI entry | Tool smoke in CI; stable artifact paths | `ci-smoke` |
+| 5. Deliver and teach | How to run / dry-run / roll back; TA sign-off | — |
+
+#### Related skills
+
+| Skill | What it does | When | Input → output |
+| :--- | :--- | :--- | :--- |
+| `feature-vertical-slice` | Lock the question and a 3–5 minute scope; open happy path + fail states | Vertical slice, min-playable, demo | Contract / GDD → playable build |
+| `ui-logic-pass` | Screen state machine, events, data bind, error handling | UI logic, nav stack, screen bind | Flow node ids → state machine and bind table |
+| `client-bugfix` | Repro → evidence → hypotheses → minimal change → regression point | Client bugs, crashes | Bug ticket → minimal diff + before/after |
+| `ci-smoke` | Probe test commands; run auto smoke subset and manual core batch | Pre-submit auto check, red localization | Repo test entry → smoke conclusion and log archive |
+| `client-combat-frame-debug` | Align anim events / hit windows / VFX timeline; presentation only | Combat frames, hit windows, prediction rollback | Four-track timeline → HUD drift and frame log |
+| `server-api-contract` | Freeze endpoint fields, error codes, idempotency, version rules; write contract tests | API freeze, protocol change | Field table → OpenAPI-equivalent + contract tests |
+| `save-schema-pass` | Freeze save fields and version; migrate, load-validate, isolate bad saves | Saves, migration, corrupt saves | Schema → migration scripts and drill record |
+| `anti-cheat-hook-check` | Circle critical write paths; check validate/rate/idempotency; bypass and false-positive tests | Anti-cheat hooks, tamper | Write-entry list → evidence logs and patches |
+| `server-combat-authority-check` | Draw authority boundary; check settle inputs/seeds; illegal packets and replay drift | Combat authority, skill sync | Sign-off list → frozen authority vs predict table |
+| `pipeline-tool-spec` | Tool duty, IO/exit codes, idempotent config, CI hook | New pipeline CLI, batch | Users + permissions → spec page |
+| `export-pipeline-fix` | Run exporter on good/bad goldens; dependency/naming failure readability and idempotency | Export validation fail, asset pipeline | Golden hashes → fix + regression fixture |
+
+#### Typical vertical slice
+
+“Skill can cast, settle, and replay”: `activate` names `client-combat-engineer` and `server-combat-engineer`. Server first: `server-combat-authority-check` + `server-api-contract`. Client `next`: `feature-vertical-slice` then `client-combat-frame-debug`. Export blockers get a separate session naming `tools-engineer` for `export-pipeline-fix`. `close` checks the authority list, contract tests, slice fail states, settle unit tests, and `ci-smoke` logs. Non-combat feature slices name `client-engineer` + `server-engineer` (`save-schema-pass`).
+
+---
+
+### 5. Art and technical art
+
+Art moves from a testable style anchor to a citable engine path. Concept delivers a makeable brief. Character and environment production pass checklists and naming gates. UI maintains the kit contract and four-state screens. Rig and animation hand skeleton, weights, and event frames to combat and VFX. Technical art turns import, LOD, shader, and VFX budgets into sampleable specs. Unapproved concepts do not enter production meshes. Failed graybox does not receive hero meshes.
+
+#### Craft paths
+
+**`character-concept-artist`** — Character visual design and makeable brief.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Lock style anchor | Color / light / silhouette language; readable at distance | `style-anchor` |
+| 2. Multiple concepts | Two to four silhouette-different options; no production sheets until pick | — |
+| 3. Production sheets | Turnarounds, material zones, socket expectations | `concept-key-art` |
+| 4. Key art vs production | Marketing and production on separate tracks; 3D follows production only | — |
+| 5. Brief and review | Frozen memory points, poly band; hand to `character-artist` | — |
+
+**`character-artist`** — Character asset checklist and export convention.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Lock approved design | Approved concept / turnaround; lock poly / texture / LOD | vs `style-anchor` |
+| 2. Character asset checklist | Model, UV, textures, LOD; expose over-budget immediately | `character-asset-checklist` |
+| 3. Name, export, import | Complete remap table; pink materials and scale in-engine | `export-naming-gate` → `import-validate` · `lod-budget-pass` |
+| 4. Collaborate and close | Topology notes to rig; style spot-check vs anchor | — |
+
+**`environment-concept-artist`** — Environment / prop concept and spatial tone.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Lock tone and anchor | Scene brief: theme, time of day, guiding color | `style-anchor` |
+| 2. Mood and hero props | Entry / combat / reward keyframes; modular hints | — |
+| 3. Makeable handoff | Color/form/material bounds vs scale table | `blockout-pass` · `env-asset-checklist`; handoff craft `environment-artist` |
+| 4. Production spot-check | After block-in, check drift vs mood | — |
+
+**`environment-artist`** — Environment asset checklist and spatial presentation.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Receive graybox and tone | Hero mesh only after graybox partitions pass | `blockout-pass` |
+| 2. Modular produce and dress | Module size, pivot, seams, collision, material reuse | `env-asset-checklist` |
+| 3. Spatial presentation and budget | Vista cards, guiding color; join LOD / shader samples | `lod-budget-pass` (overage → `shader-budget-note`) |
+| 4. Name, import, handoff | Partition replace map to level design | `export-naming-gate` → `import-validate` |
+
+**`ui-artist`** — UI Kit and screen visual pass.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Align anchor and flows | Token palette, this-iteration screens, kit gaps | `style-anchor` |
+| 2. Maintain kit contract | Variant × size × state; announce breaking changes | `ui-kit-spec` |
+| 3. Single-screen pass | Information hierarchy, four states, jumps | `ui-screen-pass` |
+| 4. Production follow-up | Multi-resolution spot-check; export names | `export-naming-gate` · `file-pack-layout` |
+| 5. Check and handoff | Token and contract versions | — |
+
+**`vfx-artist`** — VFX budget and skill-hook alignment.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Receive skills and hooks | Event names and sockets only; no full logic text | — |
+| 2. Produce and align hooks | Fire on frame; interrupt cleanup | `vfx-skill-hook` |
+| 3. Budget measure and degrade | Overdraw / particle caps; degrade still readable | `vfx-budget-pass` |
+| 4. Deliver and regress | Map to combat assembly; animation event changes must regress | `import-validate` |
+
+**`animator`** — Animation-set completeness and event hooks.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Lock set scope | Min-playable four families vs full set; event-name list only | — |
+| 2. Animation-set checklist | List → repo → constraints → pack | `anim-set-checklist` |
+| 3. Event frames | Hit / cancel / foot / cast release; align VFX | `anim-event-hook` |
+| 4. Import and handoff | Freeze paths; debt explicitly scheduled | `import-validate` |
+
+**`rigger`** — Skeleton bind, skin weights, deformation check.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Receive mesh and checklist | Skeleton template; extra bones need an application | `bind-rig-checklist` |
+| 2. Skeleton and controls | FK/IK, acyclic constraints, socket names | — |
+| 3. Skin weights | Extreme poses; influence-bone cap | `skin-weight-pass` |
+| 4. Deformation check | Standard pose library; test clips with animation | — |
+| 5. Export strip and import | Runtime bone count vs animation expectation | `export-naming-gate` → `import-validate` |
+
+**`tech-artist`** — Import validation, naming gate, LOD / shader and performance-budget join.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Diagnose blocked assets | Source / pipeline / budget / engine preset | — |
+| 2. Run gates | Name scan, import, golden regression | `import-validate` · `export-naming-gate` · `export-pipeline-fix` |
+| 3. Budget calibration | Before/after device numbers and screenshots | `lod-budget-pass` · `shader-budget-note` · `vfx-budget-pass` |
+| 4. Spec deposit and handoff | Versioned name segments, import presets, budget caps | — |
+
+Procedural open-world terrain uses the cross-cutting skill `terrain-gaea-pass` (Gaea). There is no dedicated terrain craft.
+
+#### Related skills
+
+| Skill | What it does | When | Input → output |
+| :--- | :--- | :--- | :--- |
+| `style-anchor` | One visual rule, color/form/material bounds, reject criteria | Art style, art-bible slice | Love/hate refs → versioned anchor |
+| `concept-key-art` | Brief, silhouette pick, 3D-ready key and turnarounds | Character sheets, key art | Anchor + pick → production-sheet path |
+| `character-asset-checklist` | Banded model, UV, textures, LOD; import accept | Character models, high/low | Brief + band → ticked list and baseline pose |
+| `env-asset-checklist` | Grid module size and pivot; seams, collision, material reuse, dress | Modular scenes | Scale table → dressed module pack |
+| `export-naming-gate` | Scan Domain/Type/Name/Variant/LOD; batch rename; sync refs | Naming convention, asset rename | Exports → remap table |
+| `import-validate` | Import with presets; machine-check scale/material/LOD; freeze citable path | FBX import, asset intake | Export files → frozen path |
+| `lod-budget-pass` | Per-level poly ratios and switch distances; on-screen strategy | LOD budget, decimation | Band table → distance bands and sample evidence |
+| `ui-kit-spec` | Inventory controls; variant × size × state contract | UI Kit, design system | Tokens + engine library → kit contract version |
+| `ui-screen-pass` | Single-screen hierarchy, kit refs, polymorphism, jumps | Screen pass | Flow + kit → four-state screen pack |
+| `vfx-budget-pass` | Overdraw / particle caps; measure hot spots; readable degrade | VFX budget, fillrate | Quality bands → degrade config and shots |
+| `anim-set-checklist` | Min-playable and full action sets; clip presence and tech constraints | Animation set, locomotion, pack | Ability bounds → smokeable anim pack |
+| `bind-rig-checklist` | Template skeleton, IK/constraints/sockets; extreme-pose bind check | Bind, rig, sockets | Production mesh → skeleton/socket table |
+| `skin-weight-pass` | Extreme-pose weights; influence cap; compression preview | Skinning, collapse, flying verts | Rig → extreme-pose evidence |
+| `shader-budget-note` | Variant and keyword inventory; whitelist and instruction caps | Shader budget, keyword explosion | Material list → whitelist and merge plan |
+
+#### Typical vertical slice
+
+“Hero can enter combat assembly”: `activate` names `character-concept-artist`; after approval, later sessions name `character-artist` → `rigger` → `animator` → `vfx-artist`. Import reds name `tech-artist`. `next` order: `style-anchor` → `concept-key-art` → `character-asset-checklist` → `export-naming-gate` / `import-validate` → `bind-rig-checklist` → `skin-weight-pass` → `anim-set-checklist` → `anim-event-hook` → `vfx-skill-hook` / `vfx-budget-pass`. `close` checks brief, import path, socket table, event dictionary, and budget shots. Environment line hands the `environment-concept-artist` brief to `environment-artist` after `blockout-pass`.
+
+---
+
+### 6. Quality assurance
+
+QA turns “good enough” into observable start/stop conditions and an evidence pack. The lead owns the plan and exemptions. Functional QA extracts GWT from the GDD. Automation wires high-value cases to a stable scaffold. Compatibility runs N/N-1 and the device matrix. Performance resamples against a budget. Acceptance day does not rewrite criteria to paint green.
+
+#### Craft paths
+
+**`qa-lead`** — Test plan, acceptance language, risk-exemption governance.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Plan | Scope, environments, observable start/stop conditions | `qa-plan` |
+| 2. Acceptance language and evidence map | Who submits which path; no day-of rewrite | — |
+| 3. Execution and rolling risk | Assign specialists; blocks have owners | — |
+| 4. Summary and exemptions | Pass / conditional / fail; exemption has approver, expiry, payback | `artifacts-append` |
+| 5. Retro and template feed | Miss-root-causes enter the next plan | `bug-report-write` (criteria-dispute samples) |
+
+**`qa-functional`** — Functional cases, bug tickets, regression pack.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Read slice, lock scope | Happy path / edges / fail states; record build and table version | — |
+| 2. Cases and traceability | ≥1 GWT per AC; traceability matrix | `test-case-from-gdd` |
+| 3. Execute and file bugs | Repro steps; severity ≠ priority | `bug-report-write` |
+| 4. Maintain regression pack | Every fix has a regression row; quarantine is not green | `regression-pack` |
+| 5. Help acceptance | Evidence pack to lead; do not own the automation framework | — |
+
+**`qa-automation`** — Automation scaffold, case–script map, stable CI smoke.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Scaffold | Folders, fixtures, non-zero CI hook, flake quarantine | `auto-test-scaffold` |
+| 2. Case–script map | case_id ↔ script; coverage gaps and flakes | `case-automation-map` |
+| 3. Stable scripts | Paired seed and cleanup; jitter-resistant waits | — |
+| 4. CI smoke and auto regression | Small stable smoke set; clear red owner | `regression-pack` |
+| 5. Boundary and handoff | Feel / real payment default out of coverage numerator | — |
+
+**`qa-compatibility`** — N/N-1 save and protocol, device matrix, device-specific defects.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Device execution surface | Must / sample / retire; low-end and multi-GPU families listed | `device-matrix-pass` |
+| 2. N/N-1 compat smoke | Old-save upgrade; protocol/resource fail is readable and non-dirty | `compat-smoke` |
+| 3. Device-specific bugs | Driver/API clues vs all-device repro | `bug-report-write` |
+| 4. Cert collaboration and matrix upkeep | Short clause items; screenshots include device | `platform-cert-smoke` |
+| 5. Boundary check | Multi-resolution UI crop is not the compat trunk | — |
+
+**`qa-performance`** — Performance-budget measurement and report; cert only collaborates on short clause items.
+
+| Step | Intent | Skills opened |
+| :--- | :--- | :--- |
+| 1. Collect budget, freeze scenes | Target devices and frame / memory / load bands; routes in VCS | `perf-budget-check` |
+| 2. Run and report | Fixed route, cold/warm start, p50/p95 | — |
+| 3. Perf bugs and fix options | Hotspot to module/asset type; two or three options | `bug-report-write` |
+| 4. Cert performance sample | Only clause-required short items | `platform-cert-smoke` |
+| 5. Baseline and boundary | Resamplable; shader final call is not this job | — |
+
+#### Related skills
+
+| Skill | What it does | When | Input → output |
+| :--- | :--- | :--- | :--- |
+| `qa-plan` | Risk-matrix case volume and environments; observable start/stop | Test plan | Milestone entry/exit → approved plan |
+| `artifacts-append` | Append this task’s artifact paths and summaries to the index | Artifact register, verify path refs | Paths → `artifacts/index.jsonl` |
+| `test-case-from-gdd` | Extract testable points from GDD/AC as GWT; build a trace matrix | Writing cases | Slice + AC → case pack and matrix |
+| `bug-report-write` | Write a reproducible defect | Filing bugs | Env + steps + evidence → ticket |
+| `regression-pack` | Pack regression by change impact and historical defects | Version rerun, impact packing | Change surface → searchable queue |
+| `auto-test-scaffold` | Test dirs, injectable fixtures, non-zero CI hook | Test scaffold, CI wiring | Repo convention → locally runnable sample |
+| `case-automation-map` | Map GWT / regression cases to automation ids | Coverage gaps, flakes | Case pack → map and schedule |
+| `device-matrix-pass` | High/mid/low must-test devices: functional smoke, heat, frame stability | Device matrix, low-end, degrade switches | Share source → versioned matrix |
+| `compat-smoke` | N/N-1 matrix; old-save upgrade and readable failure | Compat, hot update, migrate | Version cells → result rows and isolated bad saves |
+| `platform-cert-smoke` | Short list from target-store clauses | Cert, store review, submit smoke | Clause subset → compliance shot pack |
+| `perf-budget-check` | Representative scenes, resamplable captures; locate over-budget items | Perf budget, profiler, hitch | Budget table + route → report and fix options |
+
+#### Typical vertical slice
+
+Version submit: `activate` names `qa-lead` (T2/`read` or `sandbox`). `next`: approved `qa-plan`, then assign — functional subagent `test-case-from-gdd` → `bug-report-write` → `regression-pack`; automation `auto-test-scaffold` → `case-automation-map`; compatibility `device-matrix-pass` → `compat-smoke`; performance `perf-budget-check`. Lead runs `artifacts-append` for the evidence index. `close` checks start/stop conditions, fatal-defect list, exemption expiry, and `verify-report.json`. Build-blocker inventory uses cross-cutting `build-gate-checklist`. Happy-path build acceptance uses `build-acceptance`.
+
+---
+
+### 7. Cross-cutting capabilities / runtime and filing cabinet
+
+These skills are not listed on any craft `uses_skills`, but production sessions depend on them to scope, isolate writes, retrieve memory, close, and repair a deployment. They are the teeth of the runtime and the filing cabinet, not leftover utilities. Audio and terrain have no dedicated craft; their procedures still live in the library and must be named explicitly on the load-plan.
+
+#### Place in the pipeline
+
+Cross-cutting skills move the contract between layers: boot connectors, fill catalog gaps, assemble an execution order, push official writes into isolation roots, retrieve Canon by key, and close on core evidence only. Numeric craft bodies mention `attr-family-sync` / `data-readiness-check` / `excel-read` / `excel-format`, but those ids enter the opening set only when the load-plan names them.
+
+#### Craft relationship
+
+This module has **no** craft id. Any craft may name these skills in `loadplan.json` `items`. Producers commonly pair in-path `route-task` with this layer’s `doctor`, `assemble-craft-flow`, `verify-gate`, and `write-isolation`.
+
+#### Skill groups
+
+**Runtime and catalog**
+
+| Skill | What it does | When | Input → output |
+| :--- | :--- | :--- | :--- |
+| `doctor` | Scan skill / craft / connector config gaps; emit minimal fill or redeploy actions | Activate fail, catalog mismatch, zero tools | Install tree + `catalog.json` → gap list and fill steps |
+| `mcp-autostart` | Boot connectors by tier: core eager, others lazy | Connector down, core tier, lazy attach | `mcp-tiers.json` → handshake tool table |
+| `assemble-craft-flow` | When the plan has several execute events, emit recommended order | Assemble, flow, execute events ≥ 3 | `loadplan` → `flow.json` (close steps last) |
+
+**Write isolation and table recipe**
+
+| Skill | What it does | When | Input → output |
+| :--- | :--- | :--- | :--- |
+| `write-isolation` | Official writes land on isolation roots first; promote only with human approval and record-set merge | Any write class other than `read` | `surfaces.json` → sandbox / worktree / `_Dev` landing |
+| `excel-read` | Read-only workbook: locate range, values/formulas/styles, screenshot | Pre-write inspect, post-write read-back | Official or sandbox book → values/formulas/shots (no save) |
+| `excel-format` | Hierarchy, column roles, decimals and placeholders, alignment; required after write | Color, layout, levels | Edited range → format-layer pass |
+| `attr-family-sync` | When adding or reordering an attribute layer, read → edit → format → read across affected tables | New attribute family, multi-layer key sync | Framework change → downstream keys synced |
+| `data-readiness-check` | Hard gate: numeric framework book and combat-sim data are ready | Multi-scenario balance, dry-run, table-tool rerun | Framework path → `data-readiness.json` |
+| `personal-server-table-sync` | After table edits, export to the local personal server and reload | Local server sync, Luban, boot after table edit | Sandbox/official tables → reloaded local server |
+
+**Memory, collaboration, and common sheets**
+
+| Skill | What it does | When | Input → output |
+| :--- | :--- | :--- | :--- |
+| `memory-retrieve` | Before work, retrieve approved decisions, prior artifacts, and session records | Read Canon, find prior conclusions | `retrieve_keys` → hit list |
+| `promote-adr` | Write a technical choice as a decision record: context, options, pick, consequences | ADR, architecture choice | Discussion → `adr/` file |
+| `collab-protocol` | Clarify goal, offer fork options, advance in stages, get approval before official-path writes | Ask before write, staged approval | Fuzzy request → approved option |
+| `naming-consistency-check` | Scan entity / field / UI-key collisions and drift | Term unify, rename | Name table → canonical names and replace order |
+| `deliverable-sheets` | Fill decision, open-question, progress, and handoff summary sheets as needed | Decision table, open questions, progress | Session facts → registered common sheets |
+| `diagram-pack` | Pick a tool by diagram kind: Mermaid / xmind / excalidraw / miro | Flowcharts, loops, architecture diagrams | Diagram intent → in-repo figure files |
+
+**Build, acceptance, and close**
+
+| Skill | What it does | When | Input → output |
+| :--- | :--- | :--- | :--- |
+| `verify-gate` | Before close, check only core evidence for the tier and write a verify report | Close | Tier + evidence paths → `verify-report.json` |
+| `build-acceptance` | Run happy-path acceptance on the target build; align version; inventory known-issue disposition | Acceptance, submit-build check | Build number → acceptance record |
+| `build-gate-checklist` | Inventory CI jobs, artifact paths, crash signatures, known-issue budget | Build blockers, CI red inventory | CI/artifact state → fixable blocker list |
+
+**Audio and terrain (no dedicated craft; name explicitly)**
+
+| Skill | What it does | When | Input → output |
+| :--- | :--- | :--- | :--- |
+| `audio-fmod-checklist` | FMOD Studio / Audacity / ffmpeg event intake and listen check | SFX, BGM, mix, intake | Event table → listen-passed events |
+| `fmod-bank-build` | FMOD Studio / fmodstudiocl diagnose, bank build, GUID export | Banks, audio pack | FMOD project → bank + GUID |
+| `terrain-gaea-pass` | Procedural terrain in Gaea; export for environment modules | Terrain, heightmap, open-world tiles | Tone brief → heightmap / tile export |
+
+#### Typical vertical slice (the commands themselves)
+
+Before any department opens work: `menu` (`刷新菜单.py`; the session-start hook also refreshes when the catalog is older than sources). `activate` writes `loadplan.json` (include `write-isolation` and `verify-gate`) and generates the set. Name `memory-retrieve` when prior conclusions matter. Open `write-isolation` and `excel-read` before official-surface edits. When execute events ≥ 3, `next` runs `assemble-craft-flow`. Deploy or handshake failure runs `doctor` + `mcp-autostart`. `close` accepts only a `verify-gate` report. Architecture choices name `promote-adr`.
 
 ---
 
@@ -408,8 +1014,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) · [SUPPORT.md](SUPPORT.md).
 1. Edit skills only under `skills/<id>/SKILL.md`.
 2. Edit crafts only under `agents/<id>.md`. `uses_skills` is a sequence that `gsh next` walks.
 3. New MCP: purpose stub plus placeholders. Do not commit a connectable server or a secret.
-4. Changes to the four layers require a steer and an ADR.
-5. Pull requests require a passing isolate `verify` and a passing `unittest` run.
+4. After adding a craft or skill, mention the id in both README department maps (35/35, 106/106).
+5. Changes to the four layers require a steer and an ADR.
+6. Pull requests require a passing isolate `verify` and a passing `unittest` run.
 
 The 0.1 duplicate trees such as `cursor/skills` are removed. Edit at repo root, then `sync`.
 
