@@ -1,5 +1,5 @@
 {
-  "note": "Local host path map. Software is not in this repo. Fill after you install hosts.",
+  "note": "EXAMPLE ONLY — copy to host-paths.json locally. Software is not in this repo. Fill after you install hosts. Do not commit a live host-paths.json.",
   "hosts": {
     "excel": {
       "exe": "${EXCEL_EXE}"

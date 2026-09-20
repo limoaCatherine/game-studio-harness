@@ -23,6 +23,13 @@ REQUIRED_GITIGNORE = (
     "credentials.json",
     "secrets.json",
     "mcp.json",
+    "host-paths.json",
+    "**/host-paths.json",
+    "!**/host-paths.example.json",
+    ".aws/",
+    ".gcloud/",
+    "**/service-account*.json",
+    "**/.claude/settings.local.json",
     "**/.harness/sessions/",
     "**/.harness/artifacts/",
     "**/.harness/memory/tasks.jsonl",
@@ -42,9 +49,21 @@ class SecretScanTests(unittest.TestCase):
             data = json.loads(text)
             self.assertIn("$comment", data)
             self.assertIn("mcpServers", data)
+            self.assertNotIn("Program Files", text)
+            self.assertIn("${NODE}", text)
             if "-a" in text:
                 self.assertIn("${LARK_APP_ID}", text)
                 self.assertIn("${LARK_APP_SECRET}", text)
+
+    def test_host_paths_example_is_labeled(self) -> None:
+        path = ROOT / "harness" / "host-paths.example.json"
+        text = path.read_text(encoding="utf-8")
+        self.assertIn(EXAMPLE_LABEL, text)
+        data = json.loads(text)
+        self.assertNotIn("C:\\Users\\", text)
+        self.assertNotIn("Program Files", text)
+        self.assertEqual(findings(text), [])
+        self.assertIn("hosts", data)
 
     def test_env_example_is_labeled_and_empty(self) -> None:
         path = ROOT / ".env.example"
@@ -66,8 +85,8 @@ class SecretScanTests(unittest.TestCase):
         assert spec is not None and spec.loader is not None
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
-        deny = ("id_rsa", "secret.pem", "token.p12", "mcp.json", ".env", "credentials.json")
-        allow = ("mcp.json.example", ".env.example", "README.md", "harness/mcp.json.example")
+        deny = ("id_rsa", "secret.pem", "token.p12", "mcp.json", ".env", "credentials.json", "host-paths.json")
+        allow = ("mcp.json.example", ".env.example", "host-paths.example.json", "README.md")
         for name in deny:
             self.assertTrue(mod.DENY_NAME.search(name), name)
         for name in allow:

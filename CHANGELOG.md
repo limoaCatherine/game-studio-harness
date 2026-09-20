@@ -19,7 +19,8 @@ Version is single-sourced from [`gsh/__init__.py`](gsh/__init__.py).
 ### Changed
 
 - README / README.en section order: purpose → design philosophy → three framing notes → inventory → full department map → skill origin → problems → … (install stays after platform).
-- `.gitignore` now covers `*.pem` / credential filenames and local `.harness` sessions/artifacts; MCP example JSON files carry an in-file `EXAMPLE ONLY` label.
+- `.gitignore` now covers `*.pem` / credential filenames, live `host-paths.json`, cloud cred dirs, and local `.harness` sessions/artifacts; MCP example JSON files carry an in-file `EXAMPLE ONLY` label.
+- `gaea` / `materialpilot` MCP examples use `${NODE}` instead of a Program Files node binary. Install docs use `<studio-root>` / `<pack-root>` instead of a drive-letter workspace path.
 - Design department names all 11 crafts (systems, combat, combat numeric, economy, progression, monetization, liveops, level, narrative, copy, UX). Growth curves stay on `progression-numeric-designer`. Examples rotate across crafts.
 - GitHub Actions: `actions/checkout@v5` and `actions/setup-python@v6` (Node 24 runtime).
 

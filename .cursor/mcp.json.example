@@ -641,7 +641,7 @@
                 "--framing",
                 "ndjson",
                 "--",
-                "C:\\\\Program Files\\\\nodejs\\\\node.exe",
+                "${NODE}",
                 "${HARNESS_APPS}\\\\mcp\\\\gaea-mcp\\\\node_modules\\\\tsx\\\\dist\\\\cli.mjs",
                 "${HARNESS_APPS}\\\\mcp\\\\gaea-mcp\\\\src\\\\server.ts"
             ],
@@ -663,7 +663,7 @@
                 "--framing",
                 "ndjson",
                 "--",
-                "C:\\\\Program Files\\\\nodejs\\\\node.exe",
+                "${NODE}",
                 "${HARNESS_APPS}\\\\mcp\\\\materialpilot\\\\apps\\\\mcp-server\\\\dist\\\\main.js"
             ],
             "env": {

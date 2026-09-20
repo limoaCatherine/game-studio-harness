@@ -9,6 +9,7 @@ DENY_NAME = re.compile(
     r"^\.env$"
     r"|^\.env\.(?!example$)"
     r"|^mcp\.json$"
+    r"|host-paths\.json"
     r"|credentials\.json"
     r"|secrets?\.json"
     r"|id_rsa"

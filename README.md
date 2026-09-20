@@ -1005,7 +1005,7 @@ python -m pip install .
 gsh setup --guided
 ```
 
-Windows：`py -3.11 -m pip install .`，然后 `gsh setup --workspace D:\studio-root --yes`。
+Windows：`py -3.11 -m pip install .`，然后 `gsh setup --workspace <studio-root> --yes`。
 
 非交互：
 

@@ -19,19 +19,21 @@ This repository, the `gsh` CLI, hook scripts, generated projections, and GitHub 
 
 Do not add any of the following to git, issues, pull requests, chat, or Release assets:
 
-- `.env`, live `mcp.json`, `credentials.json`, `secrets.json`, `.pypirc`, `.npmrc` with tokens
+- `.env`, live `mcp.json`, live `host-paths.json`, `credentials.json`, `secrets.json`, `.pypirc`, `.npmrc` with tokens
 - `*.pem`, `*.pfx`, `*.p12`, `*.key`, SSH private keys (`id_rsa`, `id_ed25519`, `id_ecdsa`)
 - API keys, access tokens, passwords, private keys, webhook URLs
-- User-profile absolute paths (`C:\Users\<you>\...`, `/Users/<you>/...`)
+- User-profile absolute paths (`C:\Users\<you>\...`, `/Users/<you>/...`) and host `C:\Program Files\...` binaries
 - Personal emails, phone numbers, studio-only internal numbers
 - Unpublished game IP, live table dumps, internal-only URLs
+- Cloud credential dirs (`.aws/`, `.gcloud/`), `service-account*.json`, `.claude/settings.local.json`
 
 Copy the labeled examples instead:
 
-- `harness/mcp.json.example` and `.cursor/mcp.json.example` — `${PLACEHOLDER}` only
+- `harness/mcp.json.example` and `.cursor/mcp.json.example` — `${PLACEHOLDER}` only (`${NODE}`, `${LARK_APP_ID}`, …)
+- `harness/host-paths.example.json` — copy to a local `host-paths.json`
 - `.env.example` — empty optional keys
 
-`.gitignore` already ignores live `mcp.json`, `.env`, key material, and local `.harness` session/artifact dumps. The shipped `studio/.harness/` scaffold (state, surfaces, canon) stays tracked.
+`.gitignore` already ignores live `mcp.json`, `host-paths.json`, `.env`, key material, and local `.harness` session/artifact dumps. The shipped `studio/.harness/` scaffold (state, surfaces, canon) stays tracked.
 
 ## Secrets
 

@@ -8,6 +8,7 @@ from pathlib import Path
 USER_PATH = re.compile(r"[A-Za-z]:\\Users\\(?!\$\{)[A-Za-z0-9._-]+")
 POSIX_USER = re.compile(r"(?<![\w.-])/Users/(?!shared|Shared)[A-Za-z0-9._-]+")
 DRIVE_HOST = re.compile(r"[A-Za-z]:\\Harness-Apps|[A-Za-z]:/Harness-Apps")
+HARD_NODE = re.compile(r"nodejs\\\\node\.exe|nodejs\\node\.exe")
 SECRET_A = re.compile(r'"-a",\s*"[A-Za-z0-9]{16,}"')
 SECRET_LIKE = re.compile(
     r"\b(?:"
@@ -80,6 +81,8 @@ def findings(text: str) -> list[str]:
         out.append("posix user path")
     if DRIVE_HOST.search(text):
         out.append("host root")
+    if HARD_NODE.search(text):
+        out.append("hard-coded node host")
     if SECRET_A.search(text) or SECRET_LIKE.search(text):
         out.append("secret-like")
     if PRIVATE_KEY.search(text):
